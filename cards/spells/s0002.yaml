@@ -1,0 +1,16 @@
+id: s0002
+name: smite
+description: "Deal 1 pure damage to a 'unit'."
+cost: 2
+target_reqs:
+- type: unit
+  conditions:
+events:
+- type: damage_unit
+  when: on_play
+  targets:
+    type: targets
+    index: 0
+  details:
+    damage_type: pure
+    amount: 1

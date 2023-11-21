@@ -1,0 +1,8 @@
+id: i0001
+name: sword
+description: "Gain two attack."
+cost: 2
+traits:
+- type: add_attack
+  details:
+    amount: 2

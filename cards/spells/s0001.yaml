@@ -1,0 +1,17 @@
+id: s0001
+name: spark
+description: "Deal 2 magic damage to a 'creature'."
+cost: 2
+target_reqs:
+- type: unit
+  conditions:
+  - type: creature
+events:
+- type: damage_unit
+  when: on_play
+  targets:
+    type: targets
+    index: 0
+  details:
+    damage_type: magic
+    amount: 2

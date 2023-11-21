@@ -1,0 +1,12 @@
+id: u0002
+name: brave
+description: ''
+cost: 2
+type: creature
+damage_type: physical
+attack: 2
+health: 2
+cooldown: 2
+movement: 1
+codex: 11000000
+traits:
