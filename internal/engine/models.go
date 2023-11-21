@@ -1,6 +1,9 @@
 package engine
 
-import "github.com/quibbble/go-quill/pkg/uuid"
+import (
+	"github.com/quibbble/go-quill/pkg/errors"
+	"github.com/quibbble/go-quill/pkg/uuid"
+)
 
 type When string
 
@@ -43,7 +46,7 @@ func (c Conditions) Pass(engine IEngine, state IState) (bool, error) {
 	for _, condition := range c {
 		p, err := condition.Pass(engine, state)
 		if err != nil {
-			return false, err
+			return false, errors.Wrap(err)
 		}
 		pass = p && pass
 	}

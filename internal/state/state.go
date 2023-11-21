@@ -2,6 +2,7 @@ package state
 
 import (
 	"github.com/quibbble/go-quill/internal/state/card"
+	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
@@ -20,16 +21,16 @@ type State struct {
 func NewState(player1, player2 uuid.UUID, deck1, deck2 []string) (*State, error) {
 	board, err := NewBoard(player1, player2)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err)
 	}
 
 	d1, err := NewDeck(deck1)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err)
 	}
 	d2, err := NewDeck(deck2)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err)
 	}
 
 	hand1 := make([]*card.Card, 0)
@@ -37,11 +38,11 @@ func NewState(player1, player2 uuid.UUID, deck1, deck2 []string) (*State, error)
 	for i := 0; i < InitHandSize; i++ {
 		card1, err := d1.Draw()
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err)
 		}
 		card2, err := d2.Draw()
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err)
 		}
 		hand1 = append(hand1, card1)
 		hand2 = append(hand2, card2)

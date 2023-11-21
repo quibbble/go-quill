@@ -1,8 +1,6 @@
 package card
 
 import (
-	"fmt"
-
 	"github.com/quibbble/go-quill/cards"
 	"github.com/quibbble/go-quill/internal/engine"
 	en "github.com/quibbble/go-quill/internal/engine"
@@ -81,7 +79,7 @@ func (c *Card) RemoveTrait(engine *engine.Engine, traitUUID uuid.UUID) error {
 		}
 	}
 	if idx < 0 {
-		return fmt.Errorf("failed to find card trait")
+		return errors.Errorf("failed to find card trait")
 	}
 	c.Traits = append(c.Traits[:idx], c.Traits[idx+1:]...)
 	return trait.Remove(engine, c)

@@ -2,6 +2,7 @@ package card
 
 import (
 	en "github.com/quibbble/go-quill/internal/engine"
+	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
@@ -24,7 +25,7 @@ func NewUnitCard(id string, player uuid.UUID) (*UnitCard, error)
 func (u *UnitCard) AddItem(engine *en.Engine, item *ItemCard) error {
 	for _, trait := range item.HeldTraits {
 		if err := u.AddTrait(engine, trait); err != nil {
-			return err
+			return errors.Wrap(err)
 		}
 	}
 	u.Items = append(u.Items, item)
@@ -44,7 +45,7 @@ func (u *UnitCard) RemoveItem(engine *en.Engine, item uuid.UUID) error {
 	}
 	for _, trait := range card.HeldTraits {
 		if err := u.RemoveTrait(engine, trait.UUID); err != nil {
-			return err
+			return errors.Wrap(err)
 		}
 	}
 	u.Items = append(u.Items[:idx], u.Items[idx+1:]...)

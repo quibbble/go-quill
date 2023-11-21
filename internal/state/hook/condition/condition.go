@@ -1,10 +1,9 @@
 package condition
 
 import (
-	"fmt"
-
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
+	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
@@ -19,7 +18,7 @@ type Condition struct {
 func NewCondition(typ string, args map[string]interface{}) (*Condition, error) {
 	pass, ok := ConditionMap[typ]
 	if !ok {
-		return nil, fmt.Errorf("'%s' is not a valid condition type", typ)
+		return nil, errors.Errorf("'%s' is not a valid condition type", typ)
 	}
 	return &Condition{
 		uuid: uuid.New(st.ConditionUUID),
@@ -36,11 +35,11 @@ func (c *Condition) Type() string {
 func (c *Condition) Pass(engine en.IEngine, state en.IState) (bool, error) {
 	eng, ok := engine.(*en.Engine)
 	if !ok {
-		return false, fmt.Errorf("failed to convert IEngine to Engine")
+		return false, errors.Errorf("failed to convert IEngine to Engine")
 	}
 	sta, ok := state.(*st.State)
 	if !ok {
-		return false, fmt.Errorf("failed to convert IState to State")
+		return false, errors.Errorf("failed to convert IState to State")
 	}
 	return c.pass(eng, sta, c.args)
 }

@@ -2,6 +2,7 @@ package state
 
 import (
 	"github.com/quibbble/go-quill/internal/state/card"
+	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
@@ -50,11 +51,11 @@ func NewBoard(player1, player2 uuid.UUID) (*Board, error) {
 	for x := 0; x < Cols; x++ {
 		base1, err := card.NewUnitCard(BaseID, player1)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err)
 		}
 		base2, err := card.NewUnitCard(BaseID, player2)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err)
 		}
 
 		board.XYs[x][0].Unit = base1
