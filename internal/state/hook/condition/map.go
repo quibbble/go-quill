@@ -6,8 +6,8 @@ import (
 )
 
 var (
-	ConditionMap = map[string]func(engine *engine.Engine, state *state.State, args map[string]interface{}) (bool, error){
-		"EXAMPLE": func(engine *engine.Engine, state *state.State, args map[string]interface{}) (bool, error) {
+	ConditionMap = map[string]func(engine *engine.Engine, state *state.State, args interface{}) (bool, error){
+		"EXAMPLE": func(engine *engine.Engine, state *state.State, args interface{}) (bool, error) {
 			return false, nil
 		},
 	}

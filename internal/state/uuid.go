@@ -1,5 +1,10 @@
 package state
 
+import (
+	"github.com/quibbble/go-quill/pkg/errors"
+	"github.com/quibbble/go-quill/pkg/uuid"
+)
+
 const (
 	TileUUID      = 'T'
 	UnitUUID      = 'U'
@@ -9,4 +14,10 @@ const (
 	EngineUUID    = 'E'
 	EventUUID     = 'V'
 	ConditionUUID = 'C'
+)
+
+var (
+	ErrInvalidUUIDType = func(uuid uuid.UUID, expectedType rune) error {
+		return errors.Errorf("'%s' is not of type '%s'", string(uuid), string(expectedType))
+	}
 )

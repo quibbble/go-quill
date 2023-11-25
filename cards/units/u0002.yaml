@@ -8,5 +8,5 @@ attack: 2
 health: 2
 cooldown: 2
 movement: 1
-codex: 11000000
+codex: "11000000"
 traits:

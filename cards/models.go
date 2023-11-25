@@ -42,11 +42,12 @@ type UnitCard struct {
 	Hooks  []Hook  `yaml:"hooks"`
 
 	DamageType string   `yaml:"damage_type"`
-	Attack     uint     `yaml:"attack"`
-	Health     uint     `yaml:"health"`
-	Cooldown   uint     `yaml:"cooldown"`
-	Movement   uint     `yaml:"movement"`
-	Codex      uint8    `yaml:"codex"`
+	Attack     int      `yaml:"attack"`
+	Health     int      `yaml:"health"`
+	Cooldown   int      `yaml:"cooldown"`
+	Movement   int      `yaml:"movement"`
+	Range      int      `yaml:"range"`
+	Codex      string   `yaml:"codex"`
 	Traits     []Traits `yaml:"traits"`
 }
 

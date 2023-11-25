@@ -6,7 +6,9 @@ import (
 )
 
 type Deck struct {
-	c.Collection[card.Card]
+	c.Collection[card.ICard]
 }
 
-func NewDeck([]string) (*Deck, error)
+func NewDeck(...string) (*Deck, error)
+
+func NewEmptyDeck() *Deck

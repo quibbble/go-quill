@@ -11,14 +11,14 @@ type Event struct {
 	uuid uuid.UUID
 
 	typ    string
-	args   map[string]interface{}
-	affect func(engine *en.Engine, state *st.State, args map[string]interface{}) error
+	args   interface{}
+	affect func(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error
 }
 
-func NewEvent(typ string, args map[string]interface{}) (*Event, error) {
+func NewEvent(typ string, args interface{}) (*Event, error) {
 	affect, ok := EventMap[typ]
 	if !ok {
-		return nil, errors.Errorf("'%s' is not a valid event type", typ)
+		return nil, errors.ErrMissingMapKey
 	}
 	return &Event{
 		uuid:   uuid.New(st.EventUUID),
@@ -32,14 +32,14 @@ func (e *Event) Type() string {
 	return e.typ
 }
 
-func (e *Event) Affect(engine en.IEngine, state en.IState) error {
+func (e *Event) Affect(engine en.IEngine, state en.IState, targets ...uuid.UUID) error {
 	eng, ok := engine.(*en.Engine)
 	if !ok {
-		return errors.Errorf("failed to convert IEngine to Engine")
+		return errors.ErrInterfaceConversion
 	}
 	sta, ok := state.(*st.State)
 	if !ok {
-		return errors.Errorf("failed to convert IState to State")
+		return errors.ErrInterfaceConversion
 	}
-	return e.affect(eng, sta, e.args)
+	return e.affect(eng, sta, e.args, targets...)
 }

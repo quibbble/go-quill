@@ -7,10 +7,9 @@ target_reqs:
   conditions:
 events:
 - type: damage_unit
-  when: on_play
-  targets:
-    type: targets
-    index: 0
-  details:
+  args:
     damage_type: pure
     amount: 1
+    choose:
+      type: target
+      index: 0

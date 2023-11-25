@@ -17,6 +17,13 @@ type Trait struct {
 	Remove func(engine *engine.Engine, card *Card) error
 }
 
+type ICard interface {
+	GetInit() *cards.UnitCard
+	Playable(engine engine.IEngine, state engine.IState) (bool, error)
+	AddTrait(engine *engine.Engine, trait Trait) error
+	RemoveTrait(engine *engine.Engine, traitUUID uuid.UUID) error
+}
+
 type Card struct {
 	// data used to initialize a card
 	init *cards.UnitCard
@@ -41,7 +48,7 @@ type Card struct {
 	Traits []Trait
 }
 
-func (c *Card) GetInit() cards.Card {
+func (c *Card) GetInit() *cards.UnitCard {
 	return c.init
 }
 

@@ -13,7 +13,7 @@ const (
 )
 
 type IEngine interface {
-	Do(event IEvent, state IState) error
+	Do(event IEvent, state IState, targets ...uuid.UUID) error
 	Register(hook IHook)
 	DeRegister(hook IHook)
 }
@@ -31,7 +31,7 @@ type IHook interface {
 
 type IEvent interface {
 	Type() string
-	Affect(engine IEngine, state IState) error
+	Affect(engine IEngine, state IState, targets ...uuid.UUID) error
 }
 
 type ICondition interface {

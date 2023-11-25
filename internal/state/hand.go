@@ -11,7 +11,7 @@ const (
 )
 
 type Hand struct {
-	c.Collection[card.Card]
+	c.Collection[card.ICard]
 }
 
-func NewHand(card ...*card.Card) *Hand
+func NewHand(card ...card.ICard) *Hand

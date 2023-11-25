@@ -8,10 +8,9 @@ target_reqs:
   - type: creature
 events:
 - type: damage_unit
-  when: on_play
-  targets:
-    type: targets
-    index: 0
-  details:
+  args:
     damage_type: magic
     amount: 2
+    choose:
+      type: target
+      index: 0

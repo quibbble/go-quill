@@ -4,10 +4,14 @@ import "github.com/google/uuid"
 
 type UUID string
 
+const (
+	Nil UUID = "|"
+)
+
 func New(typ rune) UUID {
 	return UUID(string(typ) + uuid.New().String()[:8])
 }
 
-func Type(uuid UUID) rune {
-	return rune(uuid[0])
+func (u UUID) Type() rune {
+	return rune(u[0])
 }

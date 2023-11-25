@@ -11,14 +11,14 @@ type Condition struct {
 	uuid uuid.UUID
 
 	typ  string
-	args map[string]interface{}
-	pass func(engine *en.Engine, state *st.State, args map[string]interface{}) (bool, error)
+	args interface{}
+	pass func(engine *en.Engine, state *st.State, args interface{}) (bool, error)
 }
 
-func NewCondition(typ string, args map[string]interface{}) (*Condition, error) {
+func NewCondition(typ string, args interface{}) (*Condition, error) {
 	pass, ok := ConditionMap[typ]
 	if !ok {
-		return nil, errors.Errorf("'%s' is not a valid condition type", typ)
+		return nil, errors.ErrMissingMapKey
 	}
 	return &Condition{
 		uuid: uuid.New(st.ConditionUUID),
@@ -35,11 +35,11 @@ func (c *Condition) Type() string {
 func (c *Condition) Pass(engine en.IEngine, state en.IState) (bool, error) {
 	eng, ok := engine.(*en.Engine)
 	if !ok {
-		return false, errors.Errorf("failed to convert IEngine to Engine")
+		return false, errors.ErrInterfaceConversion
 	}
 	sta, ok := state.(*st.State)
 	if !ok {
-		return false, errors.Errorf("failed to convert IState to State")
+		return false, errors.ErrInterfaceConversion
 	}
 	return c.pass(eng, sta, c.args)
 }

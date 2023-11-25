@@ -2,6 +2,7 @@ package engine
 
 import (
 	"github.com/quibbble/go-quill/pkg/errors"
+	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
 // Engine handles the core game loop logic
@@ -20,7 +21,7 @@ func NewEngine(hooks ...IHook) *Engine {
 	}
 }
 
-func (e *Engine) Do(event IEvent, state IState) error {
+func (e *Engine) Do(event IEvent, state IState, targets ...uuid.UUID) error {
 
 	var err error
 
@@ -48,7 +49,7 @@ func (e *Engine) Do(event IEvent, state IState) error {
 	}
 
 	e.events = append(e.events, event)
-	if err = event.Affect(e, state); err != nil {
+	if err = event.Affect(e, state, targets...); err != nil {
 		return errors.Wrap(err)
 	}
 

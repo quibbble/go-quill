@@ -13,9 +13,11 @@ type State struct {
 
 	Board *Board
 
-	Decks map[uuid.UUID]*Deck
-	Hands map[uuid.UUID]*Hand
-	Mana  map[uuid.UUID]*Mana
+	Deck    map[uuid.UUID]*Deck
+	Discard map[uuid.UUID]*Deck
+	Trash   map[uuid.UUID]*Deck
+	Hand    map[uuid.UUID]*Hand
+	Mana    map[uuid.UUID]*Mana
 }
 
 func NewState(player1, player2 uuid.UUID, deck1, deck2 []string) (*State, error) {
@@ -24,17 +26,17 @@ func NewState(player1, player2 uuid.UUID, deck1, deck2 []string) (*State, error)
 		return nil, errors.Wrap(err)
 	}
 
-	d1, err := NewDeck(deck1)
+	d1, err := NewDeck(deck1...)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
-	d2, err := NewDeck(deck2)
+	d2, err := NewDeck(deck2...)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
 
-	hand1 := make([]*card.Card, 0)
-	hand2 := make([]*card.Card, 0)
+	hand1 := make([]card.ICard, 0)
+	hand2 := make([]card.ICard, 0)
 	for i := 0; i < InitHandSize; i++ {
 		card1, err := d1.Draw()
 		if err != nil {
@@ -44,8 +46,8 @@ func NewState(player1, player2 uuid.UUID, deck1, deck2 []string) (*State, error)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
-		hand1 = append(hand1, card1)
-		hand2 = append(hand2, card2)
+		hand1 = append(hand1, *card1)
+		hand2 = append(hand2, *card2)
 	}
 
 	return &State{
@@ -53,10 +55,12 @@ func NewState(player1, player2 uuid.UUID, deck1, deck2 []string) (*State, error)
 		Teams:  []uuid.UUID{player1, player2},
 		Winner: nil,
 
-		Board: board,
-		Decks: map[uuid.UUID]*Deck{player1: d1, player2: d2},
-		Hands: map[uuid.UUID]*Hand{player1: NewHand(hand1...), player2: NewHand(hand2...)},
-		Mana:  map[uuid.UUID]*Mana{player1: NewMana(), player2: NewMana()},
+		Board:   board,
+		Deck:    map[uuid.UUID]*Deck{player1: d1, player2: d2},
+		Discard: map[uuid.UUID]*Deck{player1: NewEmptyDeck(), player2: NewEmptyDeck()},
+		Trash:   map[uuid.UUID]*Deck{player1: NewEmptyDeck(), player2: NewEmptyDeck()},
+		Hand:    map[uuid.UUID]*Hand{player1: NewHand(hand1...), player2: NewHand(hand2...)},
+		Mana:    map[uuid.UUID]*Mana{player1: NewMana(), player2: NewMana()},
 	}, nil
 }
 
