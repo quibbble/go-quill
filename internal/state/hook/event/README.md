@@ -6,7 +6,8 @@
 - move_unit x
 - attack_unit x
 - kill_unit x
-- place_unit
+- place_unit x (unit must be in player's hand to place)
+- summon_unit x
 - play_card
 - draw_card
 - burn_card

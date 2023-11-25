@@ -18,6 +18,7 @@ type Trait struct {
 }
 
 type ICard interface {
+	GetUUID() uuid.UUID
 	GetInit() *cards.UnitCard
 	Playable(engine engine.IEngine, state engine.IState) (bool, error)
 	AddTrait(engine *engine.Engine, trait Trait) error
@@ -46,6 +47,10 @@ type Card struct {
 
 	// Traits that modify this card
 	Traits []Trait
+}
+
+func (c *Card) GetUUID() uuid.UUID {
+	return c.UUID
 }
 
 func (c *Card) GetInit() *cards.UnitCard {

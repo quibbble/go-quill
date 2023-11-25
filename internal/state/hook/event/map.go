@@ -14,5 +14,7 @@ var (
 		HealUnitEvent:    HealUnitAffect,
 		MoveUnitEvent:    MoveUnitAffect,
 		AttackUnitEvent:  AttackUnitAffect,
+		PlaceUnitEvent:   PlaceUnitAffect,
+		SummonUnitEvent:  SummonUnitAffect,
 	}
 )
