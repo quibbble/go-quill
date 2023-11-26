@@ -42,6 +42,9 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 	if attacker.Range <= 0 && !attacker.CheckCodex(x, y, a.X, a.Y) {
 		return errors.Errorf("unit '%s' cannot attack due to failed codex check", attacker.UUID)
 	}
+	if attacker.Range > 0 && !attacker.CheckRange(x, y, a.X, a.Y) {
+		return errors.Errorf("unit '%s' cannot attack due to failed range check", attacker.UUID)
+	}
 	if state.Board.XYs[a.X][a.Y].Unit == nil {
 		return errors.Errorf("unit '%s' cannot attack at (%d,%d) as no unit exists", attacker.UUID, a.X, a.Y)
 	}
@@ -67,7 +70,7 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 			return errors.Wrap(err)
 		}
 	}
-	if defenderDamage > 0 {
+	if defenderDamage > 0 && attacker.Range <= 0 {
 		event := &Event{
 			uuid: uuid.New(st.EventUUID),
 			typ:  DamageUnitEvent,

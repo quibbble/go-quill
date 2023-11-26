@@ -1,6 +1,8 @@
 package card
 
 import (
+	"math"
+
 	en "github.com/quibbble/go-quill/internal/engine"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
@@ -72,4 +74,15 @@ func (u *UnitCard) CheckCodex(x1, y1, x2, y2 int) bool {
 		(x == 1 && y == 1 && u.Codex[7] == '1') // upper-right
 
 	return check
+}
+
+// CheckRange checks whether a ranged unit may attack from x1, y1 to x2, y2
+func (u *UnitCard) CheckRange(x1, y1, x2, y2 int) bool {
+	x := int(math.Abs(float64(x2 - x1)))
+	y := int(math.Abs(float64(y2 - y1)))
+
+	if x > u.Range || y > u.Range {
+		return false
+	}
+	return true
 }

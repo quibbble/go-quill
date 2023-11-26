@@ -6,6 +6,5 @@ import (
 )
 
 var (
-	ErrUnitNotFound = func(unit uuid.UUID) error { return errors.Errorf("unit %s not found", unit) }
-	ErrCardNotFound = func(card uuid.UUID) error { return errors.Errorf("card %s not found", card) }
+	ErrNotFound = func(uuid uuid.UUID) error { return errors.Errorf("%s not found", uuid) }
 )

@@ -3,24 +3,22 @@ package event
 import (
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
-	cd "github.com/quibbble/go-quill/internal/state/card"
 	ch "github.com/quibbble/go-quill/internal/state/hook/choose"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
 const (
-	PlaceUnitEvent = "place_unit"
+	DiscardCardEvent = "discard_card"
 )
 
-type PlaceUnitArgs struct {
-	X, Y   int
+type DiscardCardArgs struct {
 	Player uuid.UUID
 	ch.Choose
 }
 
-func PlaceUnitAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
-	a, ok := args.(PlaceUnitArgs)
+func DiscardCardAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
+	a, ok := args.(DiscardCardArgs)
 	if !ok {
 		return errors.ErrInterfaceConversion
 	}
@@ -31,24 +29,13 @@ func PlaceUnitAffect(engine *en.Engine, state *st.State, args interface{}, targe
 	if len(choices) != 1 {
 		return errors.ErrInvalidSliceLength
 	}
-	if choices[0].Type() != st.UnitUUID {
-		return st.ErrInvalidUUIDType(choices[0], st.UnitUUID)
-	}
 	card, err := state.Hand[a.Player].GetCard(choices[0])
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	unit := card.(*cd.UnitCard)
-	if state.Board.XYs[a.X][a.Y].Unit != nil {
-		return errors.Errorf("unit '%s' cannot be placed on a full tile", unit.UUID)
-	}
-	min, max := state.Board.GetPlayableRowRange(a.Player)
-	if a.Y < min || a.Y > max {
-		return errors.Errorf("unit '%s' must be placed within rows %d to %d", unit.UUID, min, max)
-	}
 	if err := state.Hand[a.Player].RemoveCard(choices[0]); err != nil {
 		return errors.Wrap(err)
 	}
-	state.Board.XYs[a.X][a.Y].Unit = unit
+	state.Discard[a.Player].Add(card)
 	return nil
 }

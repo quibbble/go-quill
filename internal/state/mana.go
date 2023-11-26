@@ -1,8 +1,8 @@
 package state
 
 type Mana struct {
-	Amount  int
-	Refresh int
+	Amount     int
+	BaseAmount int
 }
 
 func NewMana() *Mana

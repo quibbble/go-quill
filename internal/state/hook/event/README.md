@@ -6,21 +6,26 @@
 - move_unit x
 - attack_unit x
 - kill_unit x
-- place_unit x (unit must be in player's hand to place)
+- place_unit x
 - summon_unit x
-- play_card
-- draw_card
-- burn_card
-- sack_card
-- refresh_mana
-- use_mana
-- gain_mana
-- lose_mana
-- end_turn
+- add_item_to_unit x
+- remove_item_from_unit x
+- play_card x
+- discard_card x
+- draw_card x
+- burn_card x
+- sack_card x
+- drain_mana x
+- gain_mana x
+- drain_base_mana x
+- gain_base_mana x
+- recycle_deck x
+- end_turn x
 
 ## Non hookable events
 - damage_units x
 - heal_units
-- add_trait_to_unit
-- remove_trait_from_unit
-- swap_unit
+- add_trait_to_card
+- remove_trait_from_card
+- swap_units
+- end_game x

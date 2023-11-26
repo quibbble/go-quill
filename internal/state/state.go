@@ -18,6 +18,7 @@ type State struct {
 	Trash   map[uuid.UUID]*Deck
 	Hand    map[uuid.UUID]*Hand
 	Mana    map[uuid.UUID]*Mana
+	Recycle map[uuid.UUID]int
 }
 
 func NewState(player1, player2 uuid.UUID, deck1, deck2 []string) (*State, error) {
@@ -61,6 +62,7 @@ func NewState(player1, player2 uuid.UUID, deck1, deck2 []string) (*State, error)
 		Trash:   map[uuid.UUID]*Deck{player1: NewEmptyDeck(), player2: NewEmptyDeck()},
 		Hand:    map[uuid.UUID]*Hand{player1: NewHand(hand1...), player2: NewHand(hand2...)},
 		Mana:    map[uuid.UUID]*Mana{player1: NewMana(), player2: NewMana()},
+		Recycle: map[uuid.UUID]int{player1: 0, player2: 0},
 	}, nil
 }
 

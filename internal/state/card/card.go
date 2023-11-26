@@ -33,7 +33,7 @@ type Card struct {
 
 	Owner uuid.UUID
 
-	Cost uint
+	Cost int
 
 	// Conditions required to play the card
 	Conditions en.Conditions

@@ -68,6 +68,17 @@ func NewBoard(player1, player2 uuid.UUID) (*Board, error) {
 	return board, nil
 }
 
+func (b *Board) GetTileXY(tile uuid.UUID) (int, int, error) {
+	for x, col := range b.XYs {
+		for y, t := range col {
+			if t.UUID == tile {
+				return x, y, nil
+			}
+		}
+	}
+	return -1, -1, ErrNotFound(tile)
+}
+
 func (b *Board) GetUnitXY(unit uuid.UUID) (int, int, error) {
 	for x, col := range b.XYs {
 		for y, tile := range col {
@@ -76,7 +87,7 @@ func (b *Board) GetUnitXY(unit uuid.UUID) (int, int, error) {
 			}
 		}
 	}
-	return -1, -1, ErrUnitNotFound(unit)
+	return -1, -1, ErrNotFound(unit)
 }
 
 // GetPlayableRowRange retries the range of rows the player may play a unit

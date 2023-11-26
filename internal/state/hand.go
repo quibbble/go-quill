@@ -18,14 +18,23 @@ type Hand struct {
 
 func NewHand(card ...card.ICard) *Hand
 
-func (h *Hand) GetAndRemoveCard(card uuid.UUID) (card.ICard, error) {
-	for i, it := range h.GetItems() {
+func (h *Hand) GetCard(card uuid.UUID) (card.ICard, error) {
+	for _, it := range h.GetItems() {
 		if it.GetUUID() == card {
-			if err := h.Remove(i); err != nil {
-				return nil, errors.Wrap(err)
-			}
 			return it, nil
 		}
 	}
-	return nil, ErrCardNotFound(card)
+	return nil, ErrNotFound(card)
+}
+
+func (h *Hand) RemoveCard(card uuid.UUID) error {
+	for i, it := range h.GetItems() {
+		if it.GetUUID() == card {
+			if err := h.Remove(i); err != nil {
+				return errors.Wrap(err)
+			}
+			return nil
+		}
+	}
+	return ErrNotFound(card)
 }
