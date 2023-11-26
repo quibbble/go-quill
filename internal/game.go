@@ -19,7 +19,6 @@ type Game struct {
 }
 
 func NewGame(player1, player2 uuid.UUID, deck1, deck2 []string) (*Game, error) {
-	// TODO add hook that ends game on 2 base death
 	engine := en.NewEngine()
 	state, err := st.NewState(player1, player2, deck1, deck2)
 	if err != nil {

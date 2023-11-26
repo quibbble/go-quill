@@ -37,6 +37,28 @@ func KillUnitAffect(engine *en.Engine, state *st.State, args interface{}, target
 	}
 	unit := state.Board.XYs[x][y].Unit
 	state.Board.XYs[x][y] = nil
-	state.Discard[unit.Owner].Add(unit)
+	if unit.GetInit().ID != "u0001" {
+		state.Discard[unit.Owner].Add(unit)
+	} else {
+		choose := &ch.BasesChoice{
+			Player: unit.Owner,
+		}
+		bases, err := choose.Retrieve(engine, state)
+		if err != nil {
+			return errors.Wrap(err)
+		}
+		if len(bases) <= 1 {
+			if err := engine.Do(&Event{
+				uuid: uuid.New(st.EventUUID),
+				typ:  EndGameEvent,
+				args: &EndGameArgs{
+					Winner: state.GetOpponent(unit.Owner),
+				},
+				affect: EndGameAffect,
+			}, state); err != nil {
+				return errors.Wrap(err)
+			}
+		}
+	}
 	return nil
 }

@@ -69,3 +69,10 @@ func NewState(player1, player2 uuid.UUID, deck1, deck2 []string) (*State, error)
 func (s *State) GetTurn() uuid.UUID {
 	return s.Teams[s.Turn%len(s.Teams)]
 }
+
+func (s *State) GetOpponent(player uuid.UUID) uuid.UUID {
+	if s.Teams[0] == player {
+		return s.Teams[1]
+	}
+	return s.Teams[0]
+}

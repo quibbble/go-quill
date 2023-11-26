@@ -10,6 +10,7 @@ import (
 type Hook struct {
 	uuid       uuid.UUID
 	when       en.When
+	typ        string
 	conditions []*cd.Condition
 	event      *ev.Event
 	reuse      []*cd.Condition

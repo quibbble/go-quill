@@ -13,6 +13,7 @@ const (
 	PlayerUUID    = 'P'
 	EngineUUID    = 'E'
 	EventUUID     = 'V'
+	HookUUID      = 'H'
 	ConditionUUID = 'C'
 )
 
