@@ -53,3 +53,8 @@ func (c Conditions) Pass(engine IEngine, state IState) (bool, error) {
 	}
 	return pass, nil
 }
+
+type ITargetReq interface {
+	Type() string
+	Validate(engine IEngine, state IState, target uuid.UUID, pior ...uuid.UUID) (bool, error)
+}

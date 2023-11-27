@@ -9,9 +9,15 @@ import (
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
+const (
+	StructureUnit = "Structure"
+	CreatureUnit  = "Creature"
+)
+
 type UnitCard struct {
 	Card
 
+	Type       string
 	DamageType string
 	Attack     int
 	Health     int
@@ -24,10 +30,27 @@ type UnitCard struct {
 	Items []*ItemCard
 }
 
-func NewUnitCard(id string, player uuid.UUID) (*UnitCard, error)
-
-func (u *UnitCard) RefreshMovement() {
-	u.Movement = u.GetInit().(*cards.UnitCard).Movement
+func NewUnitCard(id string, player uuid.UUID) (*UnitCard, error) {
+	if len(id) == 0 || id[0] != 'U' {
+		return nil, cards.ErrInvalidCardID
+	}
+	card, err := cards.ParseCard(id)
+	if err != nil {
+		return nil, errors.Wrap(err)
+	}
+	unit := card.(*cards.UnitCard)
+	return &UnitCard{
+		Card:       NewCard(&unit.Card, player),
+		Type:       unit.Type,
+		DamageType: unit.DamageType,
+		Attack:     unit.Attack,
+		Health:     unit.Health,
+		Cooldown:   unit.Cooldown,
+		Range:      unit.Range,
+		Movement:   unit.Movement,
+		Codex:      unit.Codex,
+		Items:      make([]*ItemCard, 0),
+	}, nil
 }
 
 func (u *UnitCard) AddItem(engine *en.Engine, item *ItemCard) error {
@@ -52,7 +75,7 @@ func (u *UnitCard) RemoveItem(engine *en.Engine, item uuid.UUID) error {
 		}
 	}
 	for _, trait := range card.HeldTraits {
-		if err := u.RemoveTrait(engine, trait.UUID); err != nil {
+		if err := u.RemoveTrait(engine, trait.GetUUID()); err != nil {
 			return errors.Wrap(err)
 		}
 	}

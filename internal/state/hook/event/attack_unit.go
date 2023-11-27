@@ -1,6 +1,7 @@
 package event
 
 import (
+	"github.com/quibbble/go-quill/cards"
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
 	"github.com/quibbble/go-quill/internal/state/damage"
@@ -11,7 +12,7 @@ import (
 )
 
 const (
-	AttackUnitEvent = "attack_unit"
+	AttackUnitEvent = "AttackUnit"
 )
 
 type AttackUnitArgs struct {
@@ -39,6 +40,9 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 		return errors.Wrap(err)
 	}
 	attacker := state.Board.XYs[x][y].Unit
+	if attacker.Cooldown != 0 {
+		return errors.Errorf("unit '%s' cannot attack due to cooldown", attacker.UUID)
+	}
 	if attacker.Range <= 0 && !attacker.CheckCodex(x, y, a.X, a.Y) {
 		return errors.Errorf("unit '%s' cannot attack due to failed codex check", attacker.UUID)
 	}
@@ -87,5 +91,6 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 			return errors.Wrap(err)
 		}
 	}
+	attacker.Cooldown = attacker.GetInit().(*cards.UnitCard).Cooldown
 	return nil
 }

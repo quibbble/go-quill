@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	DrawCardEvent = "draw_card"
+	DrawCardEvent = "DrawCard"
 )
 
 type DrawCardArgs struct {

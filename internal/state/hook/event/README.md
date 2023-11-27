@@ -30,3 +30,4 @@
 - swap_units
 - end_game x
 - refresh_movement x
+- cooldown x

@@ -3,5 +3,4 @@
 ## TODO
 - Traits
 - Conditions
-- Parser
 - Target Reqs

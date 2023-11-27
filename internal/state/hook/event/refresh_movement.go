@@ -1,6 +1,7 @@
 package event
 
 import (
+	"github.com/quibbble/go-quill/cards"
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
 	ch "github.com/quibbble/go-quill/internal/state/hook/choose"
@@ -9,7 +10,7 @@ import (
 )
 
 const (
-	RefreshMovementEvent = "refresh_movement"
+	RefreshMovementEvent = "RefreshMovement"
 )
 
 type RefreshMovementArgs struct {
@@ -30,7 +31,8 @@ func RefreshMovementAffect(engine *en.Engine, state *st.State, args interface{},
 		if err != nil {
 			return errors.Wrap(err)
 		}
-		state.Board.XYs[x][y].Unit.RefreshMovement()
+		unit := state.Board.XYs[x][y].Unit
+		unit.Movement = unit.GetInit().(*cards.UnitCard).Movement
 	}
 	return nil
 }

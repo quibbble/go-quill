@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	DiscardCardEvent = "discard_card"
+	DiscardCardEvent = "DiscardCard"
 )
 
 type DiscardCardArgs struct {

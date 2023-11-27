@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	DamageUnitsEvent = "damage_units"
+	DamageUnitsEvent = "DamageUnits"
 )
 
 type DamageUnitsArgs struct {

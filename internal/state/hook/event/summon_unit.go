@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	SummonUnitEvent = "summon_unit"
+	SummonUnitEvent = "SummonUnit"
 )
 
 type SummonUnitArgs struct {

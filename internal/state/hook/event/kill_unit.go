@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	KillUnitEvent = "kill_unit"
+	KillUnitEvent = "KillUnit"
 )
 
 type KillUnitArgs struct {
@@ -38,7 +38,7 @@ func KillUnitAffect(engine *en.Engine, state *st.State, args interface{}, target
 	}
 	unit := state.Board.XYs[x][y].Unit
 	state.Board.XYs[x][y] = nil
-	if unit.GetInit().(*cards.UnitCard).ID != "u0001" {
+	if unit.GetInit().(*cards.UnitCard).ID != "U0001" {
 		state.Discard[unit.Owner].Add(unit)
 	} else {
 		choose := &ch.BasesChoice{

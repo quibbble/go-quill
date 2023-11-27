@@ -5,9 +5,9 @@ import (
 )
 
 const (
-	DamageTypePure     = "pure"
-	DamageTypePhysical = "physical"
-	DamageTypeMagic    = "magic"
+	PureDamage     = "Pure"
+	PhysicalDamage = "Physical"
+	MagicDamage    = "Magic"
 )
 
 func Damage(unit *card.UnitCard, amount int, typ string) (int, error)

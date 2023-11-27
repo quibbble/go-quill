@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	GainManaEvent = "gain_mana"
+	GainManaEvent = "GainMana"
 )
 
 type GainManaArgs struct {

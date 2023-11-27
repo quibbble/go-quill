@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	DrainBaseManaEvent = "drain_base_mana"
+	DrainBaseManaEvent = "DrainBaseMana"
 )
 
 type DrainBaseManaArgs struct {

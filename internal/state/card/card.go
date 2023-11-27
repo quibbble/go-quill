@@ -2,31 +2,21 @@ package card
 
 import (
 	"github.com/quibbble/go-quill/cards"
-	"github.com/quibbble/go-quill/internal/engine"
 	en "github.com/quibbble/go-quill/internal/engine"
-	tr "github.com/quibbble/go-quill/internal/state/target"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
-type Trait struct {
-	UUID   uuid.UUID
-	Owner  uuid.UUID
-	Type   string
-	Add    func(engine *engine.Engine, card *Card) error
-	Remove func(engine *engine.Engine, card *Card) error
-}
-
 type ICard interface {
 	GetUUID() uuid.UUID
-	GetInit() cards.Card
-	Playable(engine engine.IEngine, state engine.IState) (bool, error)
-	AddTrait(engine *engine.Engine, trait Trait) error
-	RemoveTrait(engine *engine.Engine, traitUUID uuid.UUID) error
+	GetInit() cards.ICard
+	Playable(engine en.IEngine, state en.IState) (bool, error)
+	AddTrait(engine en.IEngine, trait ITrait) error
+	RemoveTrait(engine en.IEngine, traitUUID uuid.UUID) error
 }
 
 type Card struct {
-	init cards.Card
+	init cards.ICard
 
 	UUID uuid.UUID
 
@@ -37,36 +27,38 @@ type Card struct {
 	// Conditions required to play the card
 	Conditions en.Conditions
 	// Target requirements to play the card
-	TargetReqs []tr.TargetReq
+	TargetReqs []en.ITargetReq
 
-	// Events applied on unit play
-	Events []en.IEvent
 	// Hooks registered on unit play
 	Hooks []en.IHook
+	// Events applied on unit play
+	Events []en.IEvent
 
 	// Traits that modify this card
-	Traits []Trait
+	Traits []ITrait
 }
+
+func NewCard(card *cards.Card, player uuid.UUID) Card
 
 func (c *Card) GetUUID() uuid.UUID {
 	return c.UUID
 }
 
-func (c *Card) GetInit() cards.Card {
+func (c *Card) GetInit() cards.ICard {
 	return c.init
 }
 
-func (c *Card) Playable(engine engine.IEngine, state engine.IState) (bool, error) {
+func (c *Card) Playable(engine en.IEngine, state en.IState) (bool, error) {
 	return c.Conditions.Pass(engine, state)
 }
 
-func (c *Card) ValidTargets(engine engine.IEngine, state engine.IState, targets ...uuid.UUID) (bool, error) {
+func (c *Card) ValidTargets(engine en.IEngine, state en.IState, targets ...uuid.UUID) (bool, error) {
 	if len(targets) != len(c.TargetReqs) {
 		return false, nil
 	}
 	pass := true
 	for i, req := range c.TargetReqs {
-		p, err := req(engine, state, targets[i], targets[:i]...)
+		p, err := req.Validate(engine, state, targets[i], targets[:i]...)
 		if err != nil {
 			return false, errors.Wrap(err)
 		}
@@ -75,16 +67,16 @@ func (c *Card) ValidTargets(engine engine.IEngine, state engine.IState, targets 
 	return pass, nil
 }
 
-func (c *Card) AddTrait(engine *engine.Engine, trait Trait) error {
+func (c *Card) AddTrait(engine en.IEngine, trait ITrait) error {
 	c.Traits = append(c.Traits, trait)
 	return trait.Add(engine, c)
 }
 
-func (c *Card) RemoveTrait(engine *engine.Engine, traitUUID uuid.UUID) error {
+func (c *Card) RemoveTrait(engine en.IEngine, traitUUID uuid.UUID) error {
 	idx := -1
-	trait := Trait{}
+	var trait ITrait
 	for i, t := range c.Traits {
-		if trait.UUID == traitUUID {
+		if t.GetUUID() == traitUUID {
 			idx = i
 			trait = t
 		}

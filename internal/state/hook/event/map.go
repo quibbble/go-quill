@@ -18,6 +18,8 @@ var (
 		SummonUnitEvent:         SummonUnitAffect,
 		AddItemToUnitEvent:      AddItemToUnitAffect,
 		RemoveItemFromUnitEvent: RemoveItemFromUnitAffect,
+		RefreshMovementEvent:    RefreshMovementAffect,
+		CooldownEvent:           CooldownAffect,
 
 		PlayCardEvent:    PlayCardAffect,
 		DiscardCardEvent: DiscardCardAffect,

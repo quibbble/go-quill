@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	EndGameEvent = "end_game"
+	EndGameEvent = "EndGame"
 )
 
 type EndGameArgs struct {

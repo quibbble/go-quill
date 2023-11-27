@@ -9,10 +9,10 @@ import (
 )
 
 const (
-	SackCardEvent = "sack_card"
+	SackCardEvent = "SackCard"
 
-	ManaSackOption  = "mana"
-	CardsSackOption = "cards"
+	ManaSackOption  = "Mana"
+	CardsSackOption = "Cards"
 )
 
 type SackCardArgs struct {

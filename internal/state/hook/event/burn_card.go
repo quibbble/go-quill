@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	BurnCardEvent = "burn_card"
+	BurnCardEvent = "BurnCard"
 )
 
 type BurnCardArgs struct {

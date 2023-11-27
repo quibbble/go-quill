@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	AddItemToUnitEvent = "add_item_to_unit"
+	AddItemToUnitEvent = "AddItemToUnit"
 )
 
 type AddItemToUnitArgs struct {

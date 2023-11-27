@@ -1,16 +1,16 @@
-id: s0001
-name: spark
-description: "Deal 2 magic damage to a 'creature'."
-cost: 2
-target_reqs:
-- type: unit
-  conditions:
-  - type: creature
-events:
-- type: damage_unit
-  args:
-    damage_type: magic
-    amount: 2
-    choose:
-      type: target
-      index: 0
+ID: S0001
+Name: Spark
+Description: "Deal 2 'Magic' damage to a 'Creature'."
+Cost: 2
+TargetReqs:
+- Type: Unit
+  Args:
+    SubType: Creature
+Events:
+- Type: DamageUnit
+  Args:
+    DamageType: Magic
+    Amount: 2
+    Choose:
+      Type: Target
+      Index: 0

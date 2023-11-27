@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	PlaceUnitEvent = "place_unit"
+	PlaceUnitEvent = "PlaceUnit"
 )
 
 type PlaceUnitArgs struct {

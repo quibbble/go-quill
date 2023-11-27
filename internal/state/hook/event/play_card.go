@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	PlayCardEvent = "play_card"
+	PlayCardEvent = "PlayCard"
 )
 
 type PlayCardArgs struct {

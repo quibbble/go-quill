@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	RecycleDeckEvent = "recycle_deck_event"
+	RecycleDeckEvent = "RecycleDeck"
 )
 
 type RecycleDeckArgs struct {

@@ -1,81 +1,72 @@
 package cards
 
-type Card interface {
+type ICard interface{}
+
+type Card struct {
+	ID          string
+	Name        string
+	Description string
+
+	Cost int
+
+	Conditions []Condition
+	TargetReqs []TargetReq
+
+	Hooks  []Hook
+	Events []Event
+
+	Traits []Traits
 }
 
 type ItemCard struct {
-	ID          string `yaml:"id"`
-	Name        string `yaml:"name"`
-	Description string `yaml:"description"`
+	Card `yaml:",inline" mapstructure:",squash"`
 
-	Cost uint `yaml:"cost"`
-
-	Conditions []Condition `yaml:"conditions"`
-
-	Traits []Traits `yaml:"traits"`
+	HeldTraits []Traits
 }
 
 type SpellCard struct {
-	ID          string `yaml:"id"`
-	Name        string `yaml:"name"`
-	Description string `yaml:"description"`
-
-	Cost uint `yaml:"cost"`
-
-	Conditions []Condition `yaml:"conditions"`
-	TargetReqs []TargetReq `yaml:"target_reqs"`
-
-	Events []Event `yaml:"events"`
-	Hooks  []Hook  `yaml:"hooks"`
+	Card `yaml:",inline" mapstructure:",squash"`
 }
 
 type UnitCard struct {
-	ID          string `yaml:"id"`
-	Name        string `yaml:"name"`
-	Description string `yaml:"description"`
+	Card `yaml:",inline" mapstructure:",squash"`
 
-	Cost uint `yaml:"cost"`
-
-	Conditions []Condition `yaml:"conditions"`
-
-	Events []Event `yaml:"events"`
-	Hooks  []Hook  `yaml:"hooks"`
-
-	DamageType string   `yaml:"damage_type"`
-	Attack     int      `yaml:"attack"`
-	Health     int      `yaml:"health"`
-	Cooldown   int      `yaml:"cooldown"`
-	Movement   int      `yaml:"movement"`
-	Range      int      `yaml:"range"`
-	Codex      string   `yaml:"codex"`
-	Traits     []Traits `yaml:"traits"`
+	Type       string
+	DamageType string
+	Attack     int
+	Health     int
+	Cooldown   int
+	Movement   int
+	Range      int
+	Codex      string
 }
 
-type Details map[string]interface{}
+type Args map[string]interface{}
 
 type Condition struct {
-	Type    string `yaml:"type"`
-	Details `yaml:"details"`
+	Type string
+	Args Args
 }
 
 type TargetReq struct {
-	Type    string `yaml:"type"`
-	Details `yaml:"details"`
+	Type string
+	Args Args
 }
 
 type Hook struct {
-	When            string      `yaml:"when"`
-	Conditions      []Condition `yaml:"conditions"`
-	Event           `yaml:"event"`
-	ReuseConditions []Condition `yaml:"reuse_conditions"`
+	When            string
+	Type            string
+	Conditions      []Condition
+	Event           Event
+	ReuseConditions []Condition
 }
 
 type Event struct {
-	Type    string `yaml:"type"`
-	Details `yaml:"details"`
+	Type string
+	Args Args
 }
 
 type Traits struct {
-	Type    string `yaml:"type"`
-	Details `yaml:"details"`
+	Type string
+	Args Args
 }

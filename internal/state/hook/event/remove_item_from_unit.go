@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	RemoveItemFromUnitEvent = "remove_item_from_unit"
+	RemoveItemFromUnitEvent = "RemoveItemFromUnit"
 )
 
 type RemoveItemFromUnitArgs struct {

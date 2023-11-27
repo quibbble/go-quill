@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	MoveUnitEvent = "move_unit"
+	MoveUnitEvent = "MoveUnit"
 )
 
 type MoveUnitArgs struct {

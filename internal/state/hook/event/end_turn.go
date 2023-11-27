@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	EndTurnEvent = "end_turn"
+	EndTurnEvent = "EndTurn"
 )
 
 type EndTurnArgs struct {
@@ -29,7 +29,7 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 				uuid: uuid.New(st.EventUUID),
 				typ:  DamageUnitsEvent,
 				args: &DamageUnitsArgs{
-					DamageType: dg.DamageTypePure,
+					DamageType: dg.PureDamage,
 					Amount:     state.Recycle[player],
 					Choose: &choose.BasesChoice{
 						Players: []uuid.UUID{player},
@@ -74,6 +74,16 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 				},
 			},
 			affect: RefreshMovementAffect,
+		},
+		{
+			uuid: uuid.New(st.EventUUID),
+			typ:  CooldownEvent,
+			args: &CooldownArgs{
+				Choose: &choose.UnitsChoice{
+					Players: []uuid.UUID{player},
+				},
+			},
+			affect: CooldownAffect,
 		},
 		{
 			uuid: uuid.New(st.EventUUID),

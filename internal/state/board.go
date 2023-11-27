@@ -10,7 +10,7 @@ const (
 	Rows = 8
 	Cols = 3
 
-	BaseID = "u0001"
+	BaseID = "U0001"
 )
 
 type Tile struct {

@@ -1,12 +1,13 @@
-id: u0002
-name: brave
-description: ''
-cost: 2
-type: creature
-damage_type: physical
-attack: 2
-health: 2
-cooldown: 2
-movement: 1
-codex: "11000000"
-traits:
+ID: U0002
+Name: Brave
+Description: ''
+Cost: 2
+TargetReqs:
+- Type: EmptyTile
+Type: Creature
+DamageType: Physical
+Attack: 2
+Health: 2
+Cooldown: 2
+Movement: 1
+Codex: "11000000"

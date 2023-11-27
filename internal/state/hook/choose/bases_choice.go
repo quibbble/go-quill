@@ -18,7 +18,7 @@ func (c *BasesChoice) Retrieve(engine en.IEngine, state en.IState, targets ...uu
 	for _, tile := range state.(*st.State).Board.UUIDs {
 		if tile.Unit != nil &&
 			slices.Contains(c.Players, tile.Unit.Owner) &&
-			tile.Unit.GetInit().(*cards.UnitCard).ID == "u0001" {
+			tile.Unit.GetInit().(*cards.UnitCard).ID == "U0001" {
 			bases = append(bases, tile.Unit.UUID)
 		}
 	}

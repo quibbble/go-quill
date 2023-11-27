@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	HealUnitEvent = "heal_unit"
+	HealUnitEvent = "HealUnit"
 )
 
 type HealUnitArgs struct {
