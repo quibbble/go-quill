@@ -76,3 +76,7 @@ func (s *State) GetOpponent(player uuid.UUID) uuid.UUID {
 	}
 	return s.Teams[0]
 }
+
+func (s *State) GameOver() bool {
+	return s.Winner != nil
+}

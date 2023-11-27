@@ -23,6 +23,10 @@ func NewEngine(hooks ...IHook) *Engine {
 
 func (e *Engine) Do(event IEvent, state IState, targets ...uuid.UUID) error {
 
+	if state.GameOver() {
+		return nil
+	}
+
 	var err error
 
 	for i, hook := range e.hooks {

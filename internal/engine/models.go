@@ -19,6 +19,7 @@ type IEngine interface {
 }
 
 type IState interface {
+	GameOver() bool
 }
 
 type IHook interface {
