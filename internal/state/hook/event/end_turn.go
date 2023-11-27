@@ -32,7 +32,7 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 					DamageType: dg.DamageTypePure,
 					Amount:     state.Recycle[player],
 					Choose: &choose.BasesChoice{
-						Player: player,
+						Players: []uuid.UUID{player},
 					},
 				},
 				affect: DamageUnitsAffect,
@@ -54,16 +54,41 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 		size = state.Deck[player].GetSize()
 	}
 
-	// draw a card
-	if err := engine.Do(&Event{
-		uuid: uuid.New(st.EventUUID),
-		typ:  DrawCardEvent,
-		args: &DrawCardArgs{
-			Player: player,
+	// refresh mana, refresh units movement, and draw a card
+	events := []*Event{
+		{
+			uuid: uuid.New(st.EventUUID),
+			typ:  GainManaEvent,
+			args: &GainBaseManaArgs{
+				Player: player,
+				Amount: state.Mana[player].BaseAmount - state.Mana[player].Amount,
+			},
+			affect: GainManaAffect,
 		},
-		affect: DrawCardAffect,
-	}, state); err != nil {
-		return errors.Wrap(err)
+		{
+			uuid: uuid.New(st.EventUUID),
+			typ:  RefreshMovementEvent,
+			args: &RefreshMovementArgs{
+				Choose: &choose.UnitsChoice{
+					Players: []uuid.UUID{player},
+				},
+			},
+			affect: RefreshMovementAffect,
+		},
+		{
+			uuid: uuid.New(st.EventUUID),
+			typ:  DrawCardEvent,
+			args: &DrawCardArgs{
+				Player: player,
+			},
+			affect: DrawCardAffect,
+		},
+	}
+
+	for _, event := range events {
+		if err := engine.Do(event, state); err != nil {
+			return errors.Wrap(err)
+		}
 	}
 	return nil
 }

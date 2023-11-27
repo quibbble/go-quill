@@ -1,6 +1,7 @@
 package event
 
 import (
+	"github.com/quibbble/go-quill/cards"
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
 	ch "github.com/quibbble/go-quill/internal/state/hook/choose"
@@ -37,11 +38,11 @@ func KillUnitAffect(engine *en.Engine, state *st.State, args interface{}, target
 	}
 	unit := state.Board.XYs[x][y].Unit
 	state.Board.XYs[x][y] = nil
-	if unit.GetInit().ID != "u0001" {
+	if unit.GetInit().(*cards.UnitCard).ID != "u0001" {
 		state.Discard[unit.Owner].Add(unit)
 	} else {
 		choose := &ch.BasesChoice{
-			Player: unit.Owner,
+			Players: []uuid.UUID{unit.Owner},
 		}
 		bases, err := choose.Retrieve(engine, state)
 		if err != nil {

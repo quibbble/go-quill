@@ -3,6 +3,7 @@ package card
 import (
 	"math"
 
+	"github.com/quibbble/go-quill/cards"
 	en "github.com/quibbble/go-quill/internal/engine"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
@@ -16,7 +17,7 @@ type UnitCard struct {
 	Health     int
 	Cooldown   int
 	Range      int
-	Movement   uint
+	Movement   int
 	Codex      string
 
 	// Items that apply held traits to this card
@@ -24,6 +25,10 @@ type UnitCard struct {
 }
 
 func NewUnitCard(id string, player uuid.UUID) (*UnitCard, error)
+
+func (u *UnitCard) RefreshMovement() {
+	u.Movement = u.GetInit().(*cards.UnitCard).Movement
+}
 
 func (u *UnitCard) AddItem(engine *en.Engine, item *ItemCard) error {
 	for _, trait := range item.HeldTraits {

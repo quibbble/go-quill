@@ -19,15 +19,14 @@ type Trait struct {
 
 type ICard interface {
 	GetUUID() uuid.UUID
-	GetInit() *cards.UnitCard
+	GetInit() cards.Card
 	Playable(engine engine.IEngine, state engine.IState) (bool, error)
 	AddTrait(engine *engine.Engine, trait Trait) error
 	RemoveTrait(engine *engine.Engine, traitUUID uuid.UUID) error
 }
 
 type Card struct {
-	// data used to initialize a card
-	init *cards.UnitCard
+	init cards.Card
 
 	UUID uuid.UUID
 
@@ -53,7 +52,7 @@ func (c *Card) GetUUID() uuid.UUID {
 	return c.UUID
 }
 
-func (c *Card) GetInit() *cards.UnitCard {
+func (c *Card) GetInit() cards.Card {
 	return c.init
 }
 

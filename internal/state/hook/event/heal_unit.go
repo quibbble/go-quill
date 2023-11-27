@@ -1,6 +1,7 @@
 package event
 
 import (
+	"github.com/quibbble/go-quill/cards"
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
 	ch "github.com/quibbble/go-quill/internal/state/hook/choose"
@@ -38,8 +39,8 @@ func HealUnitAffect(engine *en.Engine, state *st.State, args interface{}, target
 	}
 	unit := state.Board.XYs[x][y].Unit
 	unit.Health += a.Amount
-	if unit.Health > unit.GetInit().Health {
-		unit.Health = unit.GetInit().Health
+	if unit.Health > unit.GetInit().(*cards.UnitCard).Health {
+		unit.Health = unit.GetInit().(*cards.UnitCard).Health
 	}
 	return nil
 }

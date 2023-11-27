@@ -29,3 +29,4 @@
 - remove_trait_from_card
 - swap_units
 - end_game x
+- refresh_movement x
