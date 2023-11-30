@@ -1,6 +1,7 @@
 package event
 
 import (
+	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
 	"github.com/quibbble/go-quill/pkg/errors"
@@ -17,8 +18,8 @@ type DrainManaArgs struct {
 }
 
 func DrainManaAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
-	a, ok := args.(DrainManaArgs)
-	if !ok {
+	var a DrainManaArgs
+	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
 	state.Mana[a.Player].Amount -= a.Amount

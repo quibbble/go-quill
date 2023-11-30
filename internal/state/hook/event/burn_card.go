@@ -1,6 +1,7 @@
 package event
 
 import (
+	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
 	"github.com/quibbble/go-quill/pkg/errors"
@@ -16,8 +17,8 @@ type BurnCardArgs struct {
 }
 
 func BurnCardAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
-	a, ok := args.(BurnCardArgs)
-	if !ok {
+	var a BurnCardArgs
+	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
 	card, err := state.Deck[a.Player].Draw()

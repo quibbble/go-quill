@@ -1,6 +1,7 @@
 package event
 
 import (
+	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
 	ch "github.com/quibbble/go-quill/internal/state/hook/choose"
@@ -8,25 +9,29 @@ import (
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
-const (
-	SackCardEvent = "SackCard"
+const SackCardEvent = "SackCard"
 
+const (
 	ManaSackOption  = "Mana"
 	CardsSackOption = "Cards"
 )
 
 type SackCardArgs struct {
 	Player uuid.UUID
-	ch.Choose
 	Option string
+	Choose Choose
 }
 
 func SackCardAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
-	a, ok := args.(SackCardArgs)
-	if !ok {
+	var a SackCardArgs
+	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choices, err := a.Choose.Retrieve(engine, state, targets...)
+	choose, err := ch.NewChoice(a.Choose.Type, a.Choose.Args)
+	if err != nil {
+		return errors.Wrap(err)
+	}
+	choices, err := choose.Retrieve(engine, state, targets...)
 	if err != nil {
 		return errors.Wrap(err)
 	}

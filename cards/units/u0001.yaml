@@ -9,5 +9,5 @@ DamageType: Physical
 Attack: 0
 Health: 7
 Cooldown: -1
-Movement: -1
+Movement: 0
 Codex: "00000000"

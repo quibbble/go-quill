@@ -1,14 +1,22 @@
 package choose
 
 import (
+	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/engine"
+	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
-type UUIDChoice struct {
+const UUIDChoice = "UUID"
+
+type UUIDArgs struct {
 	UUID uuid.UUID
 }
 
-func (c *UUIDChoice) Retrieve(engine en.IEngine, state en.IState, targets ...uuid.UUID) ([]uuid.UUID, error) {
+func RetrieveUUID(engine en.IEngine, state en.IState, args interface{}, targets ...uuid.UUID) ([]uuid.UUID, error) {
+	var c UUIDArgs
+	if err := mapstructure.Decode(args, &c); err != nil {
+		return nil, errors.ErrInterfaceConversion
+	}
 	return []uuid.UUID{c.UUID}, nil
 }

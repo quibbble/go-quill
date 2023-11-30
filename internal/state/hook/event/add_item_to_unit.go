@@ -1,6 +1,7 @@
 package event
 
 import (
+	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
 	cd "github.com/quibbble/go-quill/internal/state/card"
@@ -15,20 +16,28 @@ const (
 
 type AddItemToUnitArgs struct {
 	Player     uuid.UUID
-	ItemChoice ch.Choose
-	UnitChoice ch.Choose
+	ChooseItem Choose
+	ChooseUnit Choose
 }
 
 func AddItemToUnitAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
-	a, ok := args.(AddItemToUnitArgs)
-	if !ok {
+	var a AddItemToUnitArgs
+	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	itemChoices, err := a.ItemChoice.Retrieve(engine, state, targets...)
+	chooseItem, err := ch.NewChoice(a.ChooseItem.Type, a.ChooseItem.Args)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	unitChoices, err := a.UnitChoice.Retrieve(engine, state, targets...)
+	chooseUnit, err := ch.NewChoice(a.ChooseUnit.Type, a.ChooseUnit.Args)
+	if err != nil {
+		return errors.Wrap(err)
+	}
+	itemChoices, err := chooseItem.Retrieve(engine, state, targets...)
+	if err != nil {
+		return errors.Wrap(err)
+	}
+	unitChoices, err := chooseUnit.Retrieve(engine, state, targets...)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -50,11 +59,42 @@ func AddItemToUnitAffect(engine *en.Engine, state *st.State, args interface{}, t
 	if err != nil {
 		return errors.Wrap(err)
 	}
+	if state.Board.XYs[x][y].Unit.(*cd.UnitCard).Type == cd.StructureUnit {
+		return errors.Errorf("cannot add an item to a structure unit")
+	}
 	if err := state.Hand[a.Player].RemoveCard(item.UUID); err != nil {
 		return errors.Wrap(err)
 	}
-	if err := state.Board.XYs[x][y].Unit.AddItem(engine, item); err != nil {
+	if err := state.Board.XYs[x][y].Unit.(*cd.UnitCard).AddItem(engine, item); err != nil {
 		return errors.Wrap(err)
+	}
+	for _, trait := range item.HeldTraits {
+		event := &Event{
+			uuid: uuid.New(st.EventUUID),
+			typ:  AddTraitToCard,
+			args: &AddTraitToCardArgs{
+				Trait: Trait{
+					Type: trait.GetType(),
+					Args: trait.GetArgs(),
+				},
+				Choose: Choose{
+					Type: ch.UUIDChoice,
+					Args: ch.UUIDArgs{
+						UUID: unitChoices[0],
+					},
+				},
+			},
+			affect: AddTraitToCardAffect,
+		}
+		if err := engine.Do(event, state); err != nil {
+			return errors.Wrap(err)
+		}
+
+		// if unit died from adding trait then break
+		_, _, err := state.Board.GetUnitXY(unitChoices[0])
+		if err != nil {
+			break
+		}
 	}
 	return nil
 }

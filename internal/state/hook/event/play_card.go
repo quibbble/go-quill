@@ -1,11 +1,14 @@
 package event
 
 import (
+	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
 	cd "github.com/quibbble/go-quill/internal/state/card"
+	tr "github.com/quibbble/go-quill/internal/state/card/trait"
 	ch "github.com/quibbble/go-quill/internal/state/hook/choose"
 	"github.com/quibbble/go-quill/pkg/errors"
+	"github.com/quibbble/go-quill/pkg/maths"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
@@ -15,15 +18,19 @@ const (
 
 type PlayCardArgs struct {
 	Player uuid.UUID
-	ch.Choose
+	Choose Choose
 }
 
 func PlayCardAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
-	a, ok := args.(PlayCardArgs)
-	if !ok {
+	var a PlayCardArgs
+	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choices, err := a.Choose.Retrieve(engine, state, targets...)
+	choose, err := ch.NewChoice(a.Choose.Type, a.Choose.Args)
+	if err != nil {
+		return errors.Wrap(err)
+	}
+	choices, err := choose.Retrieve(engine, state, targets...)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -41,12 +48,25 @@ func PlayCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 		return errors.Errorf("player '%s' does not have enough mana to play '%s'", a.Player, card.UUID)
 	}
 
+	// purity trait check
+	if card.UUID.Type() == st.SpellUUID {
+		for _, target := range targets {
+			if x, y, err := state.Board.GetUnitXY(target); err == nil {
+				unit := state.Board.XYs[x][y].Unit
+				if len(unit.GetTraits(tr.PurityTrait)) > 0 {
+					return errors.Errorf("'%s' cannot target '%s' due to purity trait", card.UUID, unit.GetUUID())
+				}
+			}
+
+		}
+	}
+
 	if err := engine.Do(&Event{
 		uuid: uuid.New(st.EventUUID),
 		typ:  DrainManaEvent,
 		args: &DrainManaArgs{
 			Player: a.Player,
-			Amount: card.Cost,
+			Amount: maths.MaxInt(card.Cost, 0),
 		},
 		affect: DrainManaAffect,
 	}, state); err != nil {
@@ -70,11 +90,17 @@ func PlayCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 			typ:  AddItemToUnitEvent,
 			args: &AddItemToUnitArgs{
 				Player: a.Player,
-				ItemChoice: &ch.UUIDChoice{
-					UUID: card.UUID,
+				ChooseItem: Choose{
+					Type: ch.UUIDChoice,
+					Args: &ch.UUIDArgs{
+						UUID: card.UUID,
+					},
 				},
-				UnitChoice: &ch.UUIDChoice{
-					UUID: targets[0],
+				ChooseUnit: Choose{
+					Type: ch.UUIDChoice,
+					Args: &ch.UUIDArgs{
+						UUID: targets[0],
+					},
 				},
 			},
 			affect: AddItemToUnitAffect,
@@ -85,8 +111,11 @@ func PlayCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 			typ:  DiscardCardEvent,
 			args: &DiscardCardArgs{
 				Player: a.Player,
-				Choose: &ch.UUIDChoice{
-					UUID: card.UUID,
+				Choose: Choose{
+					Type: ch.UUIDChoice,
+					Args: &ch.UUIDArgs{
+						UUID: card.UUID,
+					},
 				},
 			},
 			affect: DiscardCardAffect,
@@ -106,8 +135,11 @@ func PlayCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 				X:      x,
 				Y:      y,
 				Player: a.Player,
-				Choose: &ch.UUIDChoice{
-					UUID: card.UUID,
+				Choose: Choose{
+					Type: ch.UUIDChoice,
+					Args: &ch.UUIDArgs{
+						UUID: card.UUID,
+					},
 				},
 			},
 			affect: PlaceUnitAffect,

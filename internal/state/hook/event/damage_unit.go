@@ -1,10 +1,11 @@
 package event
 
 import (
+	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
+	cd "github.com/quibbble/go-quill/internal/state/card"
 	dg "github.com/quibbble/go-quill/internal/state/damage"
-	"github.com/quibbble/go-quill/internal/state/hook/choose"
 	ch "github.com/quibbble/go-quill/internal/state/hook/choose"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
@@ -17,15 +18,19 @@ const (
 type DamageUnitArgs struct {
 	DamageType string
 	Amount     int
-	ch.Choose
+	Choose     Choose
 }
 
 func DamageUnitAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
-	a, ok := args.(DamageUnitArgs)
-	if !ok {
+	var a DamageUnitArgs
+	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choices, err := a.Choose.Retrieve(engine, state, targets...)
+	choose, err := ch.NewChoice(a.Choose.Type, a.Choose.Args)
+	if err != nil {
+		return errors.Wrap(err)
+	}
+	choices, err := choose.Retrieve(engine, state, targets...)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -39,7 +44,7 @@ func DamageUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	unit := state.Board.XYs[x][y].Unit
+	unit := state.Board.XYs[x][y].Unit.(*cd.UnitCard)
 	damage, err := dg.Damage(unit, a.Amount, a.DamageType)
 	if err != nil {
 		return errors.Wrap(err)
@@ -50,8 +55,11 @@ func DamageUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 			uuid: uuid.New(st.EventUUID),
 			typ:  KillUnitEvent,
 			args: &KillUnitArgs{
-				&choose.UUIDChoice{
-					UUID: unit.UUID,
+				Choose: Choose{
+					Type: ch.UUIDChoice,
+					Args: &ch.UUIDArgs{
+						UUID: unit.UUID,
+					},
 				},
 			},
 			affect: KillUnitAffect,

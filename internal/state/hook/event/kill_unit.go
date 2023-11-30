@@ -1,9 +1,11 @@
 package event
 
 import (
+	"github.com/mitchellh/mapstructure"
 	"github.com/quibbble/go-quill/cards"
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
+	cd "github.com/quibbble/go-quill/internal/state/card"
 	ch "github.com/quibbble/go-quill/internal/state/hook/choose"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
@@ -14,15 +16,19 @@ const (
 )
 
 type KillUnitArgs struct {
-	ch.Choose
+	Choose Choose
 }
 
 func KillUnitAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
-	a, ok := args.(KillUnitArgs)
-	if !ok {
+	var a KillUnitArgs
+	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choices, err := a.Choose.Retrieve(engine, state, targets...)
+	choose, err := ch.NewChoice(a.Choose.Type, a.Choose.Args)
+	if err != nil {
+		return errors.Wrap(err)
+	}
+	choices, err := choose.Retrieve(engine, state, targets...)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -36,13 +42,23 @@ func KillUnitAffect(engine *en.Engine, state *st.State, args interface{}, target
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	unit := state.Board.XYs[x][y].Unit
+	unit := state.Board.XYs[x][y].Unit.(*cd.UnitCard)
 	state.Board.XYs[x][y] = nil
 	if unit.GetInit().(*cards.UnitCard).ID != "U0001" {
-		state.Discard[unit.Owner].Add(unit)
+		for _, item := range unit.Items {
+			if item.Player == unit.Player {
+				item.Reset(state.BuildCard)
+				state.Discard[unit.Player].Add(item)
+			}
+		}
+		unit.Reset(state.BuildCard)
+		state.Discard[unit.Player].Add(unit)
 	} else {
-		choose := &ch.BasesChoice{
-			Players: []uuid.UUID{unit.Owner},
+		choose, err := ch.NewChoice(ch.BasesChoice, ch.BasesArgs{
+			Players: []uuid.UUID{unit.Player},
+		})
+		if err != nil {
+			return errors.Wrap(err)
 		}
 		bases, err := choose.Retrieve(engine, state)
 		if err != nil {
@@ -53,7 +69,7 @@ func KillUnitAffect(engine *en.Engine, state *st.State, args interface{}, target
 				uuid: uuid.New(st.EventUUID),
 				typ:  EndGameEvent,
 				args: &EndGameArgs{
-					Winner: state.GetOpponent(unit.Owner),
+					Winner: state.GetOpponent(unit.Player),
 				},
 				affect: EndGameAffect,
 			}, state); err != nil {

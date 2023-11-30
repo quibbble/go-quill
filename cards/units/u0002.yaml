@@ -8,6 +8,6 @@ Type: Creature
 DamageType: Physical
 Attack: 2
 Health: 2
-Cooldown: 2
+Cooldown: 1
 Movement: 1
 Codex: "11000000"

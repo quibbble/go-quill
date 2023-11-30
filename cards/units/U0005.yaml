@@ -1,0 +1,21 @@
+ID: U0005
+Name: Galosan Armorer
+Description: ''
+Cost: 3
+TargetReqs:
+- Type: EmptyTile
+Type: Creature
+DamageType: Physical
+Attack: 1
+Health: 3
+Cooldown: 2
+Movement: 1
+Codex: "00001111"
+Traits:
+- Type: Friends
+  Location: Adjacent
+  Trait:
+    Type: Buff
+    Args:
+      Stat: Health
+      Amount: 1

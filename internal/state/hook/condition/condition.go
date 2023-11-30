@@ -15,7 +15,7 @@ type Condition struct {
 	pass func(engine *en.Engine, state *st.State, args interface{}) (bool, error)
 }
 
-func NewCondition(typ string, args interface{}) (*Condition, error) {
+func NewCondition(typ string, args interface{}) (en.ICondition, error) {
 	pass, ok := ConditionMap[typ]
 	if !ok {
 		return nil, errors.ErrMissingMapKey

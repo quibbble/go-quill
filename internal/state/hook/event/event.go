@@ -7,6 +7,16 @@ import (
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
+type Choose struct {
+	Type string
+	Args interface{}
+}
+
+type Trait struct {
+	Type string
+	Args interface{}
+}
+
 type Event struct {
 	uuid uuid.UUID
 
@@ -15,7 +25,7 @@ type Event struct {
 	affect func(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error
 }
 
-func NewEvent(typ string, args interface{}) (*Event, error) {
+func NewEvent(typ string, args interface{}) (en.IEvent, error) {
 	affect, ok := EventMap[typ]
 	if !ok {
 		return nil, errors.ErrMissingMapKey

@@ -5,6 +5,12 @@ import (
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
+type IEngine interface {
+	Do(event IEvent, state IState, targets ...uuid.UUID) error
+	Register(hook IHook)
+	DeRegister(hook IHook)
+}
+
 // Engine handles the core game loop logic
 type Engine struct {
 	// list of active hooks

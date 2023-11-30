@@ -1,10 +1,16 @@
 package game
 
 import (
+	"github.com/quibbble/go-quill/cards"
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
+	cd "github.com/quibbble/go-quill/internal/state/card"
+	tr "github.com/quibbble/go-quill/internal/state/card/trait"
+	hk "github.com/quibbble/go-quill/internal/state/hook"
 	ch "github.com/quibbble/go-quill/internal/state/hook/choose"
+	cn "github.com/quibbble/go-quill/internal/state/hook/condition"
 	ev "github.com/quibbble/go-quill/internal/state/hook/event"
+	tg "github.com/quibbble/go-quill/internal/state/target"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -13,14 +19,36 @@ var (
 	ErrWrongTurn = func(player uuid.UUID) error { return errors.Errorf("'%s' cannot play on other player's turn", player) }
 )
 
+var build = func(id string, player uuid.UUID) (st.ICard, error) {
+	if len(id) == 0 {
+		return nil, cards.ErrInvalidCardID
+	}
+	builders := &cd.Builders{
+		BuildCondition: cn.NewCondition,
+		BuildEvent:     ev.NewEvent,
+		BuildHook:      hk.NewHook,
+		BuildTargetReq: tg.NewTargetReq,
+		BuildTrait:     tr.NewTrait,
+	}
+	switch id[0] {
+	case 'I':
+		return cd.NewItemCard(builders, id, player)
+	case 'S':
+		return cd.NewSpellCard(builders, id, player)
+	case 'U':
+		return cd.NewUnitCard(builders, id, player)
+	}
+	return nil, cards.ErrInvalidCardID
+}
+
 type Game struct {
 	*en.Engine
 	*st.State
 }
 
-func NewGame(player1, player2 uuid.UUID, deck1, deck2 []string) (*Game, error) {
+func NewGame(seed int64, player1, player2 uuid.UUID, deck1, deck2 []string) (*Game, error) {
 	engine := en.NewEngine()
-	state, err := st.NewState(player1, player2, deck1, deck2)
+	state, err := st.NewState(seed, build, player1, player2, deck1, deck2)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
@@ -36,8 +64,11 @@ func (g *Game) PlayCard(player, card uuid.UUID, targets ...uuid.UUID) error {
 	}
 	event, err := ev.NewEvent(ev.PlayCardEvent, ev.PlayCardArgs{
 		Player: player,
-		Choose: &ch.UUIDChoice{
-			UUID: card,
+		Choose: ev.Choose{
+			Type: ch.UUIDChoice,
+			Args: &ch.UUIDArgs{
+				UUID: card,
+			},
 		},
 	})
 	if err != nil {
@@ -56,8 +87,11 @@ func (g *Game) MoveUnit(player, unit uuid.UUID, x, y int) error {
 	event, err := ev.NewEvent(ev.MoveUnitEvent, ev.MoveUnitArgs{
 		X: x,
 		Y: y,
-		Choose: &ch.UUIDChoice{
-			UUID: unit,
+		Choose: ev.Choose{
+			Type: ch.UUIDChoice,
+			Args: &ch.UUIDArgs{
+				UUID: unit,
+			},
 		},
 	})
 	if err != nil {
@@ -76,8 +110,11 @@ func (g *Game) AttackUnit(player, unit uuid.UUID, x, y int) error {
 	event, err := ev.NewEvent(ev.AttackUnitEvent, ev.AttackUnitArgs{
 		X: x,
 		Y: y,
-		Choose: &ch.UUIDChoice{
-			UUID: unit,
+		Choose: ev.Choose{
+			Type: ch.UUIDChoice,
+			Args: &ch.UUIDArgs{
+				UUID: unit,
+			},
 		},
 	})
 	if err != nil {
@@ -95,8 +132,11 @@ func (g *Game) SackCard(player, card uuid.UUID, option string) error {
 	}
 	event, err := ev.NewEvent(ev.SackCardEvent, ev.SackCardArgs{
 		Player: player,
-		Choose: &ch.UUIDChoice{
-			UUID: card,
+		Choose: ev.Choose{
+			Type: ch.UUIDChoice,
+			Args: &ch.UUIDArgs{
+				UUID: card,
+			},
 		},
 		Option: option,
 	})

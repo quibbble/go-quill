@@ -1,7 +1,6 @@
 package state
 
 import (
-	"github.com/quibbble/go-quill/internal/state/card"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -16,7 +15,7 @@ const (
 type Tile struct {
 	UUID uuid.UUID
 	X, Y int
-	Unit *card.UnitCard
+	Unit ICard
 }
 
 func NewTile(x, y int) *Tile {
@@ -34,7 +33,7 @@ type Board struct {
 	Sides map[uuid.UUID]int
 }
 
-func NewBoard(player1, player2 uuid.UUID) (*Board, error) {
+func NewBoard(builder func(id string, player uuid.UUID) (ICard, error), player1, player2 uuid.UUID) (*Board, error) {
 	board := &Board{
 		XYs:   [Cols][Rows]*Tile{},
 		UUIDs: make(map[uuid.UUID]*Tile),
@@ -49,11 +48,11 @@ func NewBoard(player1, player2 uuid.UUID) (*Board, error) {
 	}
 
 	for x := 0; x < Cols; x++ {
-		base1, err := card.NewUnitCard(BaseID, player1)
+		base1, err := builder(BaseID, player1)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
-		base2, err := card.NewUnitCard(BaseID, player2)
+		base2, err := builder(BaseID, player2)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
@@ -82,7 +81,7 @@ func (b *Board) GetTileXY(tile uuid.UUID) (int, int, error) {
 func (b *Board) GetUnitXY(unit uuid.UUID) (int, int, error) {
 	for x, col := range b.XYs {
 		for y, tile := range col {
-			if tile.Unit != nil && tile.Unit.UUID == unit {
+			if tile.Unit != nil && tile.Unit.GetUUID() == unit {
 				return x, y, nil
 			}
 		}

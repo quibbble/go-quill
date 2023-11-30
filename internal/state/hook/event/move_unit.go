@@ -1,8 +1,10 @@
 package event
 
 import (
+	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
+	cd "github.com/quibbble/go-quill/internal/state/card"
 	ch "github.com/quibbble/go-quill/internal/state/hook/choose"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
@@ -13,16 +15,20 @@ const (
 )
 
 type MoveUnitArgs struct {
-	X, Y int
-	ch.Choose
+	X, Y   int
+	Choose Choose
 }
 
 func MoveUnitAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
-	a, ok := args.(MoveUnitArgs)
-	if !ok {
+	var a MoveUnitArgs
+	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choices, err := a.Choose.Retrieve(engine, state, targets...)
+	choose, err := ch.NewChoice(a.Choose.Type, a.Choose.Args)
+	if err != nil {
+		return errors.Wrap(err)
+	}
+	choices, err := choose.Retrieve(engine, state, targets...)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -36,7 +42,7 @@ func MoveUnitAffect(engine *en.Engine, state *st.State, args interface{}, target
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	unit := state.Board.XYs[x][y].Unit
+	unit := state.Board.XYs[x][y].Unit.(*cd.UnitCard)
 	if state.Board.XYs[a.X][a.Y].Unit != nil {
 		return errors.Errorf("unit '%s' cannot move to a full tile", unit.UUID)
 	}

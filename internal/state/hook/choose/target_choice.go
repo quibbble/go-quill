@@ -1,16 +1,23 @@
 package choose
 
 import (
+	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/engine"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
-type TargetChoice struct {
+const TargetChoice = "Target"
+
+type TargetArgs struct {
 	Index int
 }
 
-func (c *TargetChoice) Retrieve(engine en.IEngine, state en.IState, targets ...uuid.UUID) ([]uuid.UUID, error) {
+func RetrieveTarget(engine en.IEngine, state en.IState, args interface{}, targets ...uuid.UUID) ([]uuid.UUID, error) {
+	var c TargetArgs
+	if err := mapstructure.Decode(args, &c); err != nil {
+		return nil, errors.ErrInterfaceConversion
+	}
 	if c.Index < 0 || c.Index >= len(targets) {
 		return nil, errors.ErrIndexOutOfBounds
 	}

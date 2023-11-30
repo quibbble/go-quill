@@ -1,0 +1,14 @@
+ID: U0003
+Name: Galosan Archer
+Description: ''
+Cost: 2
+TargetReqs:
+- Type: EmptyTile
+Type: Creature
+DamageType: Physical
+Attack: 1
+Health: 2
+Cooldown: 2
+Movement: 1
+Range: 3
+Codex: "11110000"

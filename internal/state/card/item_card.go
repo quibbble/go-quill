@@ -2,18 +2,19 @@ package card
 
 import (
 	"github.com/quibbble/go-quill/cards"
+	st "github.com/quibbble/go-quill/internal/state"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
 type ItemCard struct {
-	Card
+	*Card
 
 	// Traits applied to a unit when an item is held
-	HeldTraits []ITrait
+	HeldTraits []st.ITrait
 }
 
-func NewItemCard(id string, player uuid.UUID) (*ItemCard, error) {
+func NewItemCard(builders *Builders, id string, player uuid.UUID) (*ItemCard, error) {
 	if len(id) == 0 || id[0] != 'I' {
 		return nil, cards.ErrInvalidCardID
 	}
@@ -22,16 +23,27 @@ func NewItemCard(id string, player uuid.UUID) (*ItemCard, error) {
 		return nil, errors.Wrap(err)
 	}
 	item := card.(*cards.ItemCard)
-	traits := make([]ITrait, 0)
+	traits := make([]st.ITrait, 0)
 	for _, trait := range item.HeldTraits {
-		trait, err := NewTrait(trait.Type, trait.Args)
+		trait, err := builders.BuildTrait(trait.Type, trait.Args)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
 		traits = append(traits, trait)
 	}
+	core, err := NewCard(builders, &item.Card, player)
+	if err != nil {
+		return nil, errors.Wrap(err)
+	}
 	return &ItemCard{
-		Card:       NewCard(&item.Card, player),
+		Card:       core,
 		HeldTraits: traits,
 	}, nil
+}
+
+func (c *ItemCard) Reset(build st.BuildCard) {
+	card, _ := build(c.init.ID, c.Player)
+	item := card.(*ItemCard)
+	item.UUID = c.UUID
+	c = item
 }

@@ -24,10 +24,29 @@
 
 ## Non hookable events
 - damage_units x
-- heal_units
-- add_trait_to_card
-- remove_trait_from_card
-- swap_units
+- heal_units x
+- add_trait_to_card x
+- remove_trait_from_card x
+- swap_units x
 - end_game x
 - refresh_movement x
 - cooldown x
+
+
+# Traits to implement
+- poison X - COMPLETE
+- rage - COMPLETE
+- recode X - COMPLETE
+- buff STAT X - COMPLETE
+- debuff STAT X - COMPLETE
+- execute - COMPLETE
+- shield X - COMPLETE
+- ward X - COMPLETE
+- thief - COMPLETE
+- purity - COMPLETE
+- pillage EVENT - 
+- battle cry EVENT - 
+- death cry EVENT - 
+- gift TRAIT - 
+- lobber - 
+- friends LOCATION TRAIT - 

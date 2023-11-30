@@ -1,6 +1,7 @@
 package event
 
 import (
+	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
 	"github.com/quibbble/go-quill/pkg/errors"
@@ -17,8 +18,8 @@ type GainBaseManaArgs struct {
 }
 
 func GainBaseManaAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
-	a, ok := args.(GainBaseManaArgs)
-	if !ok {
+	var a GainBaseManaArgs
+	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
 	state.Mana[a.Player].BaseAmount += a.Amount

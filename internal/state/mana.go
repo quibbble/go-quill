@@ -5,4 +5,9 @@ type Mana struct {
 	BaseAmount int
 }
 
-func NewMana() *Mana
+func NewMana() *Mana {
+	return &Mana{
+		Amount:     0,
+		BaseAmount: 0,
+	}
+}

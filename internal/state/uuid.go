@@ -14,7 +14,9 @@ const (
 	EngineUUID    = 'E'
 	EventUUID     = 'V'
 	TargetReqUUID = 'R'
+	TraitUUID     = 'A'
 	HookUUID      = 'H'
+	ChooseUUID    = 'O'
 	ConditionUUID = 'C'
 )
 

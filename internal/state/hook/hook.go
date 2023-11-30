@@ -2,8 +2,7 @@ package hook
 
 import (
 	en "github.com/quibbble/go-quill/internal/engine"
-	cd "github.com/quibbble/go-quill/internal/state/hook/condition"
-	ev "github.com/quibbble/go-quill/internal/state/hook/event"
+	st "github.com/quibbble/go-quill/internal/state"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
@@ -11,9 +10,20 @@ type Hook struct {
 	uuid       uuid.UUID
 	when       en.When
 	typ        string
-	conditions []*cd.Condition
-	event      *ev.Event
-	reuse      []*cd.Condition
+	conditions en.Conditions
+	event      en.IEvent
+	reuse      en.Conditions
+}
+
+func NewHook(when, typ string, conditions []en.ICondition, event en.IEvent, reuse []en.ICondition) (en.IHook, error) {
+	return &Hook{
+		uuid:       uuid.New(st.HookUUID),
+		when:       en.When(when),
+		typ:        typ,
+		conditions: conditions,
+		event:      event,
+		reuse:      reuse,
+	}, nil
 }
 
 func (h *Hook) UUID() uuid.UUID {
@@ -25,7 +35,7 @@ func (h *Hook) Trigger(when en.When, typ string) bool {
 }
 
 func (h *Hook) Pass(engine en.IEngine, state en.IState) (bool, error) {
-	return cd.SliceToConditions(h.conditions).Pass(engine, state)
+	return h.conditions.Pass(engine, state)
 }
 
 func (h *Hook) Event() en.IEvent {
@@ -33,5 +43,5 @@ func (h *Hook) Event() en.IEvent {
 }
 
 func (h *Hook) Reuse(engine en.IEngine, state en.IState) (bool, error) {
-	return cd.SliceToConditions(h.reuse).Pass(engine, state)
+	return h.reuse.Pass(engine, state)
 }

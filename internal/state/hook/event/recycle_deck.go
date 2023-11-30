@@ -1,6 +1,7 @@
 package event
 
 import (
+	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
 	"github.com/quibbble/go-quill/pkg/errors"
@@ -16,12 +17,12 @@ type RecycleDeckArgs struct {
 }
 
 func RecycleDeckAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
-	a, ok := args.(RecycleDeckArgs)
-	if !ok {
+	var a RecycleDeckArgs
+	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
 	state.Deck[a.Player] = state.Discard[a.Player]
-	state.Discard[a.Player] = st.NewEmptyDeck()
+	state.Discard[a.Player] = st.NewEmptyDeck(state.Seed)
 	state.Deck[a.Player].Shuffle()
 	return nil
 }

@@ -2,7 +2,6 @@ package state
 
 import (
 	c "github.com/quibbble/go-boardgame/pkg/collection"
-	"github.com/quibbble/go-quill/internal/state/card"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -13,12 +12,18 @@ const (
 )
 
 type Hand struct {
-	c.Collection[card.ICard]
+	c.Collection[ICard]
 }
 
-func NewHand(card ...card.ICard) *Hand
+func NewHand(seed int64, card ...ICard) *Hand {
+	collection := c.NewCollection[ICard](seed)
+	collection.Add(card...)
+	return &Hand{
+		Collection: *collection,
+	}
+}
 
-func (h *Hand) GetCard(card uuid.UUID) (card.ICard, error) {
+func (h *Hand) GetCard(card uuid.UUID) (ICard, error) {
 	for _, it := range h.GetItems() {
 		if it.GetUUID() == card {
 			return it, nil
