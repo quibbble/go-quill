@@ -5,6 +5,8 @@ const (
 )
 
 type GiftArgs struct {
-	TraitType string
-	TraitArgs interface{}
+	Trait struct {
+		Type string
+		Args interface{}
+	}
 }

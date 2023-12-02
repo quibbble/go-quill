@@ -5,6 +5,8 @@ const (
 )
 
 type BattleCryArgs struct {
-	EventType string
-	EventArgs interface{}
+	Event struct {
+		Type string
+		Args interface{}
+	}
 }

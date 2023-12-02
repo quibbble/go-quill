@@ -6,7 +6,9 @@ import (
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
-var (
+var EventMap map[string]func(engine *engine.Engine, state *state.State, args interface{}, targets ...uuid.UUID) error
+
+func init() {
 	EventMap = map[string]func(engine *engine.Engine, state *state.State, args interface{}, targets ...uuid.UUID) error{
 		DamageUnitEvent:         DamageUnitAffect,
 		DamageUnitsEvent:        DamageUnitsAffect,
@@ -38,4 +40,4 @@ var (
 
 		EndTurnEvent: EndTurnAffect,
 	}
-)
+}

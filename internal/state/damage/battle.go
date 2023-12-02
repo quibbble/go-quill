@@ -1,27 +1,50 @@
 package damage
 
 import (
-	"github.com/quibbble/go-quill/cards"
+	st "github.com/quibbble/go-quill/internal/state"
 	cd "github.com/quibbble/go-quill/internal/state/card"
 	tr "github.com/quibbble/go-quill/internal/state/card/trait"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/maths"
 )
 
-func Battle(attackingUnit, defendingUnit *cd.UnitCard) (int, int, error) {
-	attackerDamage, err := Damage(defendingUnit, maths.MaxInt(attackingUnit.Attack, 0), attackingUnit.DamageType)
+func Battle(state *st.State, attacker, defender *cd.UnitCard) (int, int, error) {
+	attackerDamage, err := Damage(defender, maths.MaxInt(attacker.Attack, 0), attacker.DamageType)
 	if err != nil {
 		return 0, 0, errors.Wrap(err)
 	}
-	// execute trait check
-	if len(attackingUnit.GetTraits(tr.ExecuteTrait)) > 0 &&
-		attackerDamage > 0 &&
-		defendingUnit.Health < defendingUnit.GetInit().(*cards.UnitCard).Health {
-		attackerDamage = defendingUnit.Health
+
+	// assassin trait check
+	assassins := attacker.GetTraits(tr.AssassinTrait)
+	if len(assassins) > 0 {
+		_, aY, err := state.Board.GetUnitXY(attacker.UUID)
+		if err != nil {
+			return 0, 0, errors.Wrap(err)
+		}
+		_, dY, err := state.Board.GetUnitXY(defender.UUID)
+		if err != nil {
+			return 0, 0, errors.Wrap(err)
+		}
+		defenderSide := state.Board.Sides[defender.Player]
+		if maths.AbsInt(defenderSide-aY) < maths.AbsInt(defenderSide-dY) {
+			for _, trait := range assassins {
+				args := trait.GetArgs().(*tr.AssassinArgs)
+				attackerDamage += args.Amount
+			}
+		}
 	}
-	defenderDamage, err := Damage(attackingUnit, maths.MaxInt(defendingUnit.Attack, 0), defendingUnit.DamageType)
+
+	defenderDamage, err := Damage(attacker, maths.MaxInt(defender.Attack, 0), defender.DamageType)
 	if err != nil {
 		return 0, 0, errors.Wrap(err)
 	}
+
+	// spiky trait check
+	spikys := defender.GetTraits(tr.SpikyTrait)
+	for _, spiky := range spikys {
+		args := spiky.GetArgs().(*tr.SpikyArgs)
+		defenderDamage += args.Amount
+	}
+
 	return attackerDamage, defenderDamage, nil
 }

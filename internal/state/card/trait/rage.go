@@ -1,7 +1,7 @@
 package trait
 
 const (
-	RageTrait = "Rage"
+	BerserkTrait = "Berserk"
 )
 
-type RageArgs struct{}
+type BerserkArgs struct{}

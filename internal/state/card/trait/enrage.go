@@ -1,10 +1,10 @@
 package trait
 
 const (
-	DeathCryTrait = "DeathCry"
+	EnrageTrait = "Enrage"
 )
 
-type DeathCryArgs struct {
+type EnrageArgs struct {
 	Event struct {
 		Type string
 		Args interface{}

@@ -5,6 +5,7 @@ import (
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
 	cd "github.com/quibbble/go-quill/internal/state/card"
+	tr "github.com/quibbble/go-quill/internal/state/card/trait"
 	ch "github.com/quibbble/go-quill/internal/state/hook/choose"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
@@ -55,5 +56,18 @@ func PlaceUnitAffect(engine *en.Engine, state *st.State, args interface{}, targe
 		return errors.Wrap(err)
 	}
 	state.Board.XYs[a.X][a.Y].Unit = unit
+
+	// battle cry trait check
+	battleCrys := unit.GetTraits(tr.BattleCryTrait)
+	for _, battleCry := range battleCrys {
+		args := battleCry.GetArgs().(*tr.BattleCryArgs)
+		event, err := NewEvent(args.Event.Type, args.Event.Args)
+		if err != nil {
+			return errors.Wrap(err)
+		}
+		if err := engine.Do(event, state); err != nil {
+			return errors.Wrap(err)
+		}
+	}
 	return nil
 }

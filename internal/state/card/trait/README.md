@@ -1,6 +1,6 @@
 # Traits
 - poison X - take X magic damage at the end of your turn
-- rage - may attack again after attacking and killing a unit
+- berserk - may attack again after attacking and killing a unit
 - recode X - recode codex
 - buff STAT X - buff unit's STAT by X
 - debuff STAT X - debuff unit's STAT by X
@@ -12,6 +12,9 @@
 - pillage EVENT - attacking a base results in EVENT
 - battle cry EVENT - placing results in EVENT
 - death cry EVENT - dieing results in EVENT
-- gift TRAIT - apply TRAIT to unit after battle
+- gift TRAIT - on attack, give TRAIT to creature
 - lobber - deal damage to target AND all adjacent units
 - friends LOCATION TRAIT - add TRAIT to LOCATION units
+- spiky X - deal X extra damage when being attacked
+- enrage EVENT - on taking damage apply event
+- assassin X - attacking a unit from behind deals X extra damage

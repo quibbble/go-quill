@@ -32,10 +32,9 @@
 - refresh_movement x
 - cooldown x
 
-
-# Traits to implement
+## Traits to implement
 - poison X - COMPLETE
-- rage - COMPLETE
+- berserk - COMPLETE
 - recode X - COMPLETE
 - buff STAT X - COMPLETE
 - debuff STAT X - COMPLETE
@@ -44,9 +43,12 @@
 - ward X - COMPLETE
 - thief - COMPLETE
 - purity - COMPLETE
-- pillage EVENT - 
-- battle cry EVENT - 
-- death cry EVENT - 
-- gift TRAIT - 
+- pillage EVENT - COMPLETE
+- battle cry EVENT - COMPLETE
+- death cry EVENT - COMPLETE
+- gift TRAIT - COMPLETE
 - lobber - 
 - friends LOCATION TRAIT - 
+- spiky X - COMPLETE
+- enrage EVENT - 
+- assassin X - COMPLETE

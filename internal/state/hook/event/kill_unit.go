@@ -6,6 +6,7 @@ import (
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
 	cd "github.com/quibbble/go-quill/internal/state/card"
+	tr "github.com/quibbble/go-quill/internal/state/card/trait"
 	ch "github.com/quibbble/go-quill/internal/state/hook/choose"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
@@ -44,7 +45,22 @@ func KillUnitAffect(engine *en.Engine, state *st.State, args interface{}, target
 	}
 	unit := state.Board.XYs[x][y].Unit.(*cd.UnitCard)
 	state.Board.XYs[x][y] = nil
+
+	// death cry trait check
+	deathCrys := unit.GetTraits(tr.DeathCryTrait)
+	for _, deathCry := range deathCrys {
+		args := deathCry.GetArgs().(*tr.DeathCryArgs)
+		event, err := NewEvent(args.Event.Type, args.Event.Args)
+		if err != nil {
+			return errors.Wrap(err)
+		}
+		if err := engine.Do(event, state); err != nil {
+			return errors.Wrap(err)
+		}
+	}
+
 	if unit.GetInit().(*cards.UnitCard).ID != "U0001" {
+		// reset and move items and unit to discard
 		for _, item := range unit.Items {
 			if item.Player == unit.Player {
 				item.Reset(state.BuildCard)
@@ -54,6 +70,7 @@ func KillUnitAffect(engine *en.Engine, state *st.State, args interface{}, target
 		unit.Reset(state.BuildCard)
 		state.Discard[unit.Player].Add(unit)
 	} else {
+		// check if the game is over
 		choose, err := ch.NewChoice(ch.BasesChoice, ch.BasesArgs{
 			Players: []uuid.UUID{unit.Player},
 		})

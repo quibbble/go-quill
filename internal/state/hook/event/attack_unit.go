@@ -111,14 +111,16 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 				return errors.Wrap(err)
 			}
 		}
+		return nil
 	}
 
-	attackerDamage, defenderDamage, err := dm.Battle(attacker, defender)
+	attackerDamage, defenderDamage, err := dm.Battle(state, attacker, defender)
 	if err != nil {
 		return errors.Wrap(err)
 	}
 	if attackerDamage > 0 {
-		event := &Event{
+		var event *Event
+		event = &Event{
 			uuid: uuid.New(st.EventUUID),
 			typ:  DamageUnitEvent,
 			args: &DamageUnitArgs{
@@ -133,10 +135,68 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 			},
 			affect: DamageUnitAffect,
 		}
+
+		// execute trait check
+		if len(attacker.GetTraits(tr.ExecuteTrait)) > 0 &&
+			defender.Health < defender.GetInit().(*cards.UnitCard).Health {
+			event = &Event{
+				uuid: uuid.New(st.EventUUID),
+				typ:  KillUnitEvent,
+				args: &KillUnitArgs{
+					Choose: Choose{
+						Type: ch.UUIDChoice,
+						Args: &ch.UUIDArgs{
+							UUID: defender.UUID,
+						},
+					},
+				},
+				affect: KillUnitAffect,
+			}
+		}
+
 		if err := engine.Do(event, state); err != nil {
 			return errors.Wrap(err)
 		}
+
+		// pillage trait check
+		if defender.GetInit().(*cards.Card).ID == "U0001" {
+			pillages := attacker.GetTraits(tr.PillageTrait)
+			for _, pillage := range pillages {
+				args := pillage.GetArgs().(*tr.PillageArgs)
+				event, err := NewEvent(args.Event.Type, args.Event.Args)
+				if err != nil {
+					return errors.Wrap(err)
+				}
+				if err := engine.Do(event, state); err != nil {
+					return errors.Wrap(err)
+				}
+			}
+		}
+
+		// gift trait check
+		if defender.Type == cd.CreatureUnit {
+			gifts := attacker.GetTraits(tr.GiftTrait)
+			for _, gift := range gifts {
+				args := gift.GetArgs().(*tr.GiftArgs)
+				event, err := NewEvent(AddTraitToCard, &AddTraitToCardArgs{
+					Trait: args.Trait,
+					Choose: Choose{
+						Type: ch.UUIDChoice,
+						Args: &ch.UUIDArgs{
+							UUID: defender.UUID,
+						},
+					},
+				})
+				if err != nil {
+					return errors.Wrap(err)
+				}
+				if err := engine.Do(event, state); err != nil {
+					return errors.Wrap(err)
+				}
+			}
+		}
 	}
+
 	if defenderDamage > 0 && attacker.Range <= 0 {
 		event := &Event{
 			uuid: uuid.New(st.EventUUID),
@@ -162,9 +222,9 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 	if _, _, err := state.Board.GetUnitXY(attacker.UUID); err == nil {
 		attacker.Cooldown = attacker.GetInit().(*cards.UnitCard).Cooldown
 
-		// rage trait check - if defender was killed then allow attacker to attack again
+		// Berserk trait check - if defender was killed then allow attacker to attack again
 		_, _, err := state.Board.GetUnitXY(defender.UUID)
-		if err != nil && len(attacker.GetTraits(tr.RageTrait)) > 0 {
+		if err != nil && len(attacker.GetTraits(tr.BerserkTrait)) > 0 {
 			attacker.Cooldown = 0
 		}
 	}
