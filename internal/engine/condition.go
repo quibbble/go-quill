@@ -1,8 +1,11 @@
 package engine
 
-import "github.com/quibbble/go-quill/pkg/errors"
+import (
+	"github.com/quibbble/go-quill/pkg/errors"
+	"github.com/quibbble/go-quill/pkg/uuid"
+)
 
-type BuildCondition func(typ string, args interface{}) (ICondition, error)
+type BuildCondition func(uuid uuid.UUID, typ string, args interface{}) (ICondition, error)
 
 type ICondition interface {
 	Type() string

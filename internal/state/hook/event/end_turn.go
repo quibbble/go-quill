@@ -26,7 +26,7 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 				for _, poison := range unit.GetTraits(tr.PoisonTrait) {
 					args := poison.GetArgs().(tr.PoisonArgs)
 					event := &Event{
-						uuid: uuid.New(st.EventUUID),
+						uuid: state.Gen.New(st.EventUUID),
 						typ:  DamageUnitEvent,
 						args: &DamageUnitArgs{
 							DamageType: dg.MagicDamage,
@@ -57,7 +57,7 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 		state.Recycle[player]++
 		events := []*Event{
 			{
-				uuid: uuid.New(st.EventUUID),
+				uuid: state.Gen.New(st.EventUUID),
 				typ:  DamageUnitsEvent,
 				args: &DamageUnitsArgs{
 					DamageType: dg.PureDamage,
@@ -72,7 +72,7 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 				affect: DamageUnitsAffect,
 			},
 			{
-				uuid: uuid.New(st.EventUUID),
+				uuid: state.Gen.New(st.EventUUID),
 				typ:  RecycleDeckEvent,
 				args: &RecycleDeckArgs{
 					Player: player,
@@ -91,7 +91,7 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 	// refresh mana, refresh units movement, and draw a card
 	events := []*Event{
 		{
-			uuid: uuid.New(st.EventUUID),
+			uuid: state.Gen.New(st.EventUUID),
 			typ:  GainManaEvent,
 			args: &GainBaseManaArgs{
 				Player: player,
@@ -100,7 +100,7 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 			affect: GainManaAffect,
 		},
 		{
-			uuid: uuid.New(st.EventUUID),
+			uuid: state.Gen.New(st.EventUUID),
 			typ:  RefreshMovementEvent,
 			args: &RefreshMovementArgs{
 				Choose: Choose{
@@ -113,7 +113,7 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 			affect: RefreshMovementAffect,
 		},
 		{
-			uuid: uuid.New(st.EventUUID),
+			uuid: state.Gen.New(st.EventUUID),
 			typ:  CooldownEvent,
 			args: &CooldownArgs{
 				Choose: Choose{
@@ -126,7 +126,7 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 			affect: CooldownAffect,
 		},
 		{
-			uuid: uuid.New(st.EventUUID),
+			uuid: state.Gen.New(st.EventUUID),
 			typ:  DrawCardEvent,
 			args: &DrawCardArgs{
 				Player: player,

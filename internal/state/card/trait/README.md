@@ -14,7 +14,8 @@
 - death cry EVENT - dieing results in EVENT
 - gift TRAIT - on attack, give TRAIT to creature
 - lobber - deal damage to target AND all adjacent units
-- friends LOCATION TRAIT - add TRAIT to LOCATION units
+- friends CHOOSE TRAIT - add TRAIT to friendly CHOOSE units
+- enemies CHOOSE TRAIT - add TRAIT to enemy CHOOSE units
 - spiky X - deal X extra damage when being attacked
 - enrage EVENT - on taking damage apply event
 - assassin X - attacking a unit from behind deals X extra damage

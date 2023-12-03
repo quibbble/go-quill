@@ -25,7 +25,7 @@ func HealUnitAffect(engine *en.Engine, state *st.State, args interface{}, target
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choose, err := ch.NewChoice(a.Choose.Type, a.Choose.Args)
+	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.Choose.Type, a.Choose.Args)
 	if err != nil {
 		return errors.Wrap(err)
 	}

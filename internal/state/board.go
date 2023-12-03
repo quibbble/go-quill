@@ -18,9 +18,9 @@ type Tile struct {
 	Unit ICard
 }
 
-func NewTile(x, y int) *Tile {
+func NewTile(uuid uuid.UUID, x, y int) *Tile {
 	return &Tile{
-		UUID: uuid.New(TileUUID),
+		UUID: uuid,
 		X:    x,
 		Y:    y,
 	}
@@ -33,7 +33,7 @@ type Board struct {
 	Sides map[uuid.UUID]int
 }
 
-func NewBoard(builder func(id string, player uuid.UUID) (ICard, error), player1, player2 uuid.UUID) (*Board, error) {
+func NewBoard(builder func(id string, player uuid.UUID) (ICard, error), gen *uuid.Gen, player1, player2 uuid.UUID) (*Board, error) {
 	board := &Board{
 		XYs:   [Cols][Rows]*Tile{},
 		UUIDs: make(map[uuid.UUID]*Tile),
@@ -41,7 +41,7 @@ func NewBoard(builder func(id string, player uuid.UUID) (ICard, error), player1,
 	}
 	for x := 0; x < Cols; x++ {
 		for y := 0; y < Rows; y++ {
-			tile := NewTile(x, y)
+			tile := NewTile(gen.New(TileUUID), x, y)
 			board.XYs[x][y] = tile
 			board.UUIDs[tile.UUID] = tile
 		}

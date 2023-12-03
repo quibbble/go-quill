@@ -25,7 +25,7 @@ func KillUnitAffect(engine *en.Engine, state *st.State, args interface{}, target
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choose, err := ch.NewChoice(a.Choose.Type, a.Choose.Args)
+	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.Choose.Type, a.Choose.Args)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -50,7 +50,7 @@ func KillUnitAffect(engine *en.Engine, state *st.State, args interface{}, target
 	deathCrys := unit.GetTraits(tr.DeathCryTrait)
 	for _, deathCry := range deathCrys {
 		args := deathCry.GetArgs().(*tr.DeathCryArgs)
-		event, err := NewEvent(args.Event.Type, args.Event.Args)
+		event, err := NewEvent(state.Gen.New(st.EventUUID), args.Event.Type, args.Event.Args)
 		if err != nil {
 			return errors.Wrap(err)
 		}
@@ -71,7 +71,7 @@ func KillUnitAffect(engine *en.Engine, state *st.State, args interface{}, target
 		state.Discard[unit.Player].Add(unit)
 	} else {
 		// check if the game is over
-		choose, err := ch.NewChoice(ch.BasesChoice, ch.BasesArgs{
+		choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), ch.BasesChoice, ch.BasesArgs{
 			Players: []uuid.UUID{unit.Player},
 		})
 		if err != nil {
@@ -83,7 +83,7 @@ func KillUnitAffect(engine *en.Engine, state *st.State, args interface{}, target
 		}
 		if len(bases) <= 1 {
 			if err := engine.Do(&Event{
-				uuid: uuid.New(st.EventUUID),
+				uuid: state.Gen.New(st.EventUUID),
 				typ:  EndGameEvent,
 				args: &EndGameArgs{
 					Winner: state.GetOpponent(unit.Player),

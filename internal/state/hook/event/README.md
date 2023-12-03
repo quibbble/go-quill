@@ -48,7 +48,8 @@
 - death cry EVENT - COMPLETE
 - gift TRAIT - COMPLETE
 - lobber - 
-- friends LOCATION TRAIT - 
+- friends CHOOSE TRAIT - 
+- enemies CHOOSE TRAIT - 
 - spiky X - COMPLETE
-- enrage EVENT - 
+- enrage EVENT - COMPLETE
 - assassin X - COMPLETE

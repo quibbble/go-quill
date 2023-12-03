@@ -27,7 +27,7 @@ func SackCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choose, err := ch.NewChoice(a.Choose.Type, a.Choose.Args)
+	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.Choose.Type, a.Choose.Args)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -41,7 +41,7 @@ func SackCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 
 	events := []*Event{
 		{
-			uuid: uuid.New(st.EventUUID),
+			uuid: state.Gen.New(st.EventUUID),
 			typ:  DiscardCardEvent,
 			args: &DiscardCardArgs{
 				Player: a.Player,
@@ -54,7 +54,7 @@ func SackCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 	switch a.Option {
 	case ManaSackOption:
 		events = append(events, &Event{
-			uuid: uuid.New(st.EventUUID),
+			uuid: state.Gen.New(st.EventUUID),
 			typ:  GainBaseManaEvent,
 			args: &GainBaseManaArgs{
 				Player: a.Player,
@@ -62,7 +62,7 @@ func SackCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 			},
 			affect: GainBaseManaAffect,
 		}, &Event{
-			uuid: uuid.New(st.EventUUID),
+			uuid: state.Gen.New(st.EventUUID),
 			typ:  GainManaEvent,
 			args: &GainManaArgs{
 				Player: a.Player,
@@ -72,14 +72,14 @@ func SackCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 		})
 	case CardsSackOption:
 		events = append(events, &Event{
-			uuid: uuid.New(st.EventUUID),
+			uuid: state.Gen.New(st.EventUUID),
 			typ:  DrawCardEvent,
 			args: &DrawCardArgs{
 				Player: a.Player,
 			},
 			affect: DrawCardAffect,
 		}, &Event{
-			uuid: uuid.New(st.EventUUID),
+			uuid: state.Gen.New(st.EventUUID),
 			typ:  DrawCardEvent,
 			args: &DrawCardArgs{
 				Player: a.Player,

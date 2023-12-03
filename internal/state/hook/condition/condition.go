@@ -15,13 +15,13 @@ type Condition struct {
 	pass func(engine *en.Engine, state *st.State, args interface{}) (bool, error)
 }
 
-func NewCondition(typ string, args interface{}) (en.ICondition, error) {
+func NewCondition(uuid uuid.UUID, typ string, args interface{}) (en.ICondition, error) {
 	pass, ok := ConditionMap[typ]
 	if !ok {
 		return nil, errors.ErrMissingMapKey
 	}
 	return &Condition{
-		uuid: uuid.New(st.ConditionUUID),
+		uuid: uuid,
 		typ:  typ,
 		args: args,
 		pass: pass,

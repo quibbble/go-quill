@@ -25,7 +25,7 @@ func NewItemCard(builders *Builders, id string, player uuid.UUID) (*ItemCard, er
 	item := card.(*cards.ItemCard)
 	traits := make([]st.ITrait, 0)
 	for _, trait := range item.HeldTraits {
-		trait, err := builders.BuildTrait(trait.Type, trait.Args)
+		trait, err := builders.BuildTrait(builders.Gen.New(st.TraitUUID), trait.Type, trait.Args)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}

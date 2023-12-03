@@ -16,7 +16,7 @@ type Trait struct {
 	remove func(engine *en.Engine, args interface{}, card st.ICard) error
 }
 
-func NewTrait(typ string, args interface{}) (st.ITrait, error) {
+func NewTrait(uuid uuid.UUID, typ string, args interface{}) (st.ITrait, error) {
 	ar, ok := TraitMap[typ]
 	if !ok {
 		return nil, errors.ErrMissingMapKey
@@ -30,7 +30,7 @@ func NewTrait(typ string, args interface{}) (st.ITrait, error) {
 		r = dummy
 	}
 	return &Trait{
-		uuid:   uuid.New(st.TraitUUID),
+		uuid:   uuid,
 		typ:    typ,
 		args:   args,
 		add:    a,

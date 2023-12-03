@@ -11,6 +11,7 @@ import (
 )
 
 const (
+	Unit          = "Unit"
 	StructureUnit = "Structure"
 	CreatureUnit  = "Creature"
 )

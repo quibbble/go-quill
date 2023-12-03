@@ -15,13 +15,13 @@ type TargetReq struct {
 	validate func(engine *en.Engine, state *st.State, args interface{}, target uuid.UUID, pior ...uuid.UUID) (bool, error)
 }
 
-func NewTargetReq(typ string, args interface{}) (en.ITargetReq, error) {
+func NewTargetReq(uuid uuid.UUID, typ string, args interface{}) (en.ITargetReq, error) {
 	validate, ok := TargeReqMap[typ]
 	if !ok {
 		return nil, errors.ErrMissingMapKey
 	}
 	return &TargetReq{
-		uuid:     uuid.New(st.TargetReqUUID),
+		uuid:     uuid,
 		typ:      typ,
 		args:     args,
 		validate: validate,

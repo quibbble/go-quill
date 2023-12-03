@@ -10,6 +10,7 @@ import (
 type State struct {
 	Seed int64
 	Rand *rand.Rand
+	Gen  *uuid.Gen
 
 	Turn   int
 	Teams  []uuid.UUID
@@ -30,7 +31,10 @@ type State struct {
 type BuildCard func(id string, player uuid.UUID) (ICard, error)
 
 func NewState(seed int64, build BuildCard, player1, player2 uuid.UUID, deck1, deck2 []string) (*State, error) {
-	board, err := NewBoard(build, player1, player2)
+	r := rand.New(rand.NewSource(seed))
+	gen := uuid.NewGen(r)
+
+	board, err := NewBoard(build, gen, player1, player2)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
@@ -61,7 +65,8 @@ func NewState(seed int64, build BuildCard, player1, player2 uuid.UUID, deck1, de
 
 	return &State{
 		Seed: seed,
-		Rand: rand.New(rand.NewSource(seed)),
+		Rand: r,
+		Gen:  gen,
 
 		Turn:   0,
 		Teams:  []uuid.UUID{player1, player2},

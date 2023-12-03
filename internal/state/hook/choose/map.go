@@ -9,9 +9,11 @@ var ChooseMap map[string]func(engine en.IEngine, state en.IState, args interface
 
 func init() {
 	ChooseMap = map[string]func(engine en.IEngine, state en.IState, args interface{}, targets ...uuid.UUID) ([]uuid.UUID, error){
-		BasesChoice:  RetrieveBases,
-		TargetChoice: RetrieveTarget,
-		UnitsChoice:  RetrieveUnits,
-		UUIDChoice:   RetrieveUUID,
+		AdjacentChoice: RetrieveAdjacent,
+		BasesChoice:    RetrieveBases,
+		OwnedChoice:    RetrieveOwned,
+		TargetChoice:   RetrieveTarget,
+		UnitsChoice:    RetrieveUnits,
+		UUIDChoice:     RetrieveUUID,
 	}
 }

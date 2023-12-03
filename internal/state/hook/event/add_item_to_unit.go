@@ -25,11 +25,11 @@ func AddItemToUnitAffect(engine *en.Engine, state *st.State, args interface{}, t
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	chooseItem, err := ch.NewChoice(a.ChooseItem.Type, a.ChooseItem.Args)
+	chooseItem, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.ChooseItem.Type, a.ChooseItem.Args)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	chooseUnit, err := ch.NewChoice(a.ChooseUnit.Type, a.ChooseUnit.Args)
+	chooseUnit, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.ChooseUnit.Type, a.ChooseUnit.Args)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -70,7 +70,7 @@ func AddItemToUnitAffect(engine *en.Engine, state *st.State, args interface{}, t
 	}
 	for _, trait := range item.HeldTraits {
 		event := &Event{
-			uuid: uuid.New(st.EventUUID),
+			uuid: state.Gen.New(st.EventUUID),
 			typ:  AddTraitToCard,
 			args: &AddTraitToCardArgs{
 				Trait: Trait{

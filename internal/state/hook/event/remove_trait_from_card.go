@@ -24,7 +24,7 @@ func RemoveTraitFromCardAffect(engine *en.Engine, state *st.State, args interfac
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choose, err := ch.NewChoice(a.Choose.Type, a.Choose.Args)
+	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.Choose.Type, a.Choose.Args)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -50,7 +50,7 @@ func RemoveTraitFromCardAffect(engine *en.Engine, state *st.State, args interfac
 		}
 		if state.Board.XYs[x][y].Unit.(*cd.UnitCard).Health <= 0 {
 			event := &Event{
-				uuid: uuid.New(st.EventUUID),
+				uuid: state.Gen.New(st.EventUUID),
 				typ:  KillUnitEvent,
 				args: &KillUnitArgs{
 					Choose: Choose{

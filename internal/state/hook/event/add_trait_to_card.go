@@ -25,11 +25,11 @@ func AddTraitToCardAffect(engine *en.Engine, state *st.State, args interface{}, 
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	trait, err := tr.NewTrait(a.Trait.Type, a.Trait.Args)
+	trait, err := tr.NewTrait(state.Gen.New(st.ChooseUUID), a.Trait.Type, a.Trait.Args)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	choose, err := ch.NewChoice(a.Choose.Type, a.Choose.Args)
+	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.Choose.Type, a.Choose.Args)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -55,7 +55,7 @@ func AddTraitToCardAffect(engine *en.Engine, state *st.State, args interface{}, 
 		}
 		if state.Board.XYs[x][y].Unit.(*cd.UnitCard).Health <= 0 {
 			event := &Event{
-				uuid: uuid.New(st.EventUUID),
+				uuid: state.Gen.New(st.EventUUID),
 				typ:  KillUnitEvent,
 				args: &KillUnitArgs{
 					Choose: Choose{

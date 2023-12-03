@@ -3,7 +3,6 @@ module github.com/quibbble/go-quill
 go 1.21
 
 require (
-	github.com/google/uuid v1.4.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/quibbble/go-boardgame v1.1.2
 	github.com/stretchr/testify v1.8.4

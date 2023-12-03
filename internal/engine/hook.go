@@ -9,7 +9,7 @@ const (
 	After  When = "After"
 )
 
-type BuildHook func(when, typ string, conditions []ICondition, event IEvent, reuse []ICondition) (IHook, error)
+type BuildHook func(uuid uuid.UUID, when, typ string, conditions []ICondition, event IEvent, reuse []ICondition) (IHook, error)
 
 type IHook interface {
 	UUID() uuid.UUID

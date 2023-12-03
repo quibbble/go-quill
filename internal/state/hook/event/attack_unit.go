@@ -27,7 +27,7 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choose, err := ch.NewChoice(a.Choose.Type, a.Choose.Args)
+	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.Choose.Type, a.Choose.Args)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -68,7 +68,7 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 		state.Hand[attacker.Player].Add(item)
 		events := []*Event{
 			{
-				uuid: uuid.New(st.EventUUID),
+				uuid: state.Gen.New(st.EventUUID),
 				typ:  RemoveItemFromUnitEvent,
 				args: &RemoveItemFromUnitArgs{
 					ChooseItem: Choose{
@@ -87,7 +87,7 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 				affect: RemoveItemFromUnitAffect,
 			},
 			{
-				uuid: uuid.New(st.EventUUID),
+				uuid: state.Gen.New(st.EventUUID),
 				typ:  AddItemToUnitEvent,
 				args: &AddItemToUnitArgs{
 					ChooseItem: Choose{
@@ -121,7 +121,7 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 	if attackerDamage > 0 {
 		var event *Event
 		event = &Event{
-			uuid: uuid.New(st.EventUUID),
+			uuid: state.Gen.New(st.EventUUID),
 			typ:  DamageUnitEvent,
 			args: &DamageUnitArgs{
 				DamageType: attacker.DamageType,
@@ -140,7 +140,7 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 		if len(attacker.GetTraits(tr.ExecuteTrait)) > 0 &&
 			defender.Health < defender.GetInit().(*cards.UnitCard).Health {
 			event = &Event{
-				uuid: uuid.New(st.EventUUID),
+				uuid: state.Gen.New(st.EventUUID),
 				typ:  KillUnitEvent,
 				args: &KillUnitArgs{
 					Choose: Choose{
@@ -163,7 +163,7 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 			pillages := attacker.GetTraits(tr.PillageTrait)
 			for _, pillage := range pillages {
 				args := pillage.GetArgs().(*tr.PillageArgs)
-				event, err := NewEvent(args.Event.Type, args.Event.Args)
+				event, err := NewEvent(state.Gen.New(st.EventUUID), args.Event.Type, args.Event.Args)
 				if err != nil {
 					return errors.Wrap(err)
 				}
@@ -178,7 +178,7 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 			gifts := attacker.GetTraits(tr.GiftTrait)
 			for _, gift := range gifts {
 				args := gift.GetArgs().(*tr.GiftArgs)
-				event, err := NewEvent(AddTraitToCard, &AddTraitToCardArgs{
+				event, err := NewEvent(state.Gen.New(st.EventUUID), AddTraitToCard, &AddTraitToCardArgs{
 					Trait: args.Trait,
 					Choose: Choose{
 						Type: ch.UUIDChoice,
@@ -199,7 +199,7 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 
 	if defenderDamage > 0 && attacker.Range <= 0 {
 		event := &Event{
-			uuid: uuid.New(st.EventUUID),
+			uuid: state.Gen.New(st.EventUUID),
 			typ:  DamageUnitEvent,
 			args: &DamageUnitArgs{
 				DamageType: defender.DamageType,

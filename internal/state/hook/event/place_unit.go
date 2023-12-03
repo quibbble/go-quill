@@ -26,7 +26,7 @@ func PlaceUnitAffect(engine *en.Engine, state *st.State, args interface{}, targe
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choose, err := ch.NewChoice(a.Choose.Type, a.Choose.Args)
+	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.Choose.Type, a.Choose.Args)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -61,7 +61,7 @@ func PlaceUnitAffect(engine *en.Engine, state *st.State, args interface{}, targe
 	battleCrys := unit.GetTraits(tr.BattleCryTrait)
 	for _, battleCry := range battleCrys {
 		args := battleCry.GetArgs().(*tr.BattleCryArgs)
-		event, err := NewEvent(args.Event.Type, args.Event.Args)
+		event, err := NewEvent(state.Gen.New(st.EventUUID), args.Event.Type, args.Event.Args)
 		if err != nil {
 			return errors.Wrap(err)
 		}

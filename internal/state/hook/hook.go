@@ -2,7 +2,6 @@ package hook
 
 import (
 	en "github.com/quibbble/go-quill/internal/engine"
-	st "github.com/quibbble/go-quill/internal/state"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
@@ -15,9 +14,9 @@ type Hook struct {
 	reuse      en.Conditions
 }
 
-func NewHook(when, typ string, conditions []en.ICondition, event en.IEvent, reuse []en.ICondition) (en.IHook, error) {
+func NewHook(uuid uuid.UUID, when, typ string, conditions []en.ICondition, event en.IEvent, reuse []en.ICondition) (en.IHook, error) {
 	return &Hook{
-		uuid:       uuid.New(st.HookUUID),
+		uuid:       uuid,
 		when:       en.When(when),
 		typ:        typ,
 		conditions: conditions,

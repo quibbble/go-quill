@@ -5,6 +5,7 @@ import (
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
 	cd "github.com/quibbble/go-quill/internal/state/card"
+	tr "github.com/quibbble/go-quill/internal/state/card/trait"
 	dg "github.com/quibbble/go-quill/internal/state/damage"
 	ch "github.com/quibbble/go-quill/internal/state/hook/choose"
 	"github.com/quibbble/go-quill/pkg/errors"
@@ -26,7 +27,7 @@ func DamageUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choose, err := ch.NewChoice(a.Choose.Type, a.Choose.Args)
+	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.Choose.Type, a.Choose.Args)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -50,9 +51,22 @@ func DamageUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 		return errors.Wrap(err)
 	}
 	unit.Health -= damage
+
+	// enrage trait check
+	for _, trait := range unit.GetTraits(tr.EnrageTrait) {
+		args := trait.GetArgs().(*tr.EnrageArgs)
+		event, err := NewEvent(state.Gen.New(st.EventUUID), args.Event.Type, args.Event.Args)
+		if err != nil {
+			return errors.Wrap(err)
+		}
+		if err := engine.Do(event, state); err != nil {
+			return errors.Wrap(err)
+		}
+	}
+
 	if unit.Health <= 0 {
 		event := &Event{
-			uuid: uuid.New(st.EventUUID),
+			uuid: state.Gen.New(st.EventUUID),
 			typ:  KillUnitEvent,
 			args: &KillUnitArgs{
 				Choose: Choose{

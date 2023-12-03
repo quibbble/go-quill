@@ -25,13 +25,13 @@ type Event struct {
 	affect func(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error
 }
 
-func NewEvent(typ string, args interface{}) (en.IEvent, error) {
+func NewEvent(uuid uuid.UUID, typ string, args interface{}) (en.IEvent, error) {
 	affect, ok := EventMap[typ]
 	if !ok {
 		return nil, errors.ErrMissingMapKey
 	}
 	return &Event{
-		uuid:   uuid.New(st.EventUUID),
+		uuid:   uuid,
 		typ:    typ,
 		args:   args,
 		affect: affect,
