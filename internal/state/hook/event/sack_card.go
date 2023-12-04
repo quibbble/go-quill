@@ -95,5 +95,8 @@ func SackCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 			return errors.Wrap(err)
 		}
 	}
+
+	state.Sacked[a.Player] = true
+
 	return nil
 }

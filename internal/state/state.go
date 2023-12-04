@@ -24,6 +24,7 @@ type State struct {
 	Hand    map[uuid.UUID]*Hand
 	Mana    map[uuid.UUID]*Mana
 	Recycle map[uuid.UUID]int
+	Sacked  map[uuid.UUID]bool
 
 	BuildCard
 }
@@ -79,6 +80,7 @@ func NewState(seed int64, build BuildCard, player1, player2 uuid.UUID, deck1, de
 		Hand:    map[uuid.UUID]*Hand{player1: NewHand(seed, hand1...), player2: NewHand(seed, hand2...)},
 		Mana:    map[uuid.UUID]*Mana{player1: NewMana(), player2: NewMana()},
 		Recycle: map[uuid.UUID]int{player1: 0, player2: 0},
+		Sacked:  map[uuid.UUID]bool{player1: false, player2: false},
 
 		BuildCard: build,
 	}, nil

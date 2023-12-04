@@ -8,12 +8,12 @@
 - shield X - mitigate X physical damage
 - ward X - mitigate X magic damage
 - thief - if target unit holds items, steal one randomly instead of attacking
-- purity - cannot be target by spells
+- purity - cannot be targeted by spells
 - pillage EVENT - attacking a base results in EVENT
 - battle cry EVENT - placing results in EVENT
 - death cry EVENT - dieing results in EVENT
 - gift TRAIT - on attack, give TRAIT to creature
-- lobber - deal damage to target AND all adjacent units
+- lobber - this ranged unit deals damage to target and codex units
 - friends CHOOSE TRAIT - add TRAIT to friendly CHOOSE units
 - enemies CHOOSE TRAIT - add TRAIT to enemy CHOOSE units
 - spiky X - deal X extra damage when being attacked

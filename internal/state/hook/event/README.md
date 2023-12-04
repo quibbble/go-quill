@@ -47,9 +47,20 @@
 - battle cry EVENT - COMPLETE
 - death cry EVENT - COMPLETE
 - gift TRAIT - COMPLETE
-- lobber - 
+- lobber - COMPLETE
 - friends CHOOSE TRAIT - 
 - enemies CHOOSE TRAIT - 
 - spiky X - COMPLETE
 - enrage EVENT - COMPLETE
 - assassin X - COMPLETE
+
+friends + enemies
+Need keep track of who had before and who had after
+Need to check both unit(s) in event and all other units
+- On place
+- On spawn
+- On move
+- On swap
+- On kill
+- On add trait
+- On remove trait

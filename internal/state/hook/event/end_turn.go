@@ -51,6 +51,8 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 	state.Turn++
 	player := state.GetTurn()
 
+	state.Sacked[player] = false
+
 	// if deck is empty then damage bases and recycle deck
 	size := state.Deck[player].GetSize()
 	for size <= 0 {

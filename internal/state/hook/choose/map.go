@@ -11,6 +11,7 @@ func init() {
 	ChooseMap = map[string]func(engine en.IEngine, state en.IState, args interface{}, targets ...uuid.UUID) ([]uuid.UUID, error){
 		AdjacentChoice: RetrieveAdjacent,
 		BasesChoice:    RetrieveBases,
+		CodexChoice:    RetrieveCodex,
 		OwnedChoice:    RetrieveOwned,
 		TargetChoice:   RetrieveTarget,
 		UnitsChoice:    RetrieveUnits,
