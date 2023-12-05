@@ -37,14 +37,14 @@ func (h *Hook) Trigger(when en.When, typ string) bool {
 	return h.when == when && h.event.GetType() == typ
 }
 
-func (h *Hook) Pass(engine en.IEngine, state en.IState, event en.IEvent) (bool, error) {
-	return h.conditions.Pass(engine, state, event)
+func (h *Hook) Pass(engine en.IEngine, state en.IState, event en.IEvent, targets ...uuid.UUID) (bool, error) {
+	return h.conditions.Pass(engine, state, event, targets...)
 }
 
 func (h *Hook) Event() en.IEvent {
 	return h.event
 }
 
-func (h *Hook) Reuse(engine en.IEngine, state en.IState, event en.IEvent) (bool, error) {
-	return h.reuse.Pass(engine, state, event)
+func (h *Hook) Reuse(engine en.IEngine, state en.IState, event en.IEvent, targets ...uuid.UUID) (bool, error) {
+	return h.reuse.Pass(engine, state, event, targets...)
 }

@@ -6,6 +6,7 @@ import (
 	st "github.com/quibbble/go-quill/internal/state"
 	ch "github.com/quibbble/go-quill/internal/state/hook/choose"
 	"github.com/quibbble/go-quill/pkg/errors"
+	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
 const UnitMissingCondition = "UnitMissing"
@@ -14,7 +15,7 @@ type UnitMissingArgs struct {
 	Choose ch.RawChoose
 }
 
-func PassUnitMissing(engine *en.Engine, state *st.State, args interface{}, event ...en.IEvent) (bool, error) {
+func PassUnitMissing(engine *en.Engine, state *st.State, args interface{}, event en.IEvent, targets ...uuid.UUID) (bool, error) {
 	var p UnitMissingArgs
 	if err := mapstructure.Decode(args, &p); err != nil {
 		return false, errors.ErrInterfaceConversion
@@ -23,7 +24,7 @@ func PassUnitMissing(engine *en.Engine, state *st.State, args interface{}, event
 	if err != nil {
 		return false, errors.Wrap(err)
 	}
-	choices, err := choose.Retrieve(engine, state)
+	choices, err := choose.Retrieve(engine, state, targets...)
 	if err != nil {
 		return false, errors.Wrap(err)
 	}

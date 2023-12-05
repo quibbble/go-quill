@@ -15,7 +15,7 @@ type IHook interface {
 	GetUUID() uuid.UUID
 	GetType() string
 	Trigger(when When, typ string) bool
-	Pass(engine IEngine, state IState, event IEvent) (bool, error)
+	Pass(engine IEngine, state IState, event IEvent, targets ...uuid.UUID) (bool, error)
 	Event() IEvent
-	Reuse(engine IEngine, state IState, event IEvent) (bool, error)
+	Reuse(engine IEngine, state IState, event IEvent, targets ...uuid.UUID) (bool, error)
 }

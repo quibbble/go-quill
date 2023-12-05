@@ -147,7 +147,7 @@ func (c *Card) GetInit() parse.ICard {
 }
 
 func (c *Card) Playable(engine en.IEngine, state en.IState) (bool, error) {
-	return c.Conditions.Pass(engine, state)
+	return c.Conditions.Pass(engine, state, nil)
 }
 
 func (c *Card) ValidTargets(engine en.IEngine, state en.IState, targets ...uuid.UUID) (bool, error) {

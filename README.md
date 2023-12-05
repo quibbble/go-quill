@@ -1,5 +1,5 @@
 # go-quill
 
 ## TODO
-- Fix conditions so that they also accept targets
+- Make hooked events accept targets
 - Valid Targets Selector

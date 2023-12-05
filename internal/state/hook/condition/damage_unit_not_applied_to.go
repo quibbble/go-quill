@@ -7,6 +7,7 @@ import (
 	ch "github.com/quibbble/go-quill/internal/state/hook/choose"
 	ev "github.com/quibbble/go-quill/internal/state/hook/event"
 	"github.com/quibbble/go-quill/pkg/errors"
+	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
 const DamageUnitAppliedToCondition = "DamageUnitAppliedTo"
@@ -15,7 +16,7 @@ type DamageUnitAppliedToArgs struct {
 	Choose ch.RawChoose
 }
 
-func PassDamageUnitAppliedTo(engine *en.Engine, state *st.State, args interface{}, event ...en.IEvent) (bool, error) {
+func PassDamageUnitAppliedTo(engine *en.Engine, state *st.State, args interface{}, event en.IEvent, targets ...uuid.UUID) (bool, error) {
 	var p DamageUnitAppliedToArgs
 	if err := mapstructure.Decode(args, &p); err != nil {
 		return false, errors.ErrInterfaceConversion
@@ -24,7 +25,7 @@ func PassDamageUnitAppliedTo(engine *en.Engine, state *st.State, args interface{
 	if err != nil {
 		return false, errors.Wrap(err)
 	}
-	choices, err := choose.Retrieve(engine, state)
+	choices, err := choose.Retrieve(engine, state, targets...)
 	if err != nil {
 		return false, errors.Wrap(err)
 	}
@@ -33,10 +34,10 @@ func PassDamageUnitAppliedTo(engine *en.Engine, state *st.State, args interface{
 	}
 	conditionUnit := choices[0]
 
-	if len(event) != 1 {
-		return false, errors.ErrInvalidSliceLength
+	if event == nil {
+		return false, errors.ErrNilInterface
 	}
-	a, ok := event[0].GetArgs().(*ev.DamageUnitArgs)
+	a, ok := event.GetArgs().(*ev.DamageUnitArgs)
 	if !ok {
 		return false, errors.ErrInterfaceConversion
 	}
@@ -44,7 +45,7 @@ func PassDamageUnitAppliedTo(engine *en.Engine, state *st.State, args interface{
 	if err != nil {
 		return false, errors.Wrap(err)
 	}
-	choices, err = choose.Retrieve(engine, state)
+	choices, err = choose.Retrieve(engine, state, targets...)
 	if err != nil {
 		return false, errors.Wrap(err)
 	}

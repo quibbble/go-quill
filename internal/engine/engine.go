@@ -39,7 +39,7 @@ func (e *Engine) Do(event IEvent, state IState, targets ...uuid.UUID) error {
 	for i, hook := range e.hooks {
 		if hook.Trigger(Before, event.GetType()) {
 
-			pass, err := hook.Pass(e, state, event)
+			pass, err := hook.Pass(e, state, event, targets...)
 			if err != nil {
 				return errors.Wrap(err)
 			}
@@ -49,7 +49,7 @@ func (e *Engine) Do(event IEvent, state IState, targets ...uuid.UUID) error {
 				}
 			}
 
-			pass, err = hook.Reuse(e, state, event)
+			pass, err = hook.Reuse(e, state, event, targets...)
 			if err != nil {
 				return errors.Wrap(err)
 			}
@@ -67,7 +67,7 @@ func (e *Engine) Do(event IEvent, state IState, targets ...uuid.UUID) error {
 	for i, hook := range e.hooks {
 		if hook.Trigger(After, event.GetType()) {
 
-			pass, err := hook.Pass(e, state, event)
+			pass, err := hook.Pass(e, state, event, targets...)
 			if err != nil {
 				return errors.Wrap(err)
 			}
@@ -77,7 +77,7 @@ func (e *Engine) Do(event IEvent, state IState, targets ...uuid.UUID) error {
 				}
 			}
 
-			pass, err = hook.Reuse(e, state, event)
+			pass, err = hook.Reuse(e, state, event, targets...)
 			if err != nil {
 				return errors.Wrap(err)
 			}

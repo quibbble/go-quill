@@ -13,7 +13,7 @@ type Condition struct {
 	typ  string
 	not  bool
 	args interface{}
-	pass func(engine *en.Engine, state *st.State, args interface{}, event ...en.IEvent) (bool, error)
+	pass func(engine *en.Engine, state *st.State, args interface{}, event en.IEvent, targets ...uuid.UUID) (bool, error)
 }
 
 func NewCondition(uuid uuid.UUID, typ string, not bool, args interface{}) (en.ICondition, error) {
@@ -42,7 +42,7 @@ func (c *Condition) GetArgs() interface{} {
 	return c.args
 }
 
-func (c *Condition) Pass(engine en.IEngine, state en.IState, event ...en.IEvent) (bool, error) {
+func (c *Condition) Pass(engine en.IEngine, state en.IState, event en.IEvent, targets ...uuid.UUID) (bool, error) {
 	eng, ok := engine.(*en.Engine)
 	if !ok {
 		return false, errors.ErrInterfaceConversion
@@ -51,7 +51,7 @@ func (c *Condition) Pass(engine en.IEngine, state en.IState, event ...en.IEvent)
 	if !ok {
 		return false, errors.ErrInterfaceConversion
 	}
-	pass, err := c.pass(eng, sta, c.args, event...)
+	pass, err := c.pass(eng, sta, c.args, event, targets...)
 	if err != nil {
 		return false, errors.Wrap(err)
 	}
