@@ -1,9 +1,9 @@
 package card
 
 import (
-	"github.com/quibbble/go-quill/cards"
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -18,7 +18,7 @@ const (
 )
 
 type Card struct {
-	init *cards.Card
+	init *parse.Card
 
 	UUID uuid.UUID
 
@@ -51,11 +51,11 @@ type Builders struct {
 	*uuid.Gen
 }
 
-func NewCard(builders *Builders, card *cards.Card, player uuid.UUID) (*Card, error) {
-	buildConditions := func(cnds []cards.Condition) ([]en.ICondition, error) {
+func NewCard(builders *Builders, card *parse.Card, player uuid.UUID) (*Card, error) {
+	buildConditions := func(cnds []parse.Condition) ([]en.ICondition, error) {
 		conditions := make([]en.ICondition, 0)
 		for _, c := range cnds {
-			condition, err := builders.BuildCondition(builders.Gen.New(st.ConditionUUID), c.Type, c.Args)
+			condition, err := builders.BuildCondition(builders.Gen.New(st.ConditionUUID), c.Type, c.Not, c.Args)
 			if err != nil {
 				return nil, errors.Wrap(err)
 			}
@@ -130,6 +130,10 @@ func NewCard(builders *Builders, card *cards.Card, player uuid.UUID) (*Card, err
 	}, nil
 }
 
+func (c *Card) GetID() string {
+	return c.init.ID
+}
+
 func (c *Card) GetUUID() uuid.UUID {
 	return c.UUID
 }
@@ -138,7 +142,7 @@ func (c *Card) GetPlayer() uuid.UUID {
 	return c.Player
 }
 
-func (c *Card) GetInit() cards.ICard {
+func (c *Card) GetInit() parse.ICard {
 	return c.init
 }
 

@@ -2,13 +2,13 @@ package event
 
 import (
 	"github.com/mitchellh/mapstructure"
-	"github.com/quibbble/go-quill/cards"
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
 	cd "github.com/quibbble/go-quill/internal/state/card"
 	tr "github.com/quibbble/go-quill/internal/state/card/trait"
 	dm "github.com/quibbble/go-quill/internal/state/damage"
 	ch "github.com/quibbble/go-quill/internal/state/hook/choose"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -165,7 +165,7 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 
 			// execute trait check
 			if len(attacker.GetTraits(tr.ExecuteTrait)) > 0 &&
-				defender.Health < defender.GetInit().(*cards.UnitCard).Health {
+				defender.Health < defender.GetInit().(*parse.UnitCard).Health {
 				event = &Event{
 					uuid: state.Gen.New(st.EventUUID),
 					typ:  KillUnitEvent,
@@ -186,7 +186,7 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 			}
 
 			// pillage trait check
-			if defender.GetInit().(*cards.Card).ID == "U0001" {
+			if defender.GetInit().(*parse.Card).ID == "U0001" {
 				pillages := attacker.GetTraits(tr.PillageTrait)
 				for _, pillage := range pillages {
 					args := pillage.GetArgs().(*tr.PillageArgs)
@@ -247,7 +247,7 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 
 	// if attacker still on board then reset cooldown
 	if _, _, err := state.Board.GetUnitXY(attacker.UUID); err == nil {
-		attacker.Cooldown = attacker.GetInit().(*cards.UnitCard).Cooldown
+		attacker.Cooldown = attacker.GetInit().(*parse.UnitCard).Cooldown
 
 		// berserk trait check - if defender was killed then allow attacker to attack again
 		_, _, err := state.Board.GetUnitXY(defender.UUID)

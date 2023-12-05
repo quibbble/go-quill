@@ -9,6 +9,7 @@ type IEngine interface {
 	Do(event IEvent, state IState, targets ...uuid.UUID) error
 	Register(hook IHook)
 	DeRegister(hook IHook)
+	Events() []IEvent
 }
 
 // Engine handles the core game loop logic
@@ -36,9 +37,9 @@ func (e *Engine) Do(event IEvent, state IState, targets ...uuid.UUID) error {
 	var err error
 
 	for i, hook := range e.hooks {
-		if hook.Trigger(Before, event.Type()) {
+		if hook.Trigger(Before, event.GetType()) {
 
-			pass, err := hook.Pass(e, state)
+			pass, err := hook.Pass(e, state, event)
 			if err != nil {
 				return errors.Wrap(err)
 			}
@@ -48,7 +49,7 @@ func (e *Engine) Do(event IEvent, state IState, targets ...uuid.UUID) error {
 				}
 			}
 
-			pass, err = hook.Reuse(e, state)
+			pass, err = hook.Reuse(e, state, event)
 			if err != nil {
 				return errors.Wrap(err)
 			}
@@ -64,9 +65,9 @@ func (e *Engine) Do(event IEvent, state IState, targets ...uuid.UUID) error {
 	}
 
 	for i, hook := range e.hooks {
-		if hook.Trigger(After, event.Type()) {
+		if hook.Trigger(After, event.GetType()) {
 
-			pass, err := hook.Pass(e, state)
+			pass, err := hook.Pass(e, state, event)
 			if err != nil {
 				return errors.Wrap(err)
 			}
@@ -76,7 +77,7 @@ func (e *Engine) Do(event IEvent, state IState, targets ...uuid.UUID) error {
 				}
 			}
 
-			pass, err = hook.Reuse(e, state)
+			pass, err = hook.Reuse(e, state, event)
 			if err != nil {
 				return errors.Wrap(err)
 			}
@@ -94,9 +95,13 @@ func (e *Engine) Register(hook IHook) {
 
 func (e *Engine) DeRegister(hook IHook) {
 	for i, h := range e.hooks {
-		if hook.UUID() == h.UUID() {
+		if hook.GetUUID() == h.GetUUID() {
 			e.hooks = append(e.hooks[:i], e.hooks[i+1:]...)
 			return
 		}
 	}
+}
+
+func (e *Engine) Events() []IEvent {
+	return e.events
 }

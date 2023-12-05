@@ -2,12 +2,12 @@ package event
 
 import (
 	"github.com/mitchellh/mapstructure"
-	"github.com/quibbble/go-quill/cards"
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
 	cd "github.com/quibbble/go-quill/internal/state/card"
 	tr "github.com/quibbble/go-quill/internal/state/card/trait"
 	ch "github.com/quibbble/go-quill/internal/state/hook/choose"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -59,7 +59,11 @@ func KillUnitAffect(engine *en.Engine, state *st.State, args interface{}, target
 		}
 	}
 
-	if unit.GetInit().(*cards.UnitCard).ID != "U0001" {
+	// friends/enemies trait check
+	FriendsTraitCheck(engine, state)
+	EnemiesTraitCheck(engine, state)
+
+	if unit.GetInit().(*parse.UnitCard).ID != "U0001" {
 		// reset and move items and unit to discard
 		for _, item := range unit.Items {
 			if item.Player == unit.Player {

@@ -1,8 +1,8 @@
 package card
 
 import (
-	"github.com/quibbble/go-quill/cards"
 	st "github.com/quibbble/go-quill/internal/state"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -16,13 +16,13 @@ type ItemCard struct {
 
 func NewItemCard(builders *Builders, id string, player uuid.UUID) (*ItemCard, error) {
 	if len(id) == 0 || id[0] != 'I' {
-		return nil, cards.ErrInvalidCardID
+		return nil, parse.ErrInvalidCardID
 	}
-	card, err := cards.ParseCard(id)
+	card, err := parse.ParseCard(id)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
-	item := card.(*cards.ItemCard)
+	item := card.(*parse.ItemCard)
 	traits := make([]st.ITrait, 0)
 	for _, trait := range item.HeldTraits {
 		trait, err := builders.BuildTrait(builders.Gen.New(st.TraitUUID), trait.Type, trait.Args)

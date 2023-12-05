@@ -52,18 +52,6 @@ func DamageUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 	}
 	unit.Health -= damage
 
-	// enrage trait check
-	for _, trait := range unit.GetTraits(tr.EnrageTrait) {
-		args := trait.GetArgs().(*tr.EnrageArgs)
-		event, err := NewEvent(state.Gen.New(st.EventUUID), args.Event.Type, args.Event.Args)
-		if err != nil {
-			return errors.Wrap(err)
-		}
-		if err := engine.Do(event, state); err != nil {
-			return errors.Wrap(err)
-		}
-	}
-
 	if unit.Health <= 0 {
 		event := &Event{
 			uuid: state.Gen.New(st.EventUUID),
@@ -81,6 +69,19 @@ func DamageUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 		if err := engine.Do(event, state); err != nil {
 			return errors.Wrap(err)
 		}
+	} else {
+		// enrage trait check
+		for _, trait := range unit.GetTraits(tr.EnrageTrait) {
+			args := trait.GetArgs().(*tr.EnrageArgs)
+			event, err := NewEvent(state.Gen.New(st.EventUUID), args.Event.Type, args.Event.Args)
+			if err != nil {
+				return errors.Wrap(err)
+			}
+			if err := engine.Do(event, state); err != nil {
+				return errors.Wrap(err)
+			}
+		}
 	}
+
 	return nil
 }

@@ -21,7 +21,7 @@ func RetrieveOwned(engine en.IEngine, state en.IState, args interface{}, targets
 	}
 	owned := make([]uuid.UUID, 0)
 	for _, tile := range state.(*st.State).Board.UUIDs {
-		if tile.Unit != nil && tile.Unit.GetPlayer() == c.Player {
+		if tile.Unit != nil && tile.Unit.GetID() != baseID && tile.Unit.GetPlayer() == c.Player {
 			owned = append(owned, tile.Unit.GetUUID())
 		}
 	}

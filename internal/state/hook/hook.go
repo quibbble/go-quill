@@ -25,22 +25,26 @@ func NewHook(uuid uuid.UUID, when, typ string, conditions []en.ICondition, event
 	}, nil
 }
 
-func (h *Hook) UUID() uuid.UUID {
+func (h *Hook) GetUUID() uuid.UUID {
 	return h.uuid
 }
 
-func (h *Hook) Trigger(when en.When, typ string) bool {
-	return h.when == when && h.event.Type() == typ
+func (h *Hook) GetType() string {
+	return h.typ
 }
 
-func (h *Hook) Pass(engine en.IEngine, state en.IState) (bool, error) {
-	return h.conditions.Pass(engine, state)
+func (h *Hook) Trigger(when en.When, typ string) bool {
+	return h.when == when && h.event.GetType() == typ
+}
+
+func (h *Hook) Pass(engine en.IEngine, state en.IState, event en.IEvent) (bool, error) {
+	return h.conditions.Pass(engine, state, event)
 }
 
 func (h *Hook) Event() en.IEvent {
 	return h.event
 }
 
-func (h *Hook) Reuse(engine en.IEngine, state en.IState) (bool, error) {
-	return h.reuse.Pass(engine, state)
+func (h *Hook) Reuse(engine en.IEngine, state en.IState, event en.IEvent) (bool, error) {
+	return h.reuse.Pass(engine, state, event)
 }

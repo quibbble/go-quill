@@ -1,16 +1,15 @@
 package condition
 
 import (
-	"github.com/quibbble/go-quill/internal/engine"
+	en "github.com/quibbble/go-quill/internal/engine"
 	"github.com/quibbble/go-quill/internal/state"
 )
 
-var ConditionMap map[string]func(engine *engine.Engine, state *state.State, args interface{}) (bool, error)
+var ConditionMap map[string]func(engine *en.Engine, state *state.State, args interface{}, event ...en.IEvent) (bool, error)
 
 func init() {
-	ConditionMap = map[string]func(engine *engine.Engine, state *state.State, args interface{}) (bool, error){
-		"EXAMPLE": func(engine *engine.Engine, state *state.State, args interface{}) (bool, error) {
-			return false, nil
-		},
+	ConditionMap = map[string]func(engine *en.Engine, state *state.State, args interface{}, event ...en.IEvent) (bool, error){
+		AlwaysFailCondition:  PassAlwaysFail,
+		UnitMissingCondition: PassUnitMissing,
 	}
 }

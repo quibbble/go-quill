@@ -12,9 +12,10 @@ const (
 type BuildHook func(uuid uuid.UUID, when, typ string, conditions []ICondition, event IEvent, reuse []ICondition) (IHook, error)
 
 type IHook interface {
-	UUID() uuid.UUID
+	GetUUID() uuid.UUID
+	GetType() string
 	Trigger(when When, typ string) bool
-	Pass(engine IEngine, state IState) (bool, error)
+	Pass(engine IEngine, state IState, event IEvent) (bool, error)
 	Event() IEvent
-	Reuse(engine IEngine, state IState) (bool, error)
+	Reuse(engine IEngine, state IState, event IEvent) (bool, error)
 }

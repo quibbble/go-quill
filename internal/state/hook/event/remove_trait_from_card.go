@@ -67,5 +67,10 @@ func RemoveTraitFromCardAffect(engine *en.Engine, state *st.State, args interfac
 			}
 		}
 	}
+
+	// friends/enemies trait check
+	FriendsTraitCheck(engine, state)
+	EnemiesTraitCheck(engine, state)
+
 	return nil
 }

@@ -24,7 +24,7 @@ func RetrieveUnits(engine en.IEngine, state en.IState, args interface{}, targets
 	}
 	units := make([]uuid.UUID, 0)
 	for _, tile := range state.(*st.State).Board.UUIDs {
-		if tile.Unit != nil {
+		if tile.Unit != nil && tile.Unit.GetID() != baseID {
 			unit := tile.Unit.(*cd.UnitCard)
 			if slices.Contains(c.Players, unit.Player) {
 				units = append(units, unit.UUID)

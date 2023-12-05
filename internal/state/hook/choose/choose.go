@@ -6,6 +6,13 @@ import (
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
+const baseID = "U0001"
+
+type RawChoose struct {
+	Type string
+	Args interface{}
+}
+
 type IChoose interface {
 	Retrieve(engine en.IEngine, state en.IState, targets ...uuid.UUID) ([]uuid.UUID, error)
 }

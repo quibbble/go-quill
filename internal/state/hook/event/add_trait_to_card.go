@@ -72,5 +72,10 @@ func AddTraitToCardAffect(engine *en.Engine, state *st.State, args interface{}, 
 			}
 		}
 	}
+
+	// friends/enemies trait check
+	FriendsTraitCheck(engine, state)
+	EnemiesTraitCheck(engine, state)
+
 	return nil
 }

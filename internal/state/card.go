@@ -1,15 +1,16 @@
 package state
 
 import (
-	"github.com/quibbble/go-quill/cards"
 	en "github.com/quibbble/go-quill/internal/engine"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
 type ICard interface {
+	GetID() string
 	GetUUID() uuid.UUID
 	GetPlayer() uuid.UUID
-	GetInit() cards.ICard
+	GetInit() parse.ICard
 	Playable(engine en.IEngine, state en.IState) (bool, error)
 	GetTraits(typ string) []ITrait
 	AddTrait(engine en.IEngine, trait ITrait) error

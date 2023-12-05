@@ -6,6 +6,10 @@ import (
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
+const (
+	InitDeckSize = 30
+)
+
 type Deck struct {
 	c.Collection[ICard]
 }

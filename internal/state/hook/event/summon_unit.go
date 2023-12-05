@@ -35,5 +35,10 @@ func SummonUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 		return errors.Errorf("unit '%s' must be placed within rows %d to %d", unit.GetUUID(), min, max)
 	}
 	state.Board.XYs[a.X][a.Y].Unit = unit
+
+	// friends/enemies trait check
+	FriendsTraitCheck(engine, state)
+	EnemiesTraitCheck(engine, state)
+
 	return nil
 }

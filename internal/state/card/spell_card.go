@@ -1,8 +1,8 @@
 package card
 
 import (
-	"github.com/quibbble/go-quill/cards"
 	st "github.com/quibbble/go-quill/internal/state"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -13,13 +13,13 @@ type SpellCard struct {
 
 func NewSpellCard(builders *Builders, id string, player uuid.UUID) (*SpellCard, error) {
 	if len(id) == 0 || id[0] != 'S' {
-		return nil, cards.ErrInvalidCardID
+		return nil, parse.ErrInvalidCardID
 	}
-	card, err := cards.ParseCard(id)
+	card, err := parse.ParseCard(id)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
-	spell := card.(*cards.SpellCard)
+	spell := card.(*parse.SpellCard)
 	core, err := NewCard(builders, &spell.Card, player)
 	if err != nil {
 		return nil, errors.Wrap(err)

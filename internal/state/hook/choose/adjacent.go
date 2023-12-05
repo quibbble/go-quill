@@ -31,7 +31,7 @@ func RetrieveAdjacent(engine en.IEngine, state en.IState, args interface{}, targ
 		}
 
 		tile := state.(*st.State).Board.XYs[x][y]
-		if tile.Unit != nil {
+		if tile.Unit != nil && tile.Unit.GetID() != baseID {
 			unit := tile.Unit.(*cd.UnitCard)
 			if (c.UnitType == cd.Unit) || (c.UnitType == unit.Type) {
 				adjacent = append(adjacent, unit.UUID)

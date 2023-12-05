@@ -75,14 +75,24 @@ func SackCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 			uuid: state.Gen.New(st.EventUUID),
 			typ:  DrawCardEvent,
 			args: &DrawCardArgs{
-				Player: a.Player,
+				Choose: Choose{
+					Type: ch.UUIDChoice,
+					Args: &ch.UUIDArgs{
+						UUID: a.Player,
+					},
+				},
 			},
 			affect: DrawCardAffect,
 		}, &Event{
 			uuid: state.Gen.New(st.EventUUID),
 			typ:  DrawCardEvent,
 			args: &DrawCardArgs{
-				Player: a.Player,
+				Choose: Choose{
+					Type: ch.UUIDChoice,
+					Args: &ch.UUIDArgs{
+						UUID: a.Player,
+					},
+				},
 			},
 			affect: DrawCardAffect,
 		})

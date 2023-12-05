@@ -38,6 +38,7 @@ func (u UUID) Type() rune {
 	return rune(u[0])
 }
 
+// Intersect performs set intersection on a ∩ ...b
 func Intersect(a []UUID, b ...[]UUID) []UUID {
 	intersect := make([]UUID, 0)
 	for _, it := range a {
@@ -53,4 +54,15 @@ func Intersect(a []UUID, b ...[]UUID) []UUID {
 		}
 	}
 	return intersect
+}
+
+// Diff performs set difference on a \ b
+func Diff(a, b []UUID) []UUID {
+	diff := make([]UUID, 0)
+	for _, it := range a {
+		if !slices.Contains(b, it) {
+			diff = append(diff, it)
+		}
+	}
+	return diff
 }

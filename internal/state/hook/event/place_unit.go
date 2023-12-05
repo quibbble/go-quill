@@ -69,5 +69,10 @@ func PlaceUnitAffect(engine *en.Engine, state *st.State, args interface{}, targe
 			return errors.Wrap(err)
 		}
 	}
+
+	// friends/enemies trait check
+	FriendsTraitCheck(engine, state)
+	EnemiesTraitCheck(engine, state)
+
 	return nil
 }

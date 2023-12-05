@@ -8,13 +8,13 @@ import (
 
 // Choices finds the intersection of all listed Choose
 type Choices struct {
-	Choices []Choose
+	Choices []IChoose
 }
 
-func NewChoices(choices ...Choose) (IChoose, error) {
+func NewChoices(choices ...IChoose) IChoose {
 	return &Choices{
 		Choices: choices,
-	}, nil
+	}
 }
 
 func (c *Choices) Retrieve(engine en.IEngine, state en.IState, targets ...uuid.UUID) ([]uuid.UUID, error) {

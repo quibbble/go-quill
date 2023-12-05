@@ -4,6 +4,7 @@ import (
 	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
+	ch "github.com/quibbble/go-quill/internal/state/hook/choose"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -13,7 +14,7 @@ const (
 )
 
 type DrawCardArgs struct {
-	Player uuid.UUID
+	Choose Choose
 }
 
 func DrawCardAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
@@ -21,10 +22,24 @@ func DrawCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	card, err := state.Deck[a.Player].Draw()
+	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.Choose.Type, a.Choose.Args)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	state.Hand[a.Player].Add(*card)
+	choices, err := choose.Retrieve(engine, state, targets...)
+	if err != nil {
+		return errors.Wrap(err)
+	}
+	if len(choices) != 1 {
+		return errors.ErrInvalidSliceLength
+	}
+	if choices[0].Type() != st.PlayerUUID {
+		return st.ErrInvalidUUIDType(choices[0], st.PlayerUUID)
+	}
+	card, err := state.Deck[choices[0]].Draw()
+	if err != nil {
+		return errors.Wrap(err)
+	}
+	state.Hand[choices[0]].Add(*card)
 	return nil
 }

@@ -1,4 +1,4 @@
-package cards
+package parse
 
 type ICard interface{}
 
@@ -45,6 +45,7 @@ type Args map[string]interface{}
 
 type Condition struct {
 	Type string
+	Not  bool
 	Args Args
 }
 

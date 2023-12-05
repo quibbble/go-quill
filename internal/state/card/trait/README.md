@@ -17,5 +17,5 @@
 - friends CHOOSE TRAIT - add TRAIT to friendly CHOOSE units
 - enemies CHOOSE TRAIT - add TRAIT to enemy CHOOSE units
 - spiky X - deal X extra damage when being attacked
-- enrage EVENT - on taking damage apply event
+- enrage EVENT - after taking damage and still living apply event
 - assassin X - attacking a unit from behind deals X extra damage

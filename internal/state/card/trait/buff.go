@@ -2,10 +2,10 @@ package trait
 
 import (
 	"github.com/mitchellh/mapstructure"
-	"github.com/quibbble/go-quill/cards"
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
 	cd "github.com/quibbble/go-quill/internal/state/card"
+	"github.com/quibbble/go-quill/parse"
 
 	"github.com/quibbble/go-quill/pkg/errors"
 )
@@ -76,7 +76,7 @@ func RemoveBuff(engine *en.Engine, args interface{}, card st.ICard) error {
 	case cd.AttackStat:
 		unit.Attack -= a.Amount
 	case cd.HealthStat:
-		initHealth := unit.GetInit().(*cards.UnitCard).Health
+		initHealth := unit.GetInit().(*parse.UnitCard).Health
 		if unit.Health > initHealth {
 			unit.Health = initHealth
 		}

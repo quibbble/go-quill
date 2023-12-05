@@ -55,5 +55,10 @@ func MoveUnitAffect(engine *en.Engine, state *st.State, args interface{}, target
 	state.Board.XYs[x][y].Unit = nil
 	state.Board.XYs[a.X][a.Y].Unit = unit
 	unit.Movement--
+
+	// friends/enemies trait check
+	FriendsTraitCheck(engine, state)
+	EnemiesTraitCheck(engine, state)
+
 	return nil
 }

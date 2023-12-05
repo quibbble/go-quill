@@ -3,9 +3,9 @@ package card
 import (
 	"math"
 
-	"github.com/quibbble/go-quill/cards"
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -34,13 +34,13 @@ type UnitCard struct {
 
 func NewUnitCard(builders *Builders, id string, player uuid.UUID) (*UnitCard, error) {
 	if len(id) == 0 || id[0] != 'U' {
-		return nil, cards.ErrInvalidCardID
+		return nil, parse.ErrInvalidCardID
 	}
-	card, err := cards.ParseCard(id)
+	card, err := parse.ParseCard(id)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
-	unit := card.(*cards.UnitCard)
+	unit := card.(*parse.UnitCard)
 	core, err := NewCard(builders, &unit.Card, player)
 	if err != nil {
 		return nil, errors.Wrap(err)

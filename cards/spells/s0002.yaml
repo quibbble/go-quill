@@ -1,5 +1,5 @@
 ID: S0002
-Name: smite
+Name: Smite
 Description: "Deal 1 'Pure' damage to a 'Unit'."
 Cost: 2
 TargetReqs:

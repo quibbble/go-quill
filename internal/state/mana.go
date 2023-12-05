@@ -7,7 +7,7 @@ type Mana struct {
 
 func NewMana() *Mana {
 	return &Mana{
-		Amount:     0,
-		BaseAmount: 0,
+		Amount:     1,
+		BaseAmount: 1,
 	}
 }

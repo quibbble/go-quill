@@ -41,6 +41,9 @@ func init() {
 		GiftTrait:      {},
 		LobberTrait:    {},
 		SpikyTrait:     {},
+		FriendsTrait:   {},
+		EnemiesTrait:   {},
+		EnrageTrait:    {},
+		AssassinTrait:  {},
 	}
-
 }

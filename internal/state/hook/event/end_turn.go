@@ -18,7 +18,7 @@ type EndTurnArgs struct {
 }
 
 func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
-	// check for poison traits on player's units
+	// poison trait check on player's units
 	for _, col := range state.Board.XYs {
 		for _, tile := range col {
 			unit := tile.Unit
@@ -95,7 +95,7 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 		{
 			uuid: state.Gen.New(st.EventUUID),
 			typ:  GainManaEvent,
-			args: &GainBaseManaArgs{
+			args: &GainManaArgs{
 				Player: player,
 				Amount: state.Mana[player].BaseAmount - state.Mana[player].Amount,
 			},
@@ -131,7 +131,12 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 			uuid: state.Gen.New(st.EventUUID),
 			typ:  DrawCardEvent,
 			args: &DrawCardArgs{
-				Player: player,
+				Choose: Choose{
+					Type: ch.UUIDChoice,
+					Args: &ch.UUIDArgs{
+						UUID: player,
+					},
+				},
 			},
 			affect: DrawCardAffect,
 		},

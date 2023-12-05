@@ -11,11 +11,12 @@ type Condition struct {
 	uuid uuid.UUID
 
 	typ  string
+	not  bool
 	args interface{}
-	pass func(engine *en.Engine, state *st.State, args interface{}) (bool, error)
+	pass func(engine *en.Engine, state *st.State, args interface{}, event ...en.IEvent) (bool, error)
 }
 
-func NewCondition(uuid uuid.UUID, typ string, args interface{}) (en.ICondition, error) {
+func NewCondition(uuid uuid.UUID, typ string, not bool, args interface{}) (en.ICondition, error) {
 	pass, ok := ConditionMap[typ]
 	if !ok {
 		return nil, errors.ErrMissingMapKey
@@ -23,16 +24,25 @@ func NewCondition(uuid uuid.UUID, typ string, args interface{}) (en.ICondition, 
 	return &Condition{
 		uuid: uuid,
 		typ:  typ,
+		not:  not,
 		args: args,
 		pass: pass,
 	}, nil
 }
 
-func (c *Condition) Type() string {
+func (c *Condition) GetUUID() uuid.UUID {
+	return c.uuid
+}
+
+func (c *Condition) GetType() string {
 	return c.typ
 }
 
-func (c *Condition) Pass(engine en.IEngine, state en.IState) (bool, error) {
+func (c *Condition) GetArgs() interface{} {
+	return c.args
+}
+
+func (c *Condition) Pass(engine en.IEngine, state en.IState, event ...en.IEvent) (bool, error) {
 	eng, ok := engine.(*en.Engine)
 	if !ok {
 		return false, errors.ErrInterfaceConversion
@@ -41,7 +51,14 @@ func (c *Condition) Pass(engine en.IEngine, state en.IState) (bool, error) {
 	if !ok {
 		return false, errors.ErrInterfaceConversion
 	}
-	return c.pass(eng, sta, c.args)
+	pass, err := c.pass(eng, sta, c.args, event...)
+	if err != nil {
+		return false, errors.Wrap(err)
+	}
+	if c.not {
+		return !pass, nil
+	}
+	return pass, nil
 }
 
 func SliceToConditions(conditions []*Condition) en.Conditions {

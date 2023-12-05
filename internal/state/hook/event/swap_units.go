@@ -34,5 +34,10 @@ func SwapUnitsAffect(engine *en.Engine, state *st.State, args interface{}, targe
 	unitB := state.Board.XYs[bX][bY].Unit
 	state.Board.XYs[aX][aY].Unit = unitB
 	state.Board.XYs[bX][bY].Unit = unitA
+
+	// friends/enemies trait check
+	FriendsTraitCheck(engine, state)
+	EnemiesTraitCheck(engine, state)
+
 	return nil
 }

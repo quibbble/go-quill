@@ -1,6 +1,6 @@
 ID: U0005
 Name: Galosan Armorer
-Description: ''
+Description: 'Adjacent friendly 'Units' gain +1 health.'
 Cost: 3
 TargetReqs:
 - Type: EmptyTile

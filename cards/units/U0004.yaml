@@ -1,6 +1,6 @@
 ID: U0004
 Name: Galosan Forger
-Description: ''
+Description: 'Adjacent friendly 'Units' gain +1 attack.'
 Cost: 3
 TargetReqs:
 - Type: EmptyTile

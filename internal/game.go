@@ -3,7 +3,6 @@ package game
 import (
 	"math/rand"
 
-	"github.com/quibbble/go-quill/cards"
 	en "github.com/quibbble/go-quill/internal/engine"
 	st "github.com/quibbble/go-quill/internal/state"
 	cd "github.com/quibbble/go-quill/internal/state/card"
@@ -13,6 +12,7 @@ import (
 	cn "github.com/quibbble/go-quill/internal/state/hook/condition"
 	ev "github.com/quibbble/go-quill/internal/state/hook/event"
 	tg "github.com/quibbble/go-quill/internal/state/target"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -23,7 +23,7 @@ var (
 
 var build = func(gen *uuid.Gen, id string, player uuid.UUID) (st.ICard, error) {
 	if len(id) == 0 {
-		return nil, cards.ErrInvalidCardID
+		return nil, parse.ErrInvalidCardID
 	}
 	builders := &cd.Builders{
 		BuildCondition: cn.NewCondition,
@@ -41,7 +41,7 @@ var build = func(gen *uuid.Gen, id string, player uuid.UUID) (st.ICard, error) {
 	case 'U':
 		return cd.NewUnitCard(builders, id, player)
 	}
-	return nil, cards.ErrInvalidCardID
+	return nil, parse.ErrInvalidCardID
 }
 
 type Game struct {

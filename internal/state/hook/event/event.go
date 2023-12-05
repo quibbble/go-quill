@@ -38,8 +38,16 @@ func NewEvent(uuid uuid.UUID, typ string, args interface{}) (en.IEvent, error) {
 	}, nil
 }
 
-func (e *Event) Type() string {
+func (e *Event) GetUUID() uuid.UUID {
+	return e.uuid
+}
+
+func (e *Event) GetType() string {
 	return e.typ
+}
+
+func (e *Event) GetArgs() interface{} {
+	return e.args
 }
 
 func (e *Event) Affect(engine en.IEngine, state en.IState, targets ...uuid.UUID) error {
