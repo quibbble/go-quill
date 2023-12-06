@@ -1,6 +1,8 @@
 package parse
 
-type ICard interface{}
+type ICard interface {
+	GetID() string
+}
 
 type Card struct {
 	ID          string
@@ -16,6 +18,10 @@ type Card struct {
 	Events []Event
 
 	Traits []Traits
+}
+
+func (c *Card) GetID() string {
+	return c.ID
 }
 
 type ItemCard struct {

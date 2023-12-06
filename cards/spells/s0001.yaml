@@ -1,11 +1,13 @@
 ID: S0001
 Name: Spark
-Description: "Deal 2 'Magic' damage to a 'Creature'."
+Description: "Deal 2 'Magic' damage to a 'Creature' or 'Structure'."
 Cost: 2
 TargetReqs:
 - Type: Unit
   Args:
-    SubType: Creature
+    UnitTypes:
+    - Creature
+    - Structure
 Events:
 - Type: DamageUnit
   Args:

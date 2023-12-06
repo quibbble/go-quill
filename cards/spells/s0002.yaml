@@ -4,6 +4,11 @@ Description: "Deal 1 'Pure' damage to a 'Unit'."
 Cost: 2
 TargetReqs:
 - Type: Unit
+  Args:
+    UnitTypes:
+    - Creature
+    - Structure
+    - Base
 Events:
 - Type: DamageUnit
   Args:

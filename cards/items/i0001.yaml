@@ -1,8 +1,9 @@
 ID: I0001
 Name: Sword
-Description: "Gain two attack."
-Cost: 2
-Traits:
-- Type: AddAttack
+Description: "Gain +2 attack."
+Cost: 1
+HeldTraits:
+- Type: Buff
   Args:
+    Stat: Attack
     Amount: 2

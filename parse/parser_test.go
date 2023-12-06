@@ -13,5 +13,5 @@ func Test_ParseCard(t *testing.T) {
 		t.Fatal(err)
 		t.FailNow()
 	}
-	assert.Equal(t, card.(UnitCard).ID, id)
+	assert.Equal(t, card.GetID(), id)
 }

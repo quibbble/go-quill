@@ -1,6 +1,6 @@
 ID: U0003
-Name: Galosan Archer
-Description: ''
+Name: Archer
+Description: ""
 Cost: 2
 TargetReqs:
 - Type: EmptyTile

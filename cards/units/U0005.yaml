@@ -1,6 +1,6 @@
 ID: U0005
-Name: Galosan Armorer
-Description: 'Adjacent friendly 'Units' gain +1 health.'
+Name: Armorer
+Description: "Adjacent friendly 'Units' gain +1 health."
 Cost: 3
 TargetReqs:
 - Type: EmptyTile
@@ -13,9 +13,15 @@ Movement: 1
 Codex: "00001111"
 Traits:
 - Type: Friends
-  Location: Adjacent
-  Trait:
-    Type: Buff
-    Args:
-      Stat: Health
-      Amount: 1
+  Args:
+    Choose:
+      Type: Adjacent
+      Args:
+        UnitTypes:
+        - Creature
+        - Structure
+    Trait:
+      Type: Buff
+      Args:
+        Stat: Health
+        Amount: 1

@@ -1,6 +1,6 @@
 ID: U0002
 Name: Brave
-Description: ''
+Description: ""
 Cost: 2
 TargetReqs:
 - Type: EmptyTile

@@ -1,10 +1,10 @@
 ID: U0001
 Name: Base
-Description: ''
+Description: ""
 Cost: 1
 TargetReqs:
 - Type: EmptyTile
-Type: Structure
+Type: Base
 DamageType: Physical
 Attack: 0
 Health: 7

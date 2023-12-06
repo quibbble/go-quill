@@ -1,0 +1,23 @@
+ID: S0005
+Name: Surge
+Description: "Target and connected 'Creatures' and 'Structures' take 2 'Magic' damage."
+Cost: 5
+TargetReqs:
+- Type: Unit
+  Args:
+    UnitTypes:
+    - Creature
+    - Structure
+Hooks:
+Events:
+- Type: DamageUnits
+  Args:
+    DamageType: Magic
+    Amount: 2
+    Choose:
+      Type: Connected
+      Args:
+        UnitTypes:
+        - Creature
+        - Structure
+        ConnectionType: Adjacent

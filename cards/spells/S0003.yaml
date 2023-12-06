@@ -5,7 +5,8 @@ Cost: 3
 TargetReqs:
 - Type: Unit
   Args:
-    SubType: Creature
+    UnitTypes:
+    - Creature
 Hooks:
 - When: After
   Type: DamageUnit
