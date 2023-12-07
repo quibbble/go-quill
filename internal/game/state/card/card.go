@@ -1,6 +1,8 @@
 package card
 
 import (
+	"slices"
+
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	"github.com/quibbble/go-quill/parse"
@@ -29,7 +31,7 @@ type Card struct {
 	// Conditions required to play the card
 	Conditions en.Conditions
 	// Target requirements to play the card
-	TargetReqs []en.ITargetReq
+	Targets []en.IChoose
 
 	// Hooks registered on unit play
 	Hooks []en.IHook
@@ -46,7 +48,7 @@ type Builders struct {
 	en.BuildCondition
 	en.BuildEvent
 	en.BuildHook
-	en.BuildTargetReq
+	en.BuildChoose
 	BuildTrait
 	*uuid.Gen
 }
@@ -90,18 +92,30 @@ func NewCard(builders *Builders, id string, player uuid.UUID) (st.ICard, error) 
 		return conditions, nil
 	}
 
+	buildEvents := func(evts []parse.Event) ([]en.IEvent, error) {
+		events := make([]en.IEvent, 0)
+		for _, e := range evts {
+			event, err := builders.BuildEvent(builders.Gen.New(st.EventUUID), e.Type, e.Args)
+			if err != nil {
+				return nil, errors.Wrap(err)
+			}
+			events = append(events, event)
+		}
+		return events, nil
+	}
+
 	conditions, err := buildConditions(crd.Conditions)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
 
-	targetReqs := make([]en.ITargetReq, 0)
-	for _, t := range crd.TargetReqs {
-		targetReq, err := builders.BuildTargetReq(builders.Gen.New(st.TargetReqUUID), t.Type, t.Args)
+	targets := make([]en.IChoose, 0)
+	for _, t := range crd.Targets {
+		target, err := builders.BuildChoose(builders.Gen.New(st.ChooseUUID), t.Type, t.Args)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
-		targetReqs = append(targetReqs, targetReq)
+		targets = append(targets, target)
 	}
 
 	hooks := make([]en.IHook, 0)
@@ -110,7 +124,7 @@ func NewCard(builders *Builders, id string, player uuid.UUID) (st.ICard, error) 
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
-		hookEvent, err := builders.BuildEvent(builders.Gen.New(st.EventUUID), h.Event.Type, h.Event.Args)
+		hookEvents, err := buildEvents(h.Events)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
@@ -118,20 +132,16 @@ func NewCard(builders *Builders, id string, player uuid.UUID) (st.ICard, error) 
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
-		hook, err := builders.BuildHook(builders.Gen.New(st.HookUUID), uuid, h.When, h.Type, hookConditions, hookEvent, hookReuseConditions)
+		hook, err := builders.BuildHook(builders.Gen.New(st.HookUUID), uuid, h.When, h.Type, hookConditions, hookEvents, hookReuseConditions)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
 		hooks = append(hooks, hook)
 	}
 
-	events := make([]en.IEvent, 0)
-	for _, e := range crd.Events {
-		event, err := builders.BuildEvent(builders.Gen.New(st.EventUUID), e.Type, e.Args)
-		if err != nil {
-			return nil, errors.Wrap(err)
-		}
-		events = append(events, event)
+	events, err := buildEvents(crd.Events)
+	if err != nil {
+		return nil, errors.Wrap(err)
 	}
 
 	traits := make([]st.ITrait, 0)
@@ -149,7 +159,7 @@ func NewCard(builders *Builders, id string, player uuid.UUID) (st.ICard, error) 
 		Player:     player,
 		Cost:       crd.Cost,
 		Conditions: conditions,
-		TargetReqs: targetReqs,
+		Targets:    targets,
 		Hooks:      hooks,
 		Events:     events,
 		Traits:     traits,
@@ -225,19 +235,27 @@ func (c *Card) Playable(engine en.IEngine, state en.IState) (bool, error) {
 	return c.Conditions.Pass(engine, state, nil)
 }
 
-func (c *Card) ValidTargets(engine en.IEngine, state en.IState, targets ...uuid.UUID) (bool, error) {
-	if len(targets) != len(c.TargetReqs) {
-		return false, nil
+func (c *Card) NextTargets(engine en.IEngine, state en.IState, targets ...uuid.UUID) ([]uuid.UUID, error) {
+	if len(targets) > len(c.Targets) {
+		return nil, errors.ErrIndexOutOfBounds
 	}
-	pass := true
-	for i, req := range c.TargetReqs {
-		p, err := req.Validate(engine, state, targets[i], targets[:i]...)
+	last := -1
+	for i, target := range targets {
+		choices, err := c.Targets[i].Retrieve(engine, state)
 		if err != nil {
-			return false, errors.Wrap(err)
+			return nil, errors.Wrap(err)
 		}
-		pass = p && pass
+		if !slices.Contains(choices, target) {
+			return nil, errors.Errorf("'%s' not a valid target", target)
+		}
+		last = i
 	}
-	return pass, nil
+	// all targets are valid and card may be played with target list
+	if last+1 == len(c.Targets) {
+		return []uuid.UUID{}, nil
+	}
+	// get the next set of valid targets in the target chain
+	return c.Targets[last+1].Retrieve(engine, state)
 }
 
 func (c *Card) GetTraits(typ string) []st.ITrait {

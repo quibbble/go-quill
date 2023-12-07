@@ -6,17 +6,6 @@ import (
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
-const baseID = "U0001"
-
-type RawChoose struct {
-	Type string
-	Args interface{}
-}
-
-type IChoose interface {
-	Retrieve(engine en.IEngine, state en.IState, targets ...uuid.UUID) ([]uuid.UUID, error)
-}
-
 type Choose struct {
 	uuid uuid.UUID
 
@@ -25,7 +14,7 @@ type Choose struct {
 	retrieve func(engine en.IEngine, state en.IState, args interface{}, targets ...uuid.UUID) ([]uuid.UUID, error)
 }
 
-func NewChoose(uuid uuid.UUID, typ string, args interface{}) (IChoose, error) {
+func NewChoose(uuid uuid.UUID, typ string, args interface{}) (en.IChoose, error) {
 	retrieve, ok := ChooseMap[typ]
 	if !ok {
 		return nil, errors.ErrMissingMapKey

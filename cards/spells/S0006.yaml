@@ -1,0 +1,18 @@
+ID: S0006
+Name: Tunnel
+Description: "Swap the position of two 'Creatures' or 'Structures'."
+Cost: 2
+Targets:
+- Type: Units
+  Args:
+    Types:
+    - Creature
+    - Structure
+- Type: Units
+  Args:
+    Types:
+    - Creature
+    - Structure
+Hooks:
+Events:
+# TODO

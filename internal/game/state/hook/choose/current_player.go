@@ -6,10 +6,10 @@ import (
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
-const PlayerTurnChoice = "PlayerTurn"
+const CurrentPlayerChoice = "CurrentPlayer"
 
-type PlayerTurnArgs struct{}
+type CurrentPlayerArgs struct{}
 
-func RetrievePlayerTurn(engine en.IEngine, state en.IState, args interface{}, targets ...uuid.UUID) ([]uuid.UUID, error) {
+func RetrieveCurrentPlayer(engine en.IEngine, state en.IState, args interface{}, targets ...uuid.UUID) ([]uuid.UUID, error) {
 	return []uuid.UUID{state.(*st.State).GetTurn()}, nil
 }

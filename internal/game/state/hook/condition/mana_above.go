@@ -10,23 +10,23 @@ import (
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
-const UnitMissingCondition = "UnitMissing"
+const ManaAboveCondition = "ManaAbove"
 
-type UnitMissingArgs struct {
-	ChooseUnit parse.Choose
+type ManaAboveArgs struct {
+	ChoosePlayer parse.Choose
+	Amount       int
 }
 
-func PassUnitMissing(engine *en.Engine, state *st.State, args interface{}, event en.IEvent, targets ...uuid.UUID) (bool, error) {
-	var p UnitMissingArgs
+func PassManaAbove(engine *en.Engine, state *st.State, args interface{}, event en.IEvent, targets ...uuid.UUID) (bool, error) {
+	var p ManaAboveArgs
 	if err := mapstructure.Decode(args, &p); err != nil {
 		return false, errors.ErrInterfaceConversion
 	}
 
-	unitChoice, err := ev.GetUnitChoice(engine, state, p.ChooseUnit, targets...)
+	playerChoice, err := ev.GetPlayerChoice(engine, state, p.ChoosePlayer, targets...)
 	if err != nil {
 		return false, errors.Wrap(err)
 	}
 
-	_, _, err = state.Board.GetUnitXY(unitChoice)
-	return err != nil, nil
+	return state.Mana[playerChoice].Amount > p.Amount, nil
 }

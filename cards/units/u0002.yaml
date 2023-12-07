@@ -2,8 +2,8 @@ ID: U0002
 Name: Brave
 Description: ""
 Cost: 2
-TargetReqs:
-- Type: EmptyTile
+Conditions:
+Targets: # SET BY PARSER
 Type: Creature
 DamageType: Physical
 Attack: 2

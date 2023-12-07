@@ -34,7 +34,7 @@ func Test_U0005(t *testing.T) {
 	assert.Equal(t, u0002Health+1, game.Board.XYs[x+1][y].Unit.(*cd.UnitCard).Health)
 
 	// should move unit and update friends traits
-	if err := game.MoveUnit(tests.Player1, uuids[0], x+1, y+1); err != nil {
+	if err := game.MoveUnitXY(tests.Player1, uuids[0], x+1, y+1); err != nil {
 		t.Fatal(err)
 	}
 	assert.Equal(t, u0002Health, game.Board.XYs[x][y-1].Unit.(*cd.UnitCard).Health)

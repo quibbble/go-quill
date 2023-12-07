@@ -8,10 +8,10 @@ import (
 
 // Choices finds the intersection of all listed Choose
 type Choices struct {
-	Choices []IChoose
+	Choices []en.IChoose
 }
 
-func NewChoices(choices ...IChoose) IChoose {
+func NewChoices(choices ...en.IChoose) en.IChoose {
 	return &Choices{
 		Choices: choices,
 	}

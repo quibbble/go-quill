@@ -5,6 +5,7 @@ import (
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -14,8 +15,8 @@ const (
 )
 
 type HealUnitsArgs struct {
-	Amount int
-	Choose ch.RawChoose
+	Amount      int
+	ChooseUnits parse.Choose
 }
 
 func HealUnitsAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
@@ -23,7 +24,7 @@ func HealUnitsAffect(engine *en.Engine, state *st.State, args interface{}, targe
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.Choose.Type, a.Choose.Args)
+	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.ChooseUnits.Type, a.ChooseUnits.Args)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -40,7 +41,7 @@ func HealUnitsAffect(engine *en.Engine, state *st.State, args interface{}, targe
 			typ:  HealUnitEvent,
 			args: &HealUnitArgs{
 				Amount: a.Amount,
-				Choose: ch.RawChoose{
+				ChooseUnit: parse.Choose{
 					Type: ch.UUIDChoice,
 					Args: &ch.UUIDArgs{
 						UUID: choice,

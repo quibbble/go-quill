@@ -14,7 +14,7 @@ import (
 const UnitsChoice = "Units"
 
 type UnitsArgs struct {
-	UnitTypes []string
+	Types []string
 }
 
 func RetrieveUnits(engine en.IEngine, state en.IState, args interface{}, targets ...uuid.UUID) ([]uuid.UUID, error) {
@@ -26,7 +26,7 @@ func RetrieveUnits(engine en.IEngine, state en.IState, args interface{}, targets
 	for _, tile := range state.(*st.State).Board.UUIDs {
 		if tile.Unit != nil {
 			unit := tile.Unit.(*cd.UnitCard)
-			if len(c.UnitTypes) == 0 || slices.Contains(c.UnitTypes, unit.Type) {
+			if len(c.Types) == 0 || slices.Contains(c.Types, unit.Type) {
 				units = append(units, unit.UUID)
 			}
 		}

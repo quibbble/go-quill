@@ -26,17 +26,17 @@ func Test_U0002(t *testing.T) {
 	assert.Equal(t, mana, game.Mana[tests.Player1].Amount)
 
 	// should fail codex check
-	err = game.MoveUnit(tests.Player1, uuids[0], x+1, y)
+	err = game.MoveUnitXY(tests.Player1, uuids[0], x+1, y)
 	assert.True(t, err != nil)
 
 	// should move unit
 	y += 1
-	if err := game.MoveUnit(tests.Player1, uuids[0], x, y); err != nil {
+	if err := game.MoveUnitXY(tests.Player1, uuids[0], x, y); err != nil {
 		t.Fatal(err)
 	}
 	assert.Equal(t, game.Board.XYs[x][y].Unit.(*cd.UnitCard).Movement, 0)
 
 	// should fail movement check
-	err = game.MoveUnit(tests.Player1, uuids[0], x, y+1)
+	err = game.MoveUnitXY(tests.Player1, uuids[0], x, y+1)
 	assert.True(t, err != nil)
 }

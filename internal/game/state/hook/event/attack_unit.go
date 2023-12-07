@@ -18,8 +18,8 @@ const (
 )
 
 type AttackUnitArgs struct {
-	X, Y   int
-	Choose ch.RawChoose
+	ChooseAttacker parse.Choose
+	ChooseDefender parse.Choose
 }
 
 func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
@@ -27,38 +27,35 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.Choose.Type, a.Choose.Args)
+	attackerChoice, err := GetUnitChoice(engine, state, a.ChooseAttacker, targets...)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	choices, err := choose.Retrieve(engine, state, targets...)
+	aX, aY, err := state.Board.GetUnitXY(attackerChoice)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	if len(choices) != 1 {
-		return errors.ErrInvalidSliceLength
-	}
-	if choices[0].Type() != st.UnitUUID {
-		return st.ErrInvalidUUIDType(choices[0], st.UnitUUID)
-	}
-	x, y, err := state.Board.GetUnitXY(choices[0])
+	attacker := state.Board.XYs[aX][aY].Unit.(*cd.UnitCard)
+
+	defenderChoice, err := GetUnitChoice(engine, state, a.ChooseDefender, targets...)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	attacker := state.Board.XYs[x][y].Unit.(*cd.UnitCard)
+	dX, dY, err := state.Board.GetUnitXY(defenderChoice)
+	if err != nil {
+		return errors.Wrap(err)
+	}
+	defender := state.Board.XYs[dX][dY].Unit.(*cd.UnitCard)
+
 	if attacker.Cooldown != 0 {
 		return errors.Errorf("unit '%s' cannot attack due to cooldown", attacker.UUID)
 	}
-	if attacker.Range <= 0 && !attacker.CheckCodex(x, y, a.X, a.Y) {
+	if attacker.Range <= 0 && !attacker.CheckCodex(aX, aY, dX, dY) {
 		return errors.Errorf("unit '%s' cannot attack due to failed codex check", attacker.UUID)
 	}
-	if attacker.Range > 0 && !attacker.CheckRange(x, y, a.X, a.Y) {
+	if attacker.Range > 0 && !attacker.CheckRange(aX, aY, dX, dY) {
 		return errors.Errorf("unit '%s' cannot attack due to failed range check", attacker.UUID)
 	}
-	if state.Board.XYs[a.X][a.Y].Unit == nil {
-		return errors.Errorf("unit '%s' cannot attack at (%d,%d) as no unit exists", attacker.UUID, a.X, a.Y)
-	}
-	defender := state.Board.XYs[a.X][a.Y].Unit.(*cd.UnitCard)
 
 	// thief trait check
 	if len(attacker.GetTraits(tr.ThiefTrait)) > 0 && len(defender.Items) > 0 {
@@ -71,13 +68,13 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 				uuid: state.Gen.New(st.EventUUID),
 				typ:  RemoveItemFromUnitEvent,
 				args: &RemoveItemFromUnitArgs{
-					ChooseItem: ch.RawChoose{
+					ChooseItem: parse.Choose{
 						Type: ch.UUIDChoice,
 						Args: &ch.UUIDArgs{
 							UUID: item.UUID,
 						},
 					},
-					ChooseUnit: ch.RawChoose{
+					ChooseUnit: parse.Choose{
 						Type: ch.UUIDChoice,
 						Args: &ch.UUIDArgs{
 							UUID: defender.UUID,
@@ -90,13 +87,13 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 				uuid: state.Gen.New(st.EventUUID),
 				typ:  AddItemToUnitEvent,
 				args: &AddItemToUnitArgs{
-					ChooseItem: ch.RawChoose{
+					ChooseItem: parse.Choose{
 						Type: ch.UUIDChoice,
 						Args: &ch.UUIDArgs{
 							UUID: item.UUID,
 						},
 					},
-					ChooseUnit: ch.RawChoose{
+					ChooseUnit: parse.Choose{
 						Type: ch.UUIDChoice,
 						Args: &ch.UUIDArgs{
 							UUID: attacker.UUID,
@@ -119,8 +116,8 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 	// lobber trait check
 	if (len(attacker.GetTraits(tr.LobberTrait)) > 0) && attacker.Range > 0 {
 		choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), ch.CodexChoice, &ch.CodexArgs{
-			UnitTypes: []string{cd.CreatureUnit, cd.StructureUnit},
-			Codex:     attacker.Codex,
+			Types: []string{cd.CreatureUnit, cd.StructureUnit},
+			Codex: attacker.Codex,
 		})
 		if err != nil {
 			return errors.Wrap(err)
@@ -151,7 +148,7 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 				args: &DamageUnitArgs{
 					DamageType: attacker.DamageType,
 					Amount:     attackerDamage,
-					Choose: ch.RawChoose{
+					ChooseUnit: parse.Choose{
 						Type: ch.UUIDChoice,
 						Args: &ch.UUIDArgs{
 							UUID: defender.UUID,
@@ -168,7 +165,7 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 					uuid: state.Gen.New(st.EventUUID),
 					typ:  KillUnitEvent,
 					args: &KillUnitArgs{
-						Choose: ch.RawChoose{
+						ChooseUnit: parse.Choose{
 							Type: ch.UUIDChoice,
 							Args: &ch.UUIDArgs{
 								UUID: defender.UUID,
@@ -204,7 +201,7 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 					args := gift.GetArgs().(tr.GiftArgs)
 					event, err := NewEvent(state.Gen.New(st.EventUUID), AddTraitToCard, &AddTraitToCardArgs{
 						Trait: args.Trait,
-						Choose: ch.RawChoose{
+						ChooseCard: parse.Choose{
 							Type: ch.UUIDChoice,
 							Args: &ch.UUIDArgs{
 								UUID: defender.UUID,
@@ -228,7 +225,7 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 				args: &DamageUnitArgs{
 					DamageType: defender.DamageType,
 					Amount:     defenderDamage,
-					Choose: ch.RawChoose{
+					ChooseUnit: parse.Choose{
 						Type: ch.UUIDChoice,
 						Args: &ch.UUIDArgs{
 							UUID: attacker.UUID,

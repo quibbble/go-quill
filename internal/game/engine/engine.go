@@ -10,6 +10,7 @@ type IEngine interface {
 	Register(hook IHook)
 	DeRegister(hook IHook)
 	Events() []IEvent
+	Hooks() []IHook
 }
 
 // Engine handles the core game loop logic
@@ -44,8 +45,10 @@ func (e *Engine) Do(event IEvent, state IState, targets ...uuid.UUID) error {
 				return errors.Wrap(err)
 			}
 			if pass {
-				if err := e.Do(hook.Event(), state, hook.GetCardUUID()); err != nil {
-					return errors.Wrap(err)
+				for _, event := range hook.Events() {
+					if err := e.Do(event, state, hook.GetCardUUID()); err != nil {
+						return errors.Wrap(err)
+					}
 				}
 			}
 
@@ -72,8 +75,10 @@ func (e *Engine) Do(event IEvent, state IState, targets ...uuid.UUID) error {
 				return errors.Wrap(err)
 			}
 			if pass {
-				if err := e.Do(hook.Event(), state, hook.GetCardUUID()); err != nil {
-					return errors.Wrap(err)
+				for _, event := range hook.Events() {
+					if err := e.Do(event, state, hook.GetCardUUID()); err != nil {
+						return errors.Wrap(err)
+					}
 				}
 			}
 
@@ -104,4 +109,8 @@ func (e *Engine) DeRegister(hook IHook) {
 
 func (e *Engine) Events() []IEvent {
 	return e.events
+}
+
+func (e *Engine) Hooks() []IHook {
+	return e.hooks
 }

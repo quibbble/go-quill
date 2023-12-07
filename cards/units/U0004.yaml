@@ -2,8 +2,8 @@ ID: U0004
 Name: Forger
 Description: "Adjacent friendly 'Units' gain +1 attack."
 Cost: 3
-TargetReqs:
-- Type: EmptyTile
+Conditions:
+Targets: # SET BY PARSER
 Type: Creature
 DamageType: Physical
 Attack: 1
@@ -14,10 +14,10 @@ Codex: "00001111"
 Traits:
 - Type: Friends
   Args:
-    Choose:
+    ChooseUnits:
       Type: Adjacent
       Args:
-        UnitTypes:
+        Types:
         - Creature
         - Structure
     Trait:

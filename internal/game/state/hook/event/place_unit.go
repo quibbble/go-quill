@@ -6,7 +6,7 @@ import (
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
 	tr "github.com/quibbble/go-quill/internal/game/state/card/trait"
-	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -16,9 +16,9 @@ const (
 )
 
 type PlaceUnitArgs struct {
-	X, Y   int
-	Player uuid.UUID
-	Choose ch.RawChoose
+	ChoosePlayer parse.Choose
+	ChooseUnit   parse.Choose
+	ChooseTile   parse.Choose
 }
 
 func PlaceUnitAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
@@ -26,36 +26,41 @@ func PlaceUnitAffect(engine *en.Engine, state *st.State, args interface{}, targe
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.Choose.Type, a.Choose.Args)
+
+	playerChoice, err := GetPlayerChoice(engine, state, a.ChoosePlayer, targets...)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	choices, err := choose.Retrieve(engine, state, targets...)
+	unitChoice, err := GetUnitChoice(engine, state, a.ChooseUnit, targets...)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	if len(choices) != 1 {
-		return errors.ErrInvalidSliceLength
+	tileChoice, err := GetTileChoice(engine, state, a.ChooseTile, targets...)
+	if err != nil {
+		return errors.Wrap(err)
 	}
-	if choices[0].Type() != st.UnitUUID {
-		return st.ErrInvalidUUIDType(choices[0], st.UnitUUID)
-	}
-	card, err := state.Hand[a.Player].GetCard(choices[0])
+
+	card, err := state.Hand[playerChoice].GetCard(unitChoice)
 	if err != nil {
 		return errors.Wrap(err)
 	}
 	unit := card.(*cd.UnitCard)
-	if state.Board.XYs[a.X][a.Y].Unit != nil {
-		return errors.Errorf("unit '%s' cannot be placed on a full tile", unit.UUID)
-	}
-	min, max := state.Board.GetPlayableRowRange(a.Player)
-	if a.Y < min || a.Y > max {
-		return errors.Errorf("unit '%s' must be placed within rows %d to %d", unit.UUID, min, max)
-	}
-	if err := state.Hand[a.Player].RemoveCard(choices[0]); err != nil {
+
+	tX, tY, err := state.Board.GetTileXY(tileChoice)
+	if err != nil {
 		return errors.Wrap(err)
 	}
-	state.Board.XYs[a.X][a.Y].Unit = unit
+	if state.Board.XYs[tX][tY].Unit != nil {
+		return errors.Errorf("unit '%s' cannot be placed on a full tile", unit.UUID)
+	}
+	min, max := state.Board.GetPlayableRowRange(playerChoice)
+	if tY < min || tY > max {
+		return errors.Errorf("unit '%s' must be placed within rows %d to %d", unit.UUID, min, max)
+	}
+	if err := state.Hand[playerChoice].RemoveCard(unitChoice); err != nil {
+		return errors.Wrap(err)
+	}
+	state.Board.XYs[tX][tY].Unit = unit
 
 	// battle cry trait check
 	battleCrys := unit.GetTraits(tr.BattleCryTrait)

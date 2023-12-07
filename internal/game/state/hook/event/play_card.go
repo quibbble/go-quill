@@ -6,6 +6,7 @@ import (
 	st "github.com/quibbble/go-quill/internal/game/state"
 	tr "github.com/quibbble/go-quill/internal/game/state/card/trait"
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/maths"
 	"github.com/quibbble/go-quill/pkg/uuid"
@@ -16,8 +17,8 @@ const (
 )
 
 type PlayCardArgs struct {
-	Player uuid.UUID
-	Choose ch.RawChoose
+	ChoosePlayer parse.Choose
+	ChooseCard   parse.Choose
 }
 
 func PlayCardAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
@@ -25,25 +26,35 @@ func PlayCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.Choose.Type, a.Choose.Args)
+
+	playerChoice, err := GetPlayerChoice(engine, state, a.ChoosePlayer, targets...)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	choices, err := choose.Retrieve(engine, state, targets...)
-	if err != nil {
-		return errors.Wrap(err)
-	}
-	if len(choices) != 1 {
-		return errors.ErrInvalidSliceLength
-	}
-	card, err := state.Hand[a.Player].GetCard(choices[0])
+	cardChoice, err := GetChoice(engine, state, a.ChooseCard, targets...)
 	if err != nil {
 		return errors.Wrap(err)
 	}
 
+	card, err := state.Hand[playerChoice].GetCard(cardChoice)
+	if err != nil {
+		return errors.Wrap(err)
+	}
+	playable, err := card.Playable(engine, state)
+	if err != nil {
+		return errors.Wrap(err)
+	}
+	next, err := card.NextTargets(engine, state, targets...)
+	if err != nil {
+		return errors.Wrap(err)
+	}
+	if !playable || len(next) != 0 {
+		return errors.Errorf("card cannot be played")
+	}
+
 	// drain mana equal to card cost
-	if state.Mana[a.Player].Amount < card.GetCost() {
-		return errors.Errorf("player '%s' does not have enough mana to play '%s'", a.Player, card.GetUUID())
+	if state.Mana[playerChoice].Amount < card.GetCost() {
+		return errors.Errorf("player '%s' does not have enough mana to play '%s'", playerChoice, card.GetUUID())
 	}
 
 	// purity trait check
@@ -63,7 +74,10 @@ func PlayCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 		uuid: state.Gen.New(st.EventUUID),
 		typ:  DrainManaEvent,
 		args: &DrainManaArgs{
-			Player: a.Player,
+			ChoosePlayer: parse.Choose{
+				Type: ch.CurrentPlayerChoice,
+				Args: &ch.CurrentPlayerArgs{},
+			},
 			Amount: maths.MaxInt(card.GetCost(), 0),
 		},
 		affect: DrainManaAffect,
@@ -87,14 +101,19 @@ func PlayCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 			uuid: state.Gen.New(st.EventUUID),
 			typ:  AddItemToUnitEvent,
 			args: &AddItemToUnitArgs{
-				Player: a.Player,
-				ChooseItem: ch.RawChoose{
+				ChoosePlayer: parse.Choose{
+					Type: ch.UUIDChoice,
+					Args: &ch.UUIDArgs{
+						UUID: playerChoice,
+					},
+				},
+				ChooseItem: parse.Choose{
 					Type: ch.UUIDChoice,
 					Args: &ch.UUIDArgs{
 						UUID: card.GetUUID(),
 					},
 				},
-				ChooseUnit: ch.RawChoose{
+				ChooseUnit: parse.Choose{
 					Type: ch.UUIDChoice,
 					Args: &ch.UUIDArgs{
 						UUID: targets[0],
@@ -108,8 +127,11 @@ func PlayCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 			uuid: state.Gen.New(st.EventUUID),
 			typ:  DiscardCardEvent,
 			args: &DiscardCardArgs{
-				Player: a.Player,
-				Choose: ch.RawChoose{
+				ChoosePlayer: parse.Choose{
+					Type: ch.CurrentPlayerChoice,
+					Args: &ch.CurrentPlayerArgs{},
+				},
+				ChooseCard: parse.Choose{
 					Type: ch.UUIDChoice,
 					Args: &ch.UUIDArgs{
 						UUID: card.GetUUID(),
@@ -122,21 +144,24 @@ func PlayCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 		if len(targets) <= 0 {
 			return errors.ErrIndexOutOfBounds
 		}
-		x, y, err := state.Board.GetTileXY(targets[0])
-		if err != nil {
-			return errors.Wrap(err)
-		}
 		event = &Event{
 			uuid: state.Gen.New(st.EventUUID),
 			typ:  PlaceUnitEvent,
 			args: &PlaceUnitArgs{
-				X:      x,
-				Y:      y,
-				Player: a.Player,
-				Choose: ch.RawChoose{
+				ChoosePlayer: parse.Choose{
+					Type: ch.CurrentPlayerChoice,
+					Args: &ch.CurrentPlayerArgs{},
+				},
+				ChooseUnit: parse.Choose{
 					Type: ch.UUIDChoice,
 					Args: &ch.UUIDArgs{
 						UUID: card.GetUUID(),
+					},
+				},
+				ChooseTile: parse.Choose{
+					Type: ch.UUIDChoice,
+					Args: &ch.UUIDArgs{
+						UUID: targets[0],
 					},
 				},
 			},

@@ -11,18 +11,18 @@ type Hook struct {
 	when       en.When
 	typ        string
 	conditions en.Conditions
-	event      en.IEvent
+	events     []en.IEvent
 	reuse      en.Conditions
 }
 
-func NewHook(uuid, cardUUID uuid.UUID, when, typ string, conditions []en.ICondition, event en.IEvent, reuse []en.ICondition) (en.IHook, error) {
+func NewHook(uuid, cardUUID uuid.UUID, when, typ string, conditions []en.ICondition, events []en.IEvent, reuse []en.ICondition) (en.IHook, error) {
 	return &Hook{
 		uuid:       uuid,
 		cardUUID:   cardUUID,
 		when:       en.When(when),
 		typ:        typ,
 		conditions: conditions,
-		event:      event,
+		events:     events,
 		reuse:      reuse,
 	}, nil
 }
@@ -40,15 +40,15 @@ func (h *Hook) GetType() string {
 }
 
 func (h *Hook) Trigger(when en.When, typ string) bool {
-	return h.when == when && h.event.GetType() == typ
+	return h.when == when && h.typ == typ
 }
 
 func (h *Hook) Pass(engine en.IEngine, state en.IState, event en.IEvent, targets ...uuid.UUID) (bool, error) {
 	return h.conditions.Pass(engine, state, event, targets...)
 }
 
-func (h *Hook) Event() en.IEvent {
-	return h.event
+func (h *Hook) Events() []en.IEvent {
+	return h.events
 }
 
 func (h *Hook) Reuse(engine en.IEngine, state en.IState, event en.IEvent, targets ...uuid.UUID) (bool, error) {

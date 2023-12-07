@@ -16,7 +16,7 @@ const AdjacentChoice = "Adjacent"
 var adjacentXYs = [][]int{{-1, -1}, {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}}
 
 type AdjacentArgs struct {
-	UnitTypes []string
+	Types []string
 }
 
 func RetrieveAdjacent(engine en.IEngine, state en.IState, args interface{}, targets ...uuid.UUID) ([]uuid.UUID, error) {
@@ -39,9 +39,11 @@ func RetrieveAdjacent(engine en.IEngine, state en.IState, args interface{}, targ
 		}
 
 		tile := state.(*st.State).Board.XYs[x][y]
-		if tile.Unit != nil {
+		if slices.Contains(c.Types, "Tile") {
+			adjacent = append(adjacent, tile.UUID)
+		} else if tile.Unit != nil {
 			unit := tile.Unit.(*cd.UnitCard)
-			if len(c.UnitTypes) == 0 || slices.Contains(c.UnitTypes, unit.Type) {
+			if len(c.Types) == 0 || slices.Contains(c.Types, unit.Type) {
 				adjacent = append(adjacent, unit.UUID)
 			}
 		}

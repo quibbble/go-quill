@@ -1,12 +1,11 @@
 package trait
 
+import "github.com/quibbble/go-quill/parse"
+
 const (
 	EnrageTrait = "Enrage"
 )
 
 type EnrageArgs struct {
-	Event struct {
-		Type string
-		Args interface{}
-	}
+	Event parse.Event
 }

@@ -1,19 +1,16 @@
 package trait
 
-import "github.com/quibbble/go-quill/pkg/uuid"
+import (
+	"github.com/quibbble/go-quill/parse"
+	"github.com/quibbble/go-quill/pkg/uuid"
+)
 
 const (
 	FriendsTrait = "Friends"
 )
 
 type FriendsArgs struct {
-	Choose struct {
-		Type string
-		Args interface{}
-	}
-	Trait struct {
-		Type string
-		Args interface{}
-	}
-	Current []uuid.UUID
+	ChooseUnits parse.Choose
+	Trait       parse.Trait
+	Current     []uuid.UUID
 }

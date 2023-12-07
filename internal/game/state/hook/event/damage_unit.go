@@ -8,6 +8,7 @@ import (
 	tr "github.com/quibbble/go-quill/internal/game/state/card/trait"
 	dg "github.com/quibbble/go-quill/internal/game/state/damage"
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -19,7 +20,7 @@ const (
 type DamageUnitArgs struct {
 	DamageType string
 	Amount     int
-	Choose     ch.RawChoose
+	ChooseUnit parse.Choose
 }
 
 func DamageUnitAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
@@ -27,21 +28,13 @@ func DamageUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.Choose.Type, a.Choose.Args)
+
+	unitChoice, err := GetUnitChoice(engine, state, a.ChooseUnit, targets...)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	choices, err := choose.Retrieve(engine, state, targets...)
-	if err != nil {
-		return errors.Wrap(err)
-	}
-	if len(choices) != 1 {
-		return errors.ErrInvalidSliceLength
-	}
-	if choices[0].Type() != st.UnitUUID {
-		return st.ErrInvalidUUIDType(choices[0], st.UnitUUID)
-	}
-	x, y, err := state.Board.GetUnitXY(choices[0])
+
+	x, y, err := state.Board.GetUnitXY(unitChoice)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -57,7 +50,7 @@ func DamageUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 			uuid: state.Gen.New(st.EventUUID),
 			typ:  KillUnitEvent,
 			args: &KillUnitArgs{
-				Choose: ch.RawChoose{
+				ChooseUnit: parse.Choose{
 					Type: ch.UUIDChoice,
 					Args: &ch.UUIDArgs{
 						UUID: unit.UUID,

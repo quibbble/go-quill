@@ -8,22 +8,22 @@ import (
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
-const OwnedChoice = "Owned"
+const TilesChoice = "Tiles"
 
-type OwnedArgs struct {
-	Player uuid.UUID
+type TilesArgs struct {
+	Empty bool
 }
 
-func RetrieveOwned(engine en.IEngine, state en.IState, args interface{}, targets ...uuid.UUID) ([]uuid.UUID, error) {
-	var c OwnedArgs
+func RetrieveTiles(engine en.IEngine, state en.IState, args interface{}, targets ...uuid.UUID) ([]uuid.UUID, error) {
+	var c TilesArgs
 	if err := mapstructure.Decode(args, &c); err != nil {
 		return nil, errors.ErrInterfaceConversion
 	}
-	owned := make([]uuid.UUID, 0)
+	tiles := make([]uuid.UUID, 0)
 	for _, tile := range state.(*st.State).Board.UUIDs {
-		if tile.Unit != nil && tile.Unit.GetID() != baseID && tile.Unit.GetPlayer() == c.Player {
-			owned = append(owned, tile.Unit.GetUUID())
+		if (tile.Unit == nil) == c.Empty {
+			tiles = append(tiles, tile.UUID)
 		}
 	}
-	return owned, nil
+	return tiles, nil
 }

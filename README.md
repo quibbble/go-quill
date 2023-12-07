@@ -1,4 +1,5 @@
 # go-quill
 
 ## TODO
-- Valid Targets Selector
+- Spell tests
+- Item tests

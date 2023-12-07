@@ -14,7 +14,7 @@ import (
 func Test_ModifyingTraitArgs(t *testing.T) {
 	gen := uuid.NewGen(rand.New(rand.NewSource(0)))
 	trait, err := NewTrait(gen.New(st.TraitUUID), FriendsTrait, &FriendsArgs{
-		Choose: struct {
+		ChooseUnits: struct {
 			Type string
 			Args interface{}
 		}{

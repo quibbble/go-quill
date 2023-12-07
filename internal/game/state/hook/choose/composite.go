@@ -4,6 +4,7 @@ import (
 	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -11,7 +12,7 @@ import (
 const CompositeChoice = "Composite"
 
 type CompositeArgs struct {
-	Choices []RawChoose
+	Choices []parse.Choose
 }
 
 func RetrieveComposite(engine en.IEngine, state en.IState, args interface{}, targets ...uuid.UUID) ([]uuid.UUID, error) {
@@ -19,7 +20,7 @@ func RetrieveComposite(engine en.IEngine, state en.IState, args interface{}, tar
 	if err := mapstructure.Decode(args, &c); err != nil {
 		return nil, errors.ErrInterfaceConversion
 	}
-	choices := make([]IChoose, 0)
+	choices := make([]en.IChoose, 0)
 	for _, ch := range c.Choices {
 		choose, err := NewChoose(state.(*st.State).Gen.New(st.ChooseUUID), ch.Type, ch.Args)
 		if err != nil {

@@ -2,8 +2,8 @@ ID: U0001
 Name: Base
 Description: ""
 Cost: 1
-TargetReqs:
-- Type: EmptyTile
+Conditions:
+Targets: # SET BY PARSER
 Type: Base
 DamageType: Physical
 Attack: 0

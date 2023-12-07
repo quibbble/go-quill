@@ -5,6 +5,7 @@ import (
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -17,9 +18,9 @@ const (
 )
 
 type SackCardArgs struct {
-	Player uuid.UUID
-	Option string
-	Choose ch.RawChoose
+	ChoosePlayer parse.Choose
+	Option       string
+	ChooseCard   parse.Choose
 }
 
 func SackCardAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
@@ -27,16 +28,10 @@ func SackCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.Choose.Type, a.Choose.Args)
+
+	playerChoice, err := GetPlayerChoice(engine, state, a.ChoosePlayer, targets...)
 	if err != nil {
 		return errors.Wrap(err)
-	}
-	choices, err := choose.Retrieve(engine, state, targets...)
-	if err != nil {
-		return errors.Wrap(err)
-	}
-	if len(choices) != 1 {
-		return errors.ErrInvalidSliceLength
 	}
 
 	events := []*Event{
@@ -44,8 +39,11 @@ func SackCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 			uuid: state.Gen.New(st.EventUUID),
 			typ:  DiscardCardEvent,
 			args: &DiscardCardArgs{
-				Player: a.Player,
-				Choose: a.Choose,
+				ChoosePlayer: parse.Choose{
+					Type: ch.CurrentPlayerChoice,
+					Args: &ch.CurrentPlayerArgs{},
+				},
+				ChooseCard: a.ChooseCard,
 			},
 			affect: DiscardCardAffect,
 		},
@@ -57,7 +55,10 @@ func SackCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 			uuid: state.Gen.New(st.EventUUID),
 			typ:  GainBaseManaEvent,
 			args: &GainBaseManaArgs{
-				Player: a.Player,
+				ChoosePlayer: parse.Choose{
+					Type: ch.CurrentPlayerChoice,
+					Args: &ch.CurrentPlayerArgs{},
+				},
 				Amount: 1,
 			},
 			affect: GainBaseManaAffect,
@@ -65,7 +66,10 @@ func SackCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 			uuid: state.Gen.New(st.EventUUID),
 			typ:  GainManaEvent,
 			args: &GainManaArgs{
-				Player: a.Player,
+				ChoosePlayer: parse.Choose{
+					Type: ch.CurrentPlayerChoice,
+					Args: &ch.CurrentPlayerArgs{},
+				},
 				Amount: 1,
 			},
 			affect: GainManaAffect,
@@ -75,10 +79,10 @@ func SackCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 			uuid: state.Gen.New(st.EventUUID),
 			typ:  DrawCardEvent,
 			args: &DrawCardArgs{
-				Choose: ch.RawChoose{
+				ChoosePlayer: parse.Choose{
 					Type: ch.UUIDChoice,
 					Args: &ch.UUIDArgs{
-						UUID: a.Player,
+						UUID: playerChoice,
 					},
 				},
 			},
@@ -87,10 +91,10 @@ func SackCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 			uuid: state.Gen.New(st.EventUUID),
 			typ:  DrawCardEvent,
 			args: &DrawCardArgs{
-				Choose: ch.RawChoose{
+				ChoosePlayer: parse.Choose{
 					Type: ch.UUIDChoice,
 					Args: &ch.UUIDArgs{
-						UUID: a.Player,
+						UUID: playerChoice,
 					},
 				},
 			},
@@ -106,7 +110,7 @@ func SackCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 		}
 	}
 
-	state.Sacked[a.Player] = true
+	state.Sacked[playerChoice] = true
 
 	return nil
 }

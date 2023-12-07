@@ -2,8 +2,8 @@ ID: U0003
 Name: Archer
 Description: ""
 Cost: 2
-TargetReqs:
-- Type: EmptyTile
+Conditions:
+Targets: # SET BY PARSER
 Type: Creature
 DamageType: Physical
 Attack: 1

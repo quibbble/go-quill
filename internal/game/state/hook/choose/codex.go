@@ -16,8 +16,8 @@ const CodexChoice = "Codex"
 var codexXYs = [][]int{{0, 1}, {0, -1}, {-1, 0}, {1, 0}, {-1, 1}, {1, -1}, {-1, -1}, {1, 1}}
 
 type CodexArgs struct {
-	UnitTypes []string
-	Codex     string
+	Types []string
+	Codex string
 }
 
 func RetrieveCodex(engine en.IEngine, state en.IState, args interface{}, targets ...uuid.UUID) ([]uuid.UUID, error) {
@@ -40,9 +40,11 @@ func RetrieveCodex(engine en.IEngine, state en.IState, args interface{}, targets
 				continue
 			}
 			tile := state.(*st.State).Board.XYs[x][y]
-			if tile.Unit != nil {
+			if slices.Contains(c.Types, "Tile") {
+				codex = append(codex, tile.UUID)
+			} else if tile.Unit != nil {
 				unit := tile.Unit.(*cd.UnitCard)
-				if len(c.UnitTypes) == 0 || slices.Contains(c.UnitTypes, unit.Type) {
+				if len(c.Types) == 0 || slices.Contains(c.Types, unit.Type) {
 					codex = append(codex, unit.UUID)
 				}
 			}

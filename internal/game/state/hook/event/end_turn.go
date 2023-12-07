@@ -7,6 +7,7 @@ import (
 	tr "github.com/quibbble/go-quill/internal/game/state/card/trait"
 	dg "github.com/quibbble/go-quill/internal/game/state/damage"
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -15,8 +16,7 @@ const (
 	EndTurnEvent = "EndTurn"
 )
 
-type EndTurnArgs struct {
-}
+type EndTurnArgs struct{}
 
 func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
 	// poison trait check on player's units
@@ -32,7 +32,7 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 						args: &DamageUnitArgs{
 							DamageType: dg.MagicDamage,
 							Amount:     args.Amount,
-							Choose: ch.RawChoose{
+							ChooseUnit: parse.Choose{
 								Type: ch.UUIDChoice,
 								Args: ch.UUIDArgs{
 									UUID: unit.GetUUID(),
@@ -65,20 +65,23 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 				args: &DamageUnitsArgs{
 					DamageType: dg.PureDamage,
 					Amount:     state.Recycle[player],
-					Choose: ch.RawChoose{
+					ChooseUnits: parse.Choose{
 						Type: ch.CompositeChoice,
 						Args: &ch.CompositeArgs{
-							Choices: []ch.RawChoose{
+							Choices: []parse.Choose{
 								{
-									Type: ch.OwnedChoice,
-									Args: &ch.OwnedArgs{
-										Player: player,
+									Type: ch.OwnedUnitsChoice,
+									Args: &ch.OwnedUnitsArgs{
+										ChoosePlayer: parse.Choose{
+											Type: ch.CurrentPlayerChoice,
+											Args: &ch.CurrentPlayerArgs{},
+										},
 									},
 								},
 								{
 									Type: ch.UnitsChoice,
 									Args: &ch.UnitsArgs{
-										UnitTypes: []string{
+										Types: []string{
 											cd.BaseUnit,
 										},
 									},
@@ -93,7 +96,12 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 				uuid: state.Gen.New(st.EventUUID),
 				typ:  RecycleDeckEvent,
 				args: &RecycleDeckArgs{
-					Player: player,
+					ChoosePlayer: parse.Choose{
+						Type: ch.UUIDChoice,
+						Args: &ch.UUIDArgs{
+							UUID: player,
+						},
+					},
 				},
 				affect: RecycleDeckAffect,
 			},
@@ -112,7 +120,10 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 			uuid: state.Gen.New(st.EventUUID),
 			typ:  GainManaEvent,
 			args: &GainManaArgs{
-				Player: player,
+				ChoosePlayer: parse.Choose{
+					Type: ch.CurrentPlayerChoice,
+					Args: &ch.CurrentPlayerArgs{},
+				},
 				Amount: state.Mana[player].BaseAmount - state.Mana[player].Amount,
 			},
 			affect: GainManaAffect,
@@ -121,20 +132,23 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 			uuid: state.Gen.New(st.EventUUID),
 			typ:  RefreshMovementEvent,
 			args: &RefreshMovementArgs{
-				Choose: ch.RawChoose{
+				ChooseUnits: parse.Choose{
 					Type: ch.CompositeChoice,
 					Args: &ch.CompositeArgs{
-						Choices: []ch.RawChoose{
+						Choices: []parse.Choose{
 							{
-								Type: ch.OwnedChoice,
-								Args: &ch.OwnedArgs{
-									Player: player,
+								Type: ch.OwnedUnitsChoice,
+								Args: &ch.OwnedUnitsArgs{
+									ChoosePlayer: parse.Choose{
+										Type: ch.CurrentPlayerChoice,
+										Args: &ch.CurrentPlayerArgs{},
+									},
 								},
 							},
 							{
 								Type: ch.UnitsChoice,
 								Args: &ch.UnitsArgs{
-									UnitTypes: []string{
+									Types: []string{
 										cd.CreatureUnit,
 									},
 								},
@@ -149,20 +163,23 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 			uuid: state.Gen.New(st.EventUUID),
 			typ:  CooldownEvent,
 			args: &CooldownArgs{
-				Choose: ch.RawChoose{
+				ChooseUnits: parse.Choose{
 					Type: ch.CompositeChoice,
 					Args: &ch.CompositeArgs{
-						Choices: []ch.RawChoose{
+						Choices: []parse.Choose{
 							{
-								Type: ch.OwnedChoice,
-								Args: &ch.OwnedArgs{
-									Player: player,
+								Type: ch.OwnedUnitsChoice,
+								Args: &ch.OwnedUnitsArgs{
+									ChoosePlayer: parse.Choose{
+										Type: ch.CurrentPlayerChoice,
+										Args: &ch.CurrentPlayerArgs{},
+									},
 								},
 							},
 							{
 								Type: ch.UnitsChoice,
 								Args: &ch.UnitsArgs{
-									UnitTypes: []string{
+									Types: []string{
 										cd.CreatureUnit,
 										cd.StructureUnit,
 									},
@@ -178,7 +195,7 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 			uuid: state.Gen.New(st.EventUUID),
 			typ:  DrawCardEvent,
 			args: &DrawCardArgs{
-				Choose: ch.RawChoose{
+				ChoosePlayer: parse.Choose{
 					Type: ch.UUIDChoice,
 					Args: &ch.UUIDArgs{
 						UUID: player,

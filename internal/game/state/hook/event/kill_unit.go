@@ -7,6 +7,7 @@ import (
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
 	tr "github.com/quibbble/go-quill/internal/game/state/card/trait"
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -16,7 +17,7 @@ const (
 )
 
 type KillUnitArgs struct {
-	Choose ch.RawChoose
+	ChooseUnit parse.Choose
 }
 
 func KillUnitAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
@@ -24,26 +25,18 @@ func KillUnitAffect(engine *en.Engine, state *st.State, args interface{}, target
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.Choose.Type, a.Choose.Args)
+
+	unitChoice, err := GetUnitChoice(engine, state, a.ChooseUnit, targets...)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	choices, err := choose.Retrieve(engine, state, targets...)
-	if err != nil {
-		return errors.Wrap(err)
-	}
-	if len(choices) != 1 {
-		return errors.ErrInvalidSliceLength
-	}
-	if choices[0].Type() != st.UnitUUID {
-		return st.ErrInvalidUUIDType(choices[0], st.UnitUUID)
-	}
-	x, y, err := state.Board.GetUnitXY(choices[0])
+
+	x, y, err := state.Board.GetUnitXY(unitChoice)
 	if err != nil {
 		return errors.Wrap(err)
 	}
 	unit := state.Board.XYs[x][y].Unit.(*cd.UnitCard)
-	state.Board.XYs[x][y] = nil
+	state.Board.XYs[x][y].Unit = nil
 
 	// death cry trait check
 	deathCrys := unit.GetTraits(tr.DeathCryTrait)
@@ -75,13 +68,18 @@ func KillUnitAffect(engine *en.Engine, state *st.State, args interface{}, target
 	} else {
 		// check if the game is over
 		choose1, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), ch.UnitsChoice, ch.UnitsArgs{
-			UnitTypes: []string{cd.BaseUnit},
+			Types: []string{cd.BaseUnit},
 		})
 		if err != nil {
 			return errors.Wrap(err)
 		}
-		choose2, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), ch.OwnedChoice, ch.OwnedArgs{
-			Player: unit.Player,
+		choose2, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), ch.OwnedUnitsChoice, ch.OwnedUnitsArgs{
+			ChoosePlayer: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: &ch.UUIDArgs{
+					UUID: unit.Player,
+				},
+			},
 		})
 		if err != nil {
 			return errors.Wrap(err)

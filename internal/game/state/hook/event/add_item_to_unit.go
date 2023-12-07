@@ -5,8 +5,8 @@ import (
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
-	tr "github.com/quibbble/go-quill/internal/game/state/card/trait"
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -16,9 +16,9 @@ const (
 )
 
 type AddItemToUnitArgs struct {
-	Player     uuid.UUID
-	ChooseItem ch.RawChoose
-	ChooseUnit ch.RawChoose
+	ChoosePlayer parse.Choose
+	ChooseItem   parse.Choose
+	ChooseUnit   parse.Choose
 }
 
 func AddItemToUnitAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
@@ -26,62 +26,55 @@ func AddItemToUnitAffect(engine *en.Engine, state *st.State, args interface{}, t
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	chooseItem, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.ChooseItem.Type, a.ChooseItem.Args)
+
+	playerChoice, err := GetPlayerChoice(engine, state, a.ChoosePlayer, targets...)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	chooseUnit, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.ChooseUnit.Type, a.ChooseUnit.Args)
+	itemChoice, err := GetItemChoice(engine, state, a.ChooseItem, targets...)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	itemChoices, err := chooseItem.Retrieve(engine, state, targets...)
+	unitChoice, err := GetUnitChoice(engine, state, a.ChooseUnit, targets...)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	unitChoices, err := chooseUnit.Retrieve(engine, state, targets...)
+
+	card, err := state.Hand[playerChoice].GetCard(itemChoice)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	if len(itemChoices) != 1 || len(unitChoices) != 1 {
-		return errors.ErrInvalidSliceLength
-	}
-	if itemChoices[0].Type() != st.ItemUUID {
-		return st.ErrInvalidUUIDType(itemChoices[0], st.ItemUUID)
-	}
-	if unitChoices[0].Type() != st.UnitUUID {
-		return st.ErrInvalidUUIDType(unitChoices[0], st.UnitUUID)
-	}
-	card, err := state.Hand[a.Player].GetCard(itemChoices[0])
+	itemCard := card.(*cd.ItemCard)
+
+	x, y, err := state.Board.GetUnitXY(unitChoice)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	item := card.(*cd.ItemCard)
-	x, y, err := state.Board.GetUnitXY(unitChoices[0])
-	if err != nil {
-		return errors.Wrap(err)
-	}
-	if state.Board.XYs[x][y].Unit.(*cd.UnitCard).Type == cd.StructureUnit {
+	unitCard := state.Board.XYs[x][y].Unit.(*cd.UnitCard)
+
+	if unitCard.Type == cd.StructureUnit {
 		return errors.Errorf("cannot add an item to a structure unit")
 	}
-	if err := state.Hand[a.Player].RemoveCard(item.UUID); err != nil {
+	if err := state.Hand[playerChoice].RemoveCard(itemChoice); err != nil {
 		return errors.Wrap(err)
 	}
-	if err := state.Board.XYs[x][y].Unit.(*cd.UnitCard).AddItem(engine, item); err != nil {
+	if err := unitCard.AddItem(engine, itemCard); err != nil {
 		return errors.Wrap(err)
 	}
-	for _, trait := range item.HeldTraits {
+
+	for _, trait := range itemCard.HeldTraits {
 		event := &Event{
 			uuid: state.Gen.New(st.EventUUID),
 			typ:  AddTraitToCard,
 			args: &AddTraitToCardArgs{
-				Trait: tr.RawTrait{
+				Trait: parse.Trait{
 					Type: trait.GetType(),
 					Args: trait.GetArgs(),
 				},
-				Choose: ch.RawChoose{
+				ChooseCard: parse.Choose{
 					Type: ch.UUIDChoice,
 					Args: ch.UUIDArgs{
-						UUID: unitChoices[0],
+						UUID: unitChoice,
 					},
 				},
 			},
@@ -92,7 +85,7 @@ func AddItemToUnitAffect(engine *en.Engine, state *st.State, args interface{}, t
 		}
 
 		// if unit died from adding trait then break
-		_, _, err := state.Board.GetUnitXY(unitChoices[0])
+		_, _, err := state.Board.GetUnitXY(unitChoice)
 		if err != nil {
 			break
 		}

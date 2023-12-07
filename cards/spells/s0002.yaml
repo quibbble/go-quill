@@ -2,10 +2,10 @@ ID: S0002
 Name: Smite
 Description: "Deal 1 'Pure' damage to a 'Unit'."
 Cost: 2
-TargetReqs:
-- Type: Unit
+Targets:
+- Type: Units
   Args:
-    UnitTypes:
+    Types:
     - Creature
     - Structure
     - Base
@@ -14,6 +14,6 @@ Events:
   Args:
     DamageType: Pure
     Amount: 1
-    Choose:
+    ChooseUnit:
       Type: Target
       Index: 0

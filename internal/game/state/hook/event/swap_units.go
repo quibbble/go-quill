@@ -4,6 +4,7 @@ import (
 	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -13,8 +14,8 @@ const (
 )
 
 type SwapUnitsArgs struct {
-	UnitA uuid.UUID
-	UnitB uuid.UUID
+	ChooseUnitA parse.Choose
+	ChooseUnitB parse.Choose
 }
 
 func SwapUnitsAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
@@ -22,11 +23,21 @@ func SwapUnitsAffect(engine *en.Engine, state *st.State, args interface{}, targe
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	aX, aY, err := state.Board.GetUnitXY(a.UnitA)
+
+	unitAChoice, err := GetUnitChoice(engine, state, a.ChooseUnitA, targets...)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	bX, bY, err := state.Board.GetUnitXY(a.UnitA)
+	unitBChoice, err := GetUnitChoice(engine, state, a.ChooseUnitB, targets...)
+	if err != nil {
+		return errors.Wrap(err)
+	}
+
+	aX, aY, err := state.Board.GetUnitXY(unitAChoice)
+	if err != nil {
+		return errors.Wrap(err)
+	}
+	bX, bY, err := state.Board.GetUnitXY(unitBChoice)
 	if err != nil {
 		return errors.Wrap(err)
 	}

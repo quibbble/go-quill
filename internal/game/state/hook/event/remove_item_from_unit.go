@@ -6,6 +6,7 @@ import (
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -15,8 +16,8 @@ const (
 )
 
 type RemoveItemFromUnitArgs struct {
-	ChooseItem ch.RawChoose
-	ChooseUnit ch.RawChoose
+	ChooseItem parse.Choose
+	ChooseUnit parse.Choose
 }
 
 func RemoveItemFromUnitAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
@@ -24,36 +25,21 @@ func RemoveItemFromUnitAffect(engine *en.Engine, state *st.State, args interface
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	chooseItem, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.ChooseItem.Type, a.ChooseItem.Args)
+
+	itemChoice, err := GetItemChoice(engine, state, a.ChooseItem, targets...)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	chooseUnit, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.ChooseUnit.Type, a.ChooseUnit.Args)
+	unitChoice, err := GetUnitChoice(engine, state, a.ChooseUnit, targets...)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	itemChoices, err := chooseItem.Retrieve(engine, state, targets...)
+
+	x, y, err := state.Board.GetUnitXY(unitChoice)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	unitChoices, err := chooseUnit.Retrieve(engine, state, targets...)
-	if err != nil {
-		return errors.Wrap(err)
-	}
-	if len(itemChoices) != 1 || len(unitChoices) != 1 {
-		return errors.ErrInvalidSliceLength
-	}
-	if itemChoices[0].Type() != st.ItemUUID {
-		return st.ErrInvalidUUIDType(itemChoices[0], st.ItemUUID)
-	}
-	if unitChoices[0].Type() != st.UnitUUID {
-		return st.ErrInvalidUUIDType(unitChoices[0], st.UnitUUID)
-	}
-	x, y, err := state.Board.GetUnitXY(unitChoices[0])
-	if err != nil {
-		return errors.Wrap(err)
-	}
-	item, err := state.Board.XYs[x][y].Unit.(*cd.UnitCard).GetAndRemoveItem(engine, itemChoices[0])
+	item, err := state.Board.XYs[x][y].Unit.(*cd.UnitCard).GetAndRemoveItem(engine, itemChoice)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -63,10 +49,10 @@ func RemoveItemFromUnitAffect(engine *en.Engine, state *st.State, args interface
 			typ:  RemoveTraitFromCard,
 			args: &RemoveTraitFromCardArgs{
 				Trait: trait.GetUUID(),
-				Choose: ch.RawChoose{
+				ChooseCard: parse.Choose{
 					Type: ch.UUIDChoice,
 					Args: ch.UUIDArgs{
-						UUID: unitChoices[0],
+						UUID: unitChoice,
 					},
 				},
 			},
@@ -77,7 +63,7 @@ func RemoveItemFromUnitAffect(engine *en.Engine, state *st.State, args interface
 		}
 
 		// if unit died from adding trait then break
-		_, _, err := state.Board.GetUnitXY(unitChoices[0])
+		_, _, err := state.Board.GetUnitXY(unitChoice)
 		if err != nil {
 			break
 		}

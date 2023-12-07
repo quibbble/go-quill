@@ -11,11 +11,6 @@ import (
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
-type RawTrait struct {
-	Type string
-	Args interface{}
-}
-
 type Trait struct {
 	uuid uuid.UUID
 	typ  string

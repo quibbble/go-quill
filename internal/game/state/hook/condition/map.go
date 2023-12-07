@@ -13,5 +13,6 @@ func init() {
 		AlwaysFailCondition:          PassAlwaysFail,
 		UnitMissingCondition:         PassUnitMissing,
 		DamageUnitAppliedToCondition: PassDamageUnitAppliedTo,
+		ManaAboveCondition:           PassManaAbove,
 	}
 }

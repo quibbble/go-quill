@@ -6,6 +6,7 @@ import (
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -15,8 +16,8 @@ const (
 )
 
 type RemoveTraitFromCardArgs struct {
-	Trait  uuid.UUID
-	Choose ch.RawChoose
+	Trait      uuid.UUID
+	ChooseCard parse.Choose
 }
 
 func RemoveTraitFromCardAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
@@ -24,27 +25,22 @@ func RemoveTraitFromCardAffect(engine *en.Engine, state *st.State, args interfac
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.Choose.Type, a.Choose.Args)
+
+	choice, err := GetChoice(engine, state, a.ChooseCard, targets...)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	choices, err := choose.Retrieve(engine, state, targets...)
-	if err != nil {
-		return errors.Wrap(err)
-	}
-	if len(choices) != 1 {
-		return errors.ErrInvalidSliceLength
-	}
-	card := state.GetCard(choices[0])
+
+	card := state.GetCard(choice)
 	if card == nil {
-		return st.ErrNotFound(choices[0])
+		return st.ErrNotFound(choice)
 	}
 	if card.RemoveTrait(engine, a.Trait); err != nil {
 		return errors.Wrap(err)
 	}
-	if choices[0].Type() == st.UnitUUID && card.(*cd.UnitCard).Health <= 0 {
+	if choice.Type() == st.UnitUUID && card.(*cd.UnitCard).Health <= 0 {
 		// kill unit if health to low
-		x, y, err := state.Board.GetUnitXY(choices[0])
+		x, y, err := state.Board.GetUnitXY(choice)
 		if err != nil {
 			return errors.Wrap(err)
 		}
@@ -53,10 +49,10 @@ func RemoveTraitFromCardAffect(engine *en.Engine, state *st.State, args interfac
 				uuid: state.Gen.New(st.EventUUID),
 				typ:  KillUnitEvent,
 				args: &KillUnitArgs{
-					Choose: ch.RawChoose{
+					ChooseUnit: parse.Choose{
 						Type: ch.UUIDChoice,
 						Args: ch.UUIDArgs{
-							UUID: choices[0],
+							UUID: choice,
 						},
 					},
 				},

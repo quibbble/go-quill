@@ -13,7 +13,7 @@ import (
 const ConnectedChoice = "Connected"
 
 type ConnectedArgs struct {
-	UnitTypes      []string
+	Types          []string
 	ConnectionType string
 }
 
@@ -30,15 +30,15 @@ func RetrieveConnected(engine en.IEngine, state en.IState, args interface{}, tar
 		return nil, errors.Wrap(err)
 	}
 
-	var choose IChoose
+	var choose en.IChoose
 	switch c.ConnectionType {
 	case AdjacentChoice:
 		choose, err = NewChoose(state.(*st.State).Gen.New(st.ChooseUUID), AdjacentChoice, &AdjacentArgs{
-			UnitTypes: c.UnitTypes,
+			Types: c.Types,
 		})
 	case CodexChoice:
 		choose, err = NewChoose(state.(*st.State).Gen.New(st.ChooseUUID), CodexChoice, &CodexArgs{
-			UnitTypes: c.UnitTypes,
+			Types: c.Types,
 		})
 	default:
 		return nil, errors.Errorf("'%s' not a valid connection type", c.ConnectionType)

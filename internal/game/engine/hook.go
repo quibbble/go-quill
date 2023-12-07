@@ -9,7 +9,7 @@ const (
 	After  When = "After"
 )
 
-type BuildHook func(uuid, cardUUID uuid.UUID, when, typ string, conditions []ICondition, event IEvent, reuse []ICondition) (IHook, error)
+type BuildHook func(uuid, cardUUID uuid.UUID, when, typ string, conditions []ICondition, events []IEvent, reuse []ICondition) (IHook, error)
 
 // Hooks are always registered by a card
 type IHook interface {
@@ -18,6 +18,6 @@ type IHook interface {
 	GetType() string
 	Trigger(when When, typ string) bool
 	Pass(engine IEngine, state IState, event IEvent, targets ...uuid.UUID) (bool, error)
-	Event() IEvent
+	Events() []IEvent
 	Reuse(engine IEngine, state IState, event IEvent, targets ...uuid.UUID) (bool, error)
 }

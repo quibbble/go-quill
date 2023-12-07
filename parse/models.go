@@ -12,12 +12,12 @@ type Card struct {
 	Cost int
 
 	Conditions []Condition
-	TargetReqs []TargetReq
+	Targets    []Choose
 
 	Hooks  []Hook
 	Events []Event
 
-	Traits []Traits
+	Traits []Trait
 }
 
 func (c *Card) GetID() string {
@@ -27,7 +27,7 @@ func (c *Card) GetID() string {
 type ItemCard struct {
 	Card `yaml:",inline" mapstructure:",squash"`
 
-	HeldTraits []Traits
+	HeldTraits []Trait
 }
 
 type SpellCard struct {
@@ -47,33 +47,31 @@ type UnitCard struct {
 	Codex      string
 }
 
-type Args map[string]interface{}
-
 type Condition struct {
 	Type string
 	Not  bool
-	Args Args
+	Args interface{}
 }
 
-type TargetReq struct {
+type Choose struct {
 	Type string
-	Args Args
+	Args interface{}
 }
 
 type Hook struct {
 	When            string
 	Type            string
 	Conditions      []Condition
-	Event           Event
+	Events          []Event
 	ReuseConditions []Condition
 }
 
 type Event struct {
 	Type string
-	Args Args
+	Args interface{}
 }
 
-type Traits struct {
+type Trait struct {
 	Type string
-	Args Args
+	Args interface{}
 }

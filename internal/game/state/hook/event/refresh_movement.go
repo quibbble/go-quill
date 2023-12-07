@@ -16,7 +16,7 @@ const (
 )
 
 type RefreshMovementArgs struct {
-	Choose ch.RawChoose
+	ChooseUnits parse.Choose
 }
 
 func RefreshMovementAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
@@ -24,7 +24,7 @@ func RefreshMovementAffect(engine *en.Engine, state *st.State, args interface{},
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.Choose.Type, a.Choose.Args)
+	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.ChooseUnits.Type, a.ChooseUnits.Args)
 	if err != nil {
 		return errors.Wrap(err)
 	}

@@ -2,10 +2,10 @@ ID: S0003
 Name: Burn
 Description: "Deal 3 'Magic' damage to a 'Creature'. If it dies draw a card."
 Cost: 3
-TargetReqs:
-- Type: Unit
+Targets:
+- Type: Units
   Args:
-    UnitTypes:
+    Types:
     - Creature
 Hooks:
 - When: After
@@ -14,33 +14,36 @@ Hooks:
   - Type: DamageUnitAppliedTo
     Not: false
     Args:
-      Choose:
+      ChooseUnit:
         Type: Target
-        Index: 0
+        Args:
+          Index: 0
   - Type: UnitMissing
     Not: false
     Args:
-      Choose:
+      ChooseUnit:
         Type: Target
-        Index: 0
+        Args:
+          Index: 0
   Events:
   - Type: DrawCard
     Args:
-      Choose:
-        Type: PlayerTurn
-        Args:
+      ChoosePlayer:
+        Type: CurrentPlayer
   ReuseConditions:
   - Type: DamageUnitAppliedTo
     Not: true
     Args:
-      Choose:
+      ChooseUnit:
         Type: Target
-        Index: 0
+        Args:
+          Index: 0
 Events:
 - Type: DamageUnit
   Args:
     DamageType: Magic
     Amount: 3
-    Choose:
+    ChooseUnit:
       Type: Target
-      Index: 0
+      Args:
+        Index: 0

@@ -50,5 +50,32 @@ func ParseCard(id string) (ICard, error) {
 	if err := mapstructure.Decode(m, card); err != nil {
 		return nil, errors.Wrap(err)
 	}
+
+	// set unit card targets as they are the same no matter the unit
+	if id[0] == 'U' {
+		card.(*UnitCard).Card.Targets = []Choose{
+			{
+				Type: "Composite",
+				Args: map[string]interface{}{
+					"Choices": []Choose{
+						{
+							Type: "Tiles",
+							Args: map[string]interface{}{
+								"Empty": true,
+							},
+						},
+						{
+							Type: "OwnedTiles",
+							Args: map[string]interface{}{
+								"ChoosePlayer": Choose{
+									Type: "CurrentPlayer",
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+	}
 	return card, nil
 }

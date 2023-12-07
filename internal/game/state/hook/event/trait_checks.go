@@ -8,6 +8,7 @@ import (
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
 	tr "github.com/quibbble/go-quill/internal/game/state/card/trait"
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -23,12 +24,17 @@ func FriendsTraitCheck(engine *en.Engine, state *st.State) error {
 					if before == nil {
 						before = make([]uuid.UUID, 0)
 					}
-					choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), args.Choose.Type, args.Choose.Args)
+					choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), args.ChooseUnits.Type, args.ChooseUnits.Args)
 					if err != nil {
 						return errors.Wrap(err)
 					}
-					owned, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), ch.OwnedChoice, &ch.OwnedArgs{
-						Player: tile.Unit.GetPlayer(),
+					owned, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), ch.OwnedUnitsChoice, &ch.OwnedUnitsArgs{
+						ChoosePlayer: parse.Choose{
+							Type: ch.UUIDChoice,
+							Args: &ch.UUIDArgs{
+								UUID: tile.Unit.GetPlayer(),
+							},
+						},
 					})
 					if err != nil {
 						return errors.Wrap(err)
@@ -66,12 +72,17 @@ func EnemiesTraitCheck(engine *en.Engine, state *st.State) error {
 					if before == nil {
 						before = make([]uuid.UUID, 0)
 					}
-					choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), args.Choose.Type, args.Choose.Args)
+					choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), args.ChooseUnits.Type, args.ChooseUnits.Args)
 					if err != nil {
 						return errors.Wrap(err)
 					}
-					owned, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), ch.OwnedChoice, &ch.OwnedArgs{
-						Player: state.GetOpponent(tile.Unit.GetPlayer()),
+					owned, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), ch.OwnedUnitsChoice, &ch.OwnedUnitsArgs{
+						ChoosePlayer: parse.Choose{
+							Type: ch.UUIDChoice,
+							Args: &ch.UUIDArgs{
+								UUID: state.GetOpponent(tile.Unit.GetPlayer()),
+							},
+						},
 					})
 					if err != nil {
 						return errors.Wrap(err)
@@ -111,7 +122,7 @@ func updateUnits(engine *en.Engine, state *st.State, before, after []uuid.UUID, 
 			if reflect.DeepEqual(t.GetArgs(), trait.GetArgs()) {
 				event, err := NewEvent(state.Gen.New(st.EventUUID), RemoveTraitFromCard, &RemoveTraitFromCardArgs{
 					Trait: t.GetUUID(),
-					Choose: ch.RawChoose{
+					ChooseCard: parse.Choose{
 						Type: ch.UUIDChoice,
 						Args: &ch.UUIDArgs{
 							UUID: u,
@@ -135,11 +146,11 @@ func updateUnits(engine *en.Engine, state *st.State, before, after []uuid.UUID, 
 	add := uuid.Diff(after, before)
 	for _, u := range add {
 		event, err := NewEvent(state.Gen.New(st.EventUUID), AddTraitToCard, &AddTraitToCardArgs{
-			Trait: tr.RawTrait{
+			Trait: parse.Trait{
 				Type: trait.GetType(),
 				Args: trait.GetArgs(),
 			},
-			Choose: ch.RawChoose{
+			ChooseCard: parse.Choose{
 				Type: ch.UUIDChoice,
 				Args: &ch.UUIDArgs{
 					UUID: u,

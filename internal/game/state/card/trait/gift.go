@@ -1,12 +1,11 @@
 package trait
 
+import "github.com/quibbble/go-quill/parse"
+
 const (
 	GiftTrait = "Gift"
 )
 
 type GiftArgs struct {
-	Trait struct {
-		Type string
-		Args interface{}
-	}
+	Trait parse.Trait
 }

@@ -26,14 +26,14 @@ func Test_U0003(t *testing.T) {
 	game.Board.XYs[x][y+2].Unit = u0002
 
 	// should fail cooldown check
-	err = game.AttackUnit(tests.Player1, uuids[0], x, y+2)
+	err = game.AttackUnit(tests.Player1, uuids[0], u0002.GetUUID())
 	assert.True(t, err != nil)
 
 	// should attack at range
 	u0002Health := game.Board.XYs[x][y+2].Unit.(*cd.UnitCard).Health
 	u0003Health := game.Board.XYs[x][y].Unit.(*cd.UnitCard).Health
 	game.Board.XYs[x][y].Unit.(*cd.UnitCard).Cooldown = 0
-	if err := game.AttackUnit(tests.Player1, uuids[0], x, y+2); err != nil {
+	if err := game.AttackUnit(tests.Player1, uuids[0], u0002.GetUUID()); err != nil {
 		t.Fatal(err)
 	}
 	assert.Equal(t, u0003Health, game.Board.XYs[x][y].Unit.(*cd.UnitCard).Health)

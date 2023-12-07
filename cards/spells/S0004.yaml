@@ -1,9 +1,27 @@
 ID: S0004
 Name: Power Override
-Description: "Gain +6 energy. If current energy is 11 or more then draw a card."
+Description: "Gain +6 energy. If current energy is 9 or more then draw a card."
 Cost: 3
-TargetReqs:
+Targets:
 Hooks:
-# TODO
+- When: After
+  Type: GainMana
+  Conditions:
+  - Type: ManaAbove
+    Args:
+      ChoosePlayer:
+        Type: CurrentPlayer
+      Amount: 8
+  Events:
+  - Type: DrawCard
+    Args:
+      ChoosePlayer:
+        Type: CurrentPlayer
+  ReuseConditions:
+  - Type: AlwaysFail
 Events:
-# TODO
+- Type: GainMana
+  Args:
+    Amount: 6
+    ChoosePlayer:
+      Type: CurrentPlayer
