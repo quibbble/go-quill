@@ -1,6 +1,6 @@
 ID: S0006
 Name: Tunnel
-Description: "Swap the position of two 'Creatures' or 'Structures'."
+Description: "Swap the position of two 'Creatures' or 'Structures' owned by the same player."
 Cost: 2
 Targets:
 - Type: Units
@@ -8,11 +8,29 @@ Targets:
     Types:
     - Creature
     - Structure
-- Type: Units
+- Type: Composite
   Args:
-    Types:
-    - Creature
-    - Structure
+    Choices:
+    - Type: Units
+      Args:
+        Types:
+        - Creature
+        - Structure
+    - Type: OwnedUnits
+      Args:
+        ChoosePlayer:
+          Type: TargetOwner
+          Args:
+            Index: 0
 Hooks:
 Events:
-# TODO
+- Type: SwapUnits
+  Args:
+    ChooseUnitA:
+      Type: Target
+      Args:
+        Index: 0
+    ChooseUnitB:
+      Type: Target
+      Args:
+        Index: 1

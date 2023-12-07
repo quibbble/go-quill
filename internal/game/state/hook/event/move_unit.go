@@ -15,8 +15,9 @@ const (
 )
 
 type MoveUnitArgs struct {
-	ChooseUnit parse.Choose
-	ChooseTile parse.Choose
+	ChooseUnit   parse.Choose
+	ChooseTile   parse.Choose
+	UnitMovement bool
 }
 
 func MoveUnitAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
@@ -56,7 +57,10 @@ func MoveUnitAffect(engine *en.Engine, state *st.State, args interface{}, target
 	}
 	state.Board.XYs[uX][uY].Unit = nil
 	state.Board.XYs[tX][tY].Unit = unit
-	unit.Movement--
+
+	if a.UnitMovement {
+		unit.Movement--
+	}
 
 	// friends/enemies trait check
 	FriendsTraitCheck(engine, state)

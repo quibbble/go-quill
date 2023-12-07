@@ -241,7 +241,7 @@ func (c *Card) NextTargets(engine en.IEngine, state en.IState, targets ...uuid.U
 	}
 	last := -1
 	for i, target := range targets {
-		choices, err := c.Targets[i].Retrieve(engine, state)
+		choices, err := c.Targets[i].Retrieve(engine, state, targets...)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}

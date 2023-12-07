@@ -22,5 +22,6 @@ func init() {
 		CompositeChoice:      RetrieveComposite,
 		CurrentPlayerChoice:  RetrieveCurrentPlayer,
 		OpposingPlayerChoice: RetrieveOpposingPlayer,
+		TargetOwnerChoice:    RetrieveTargetOwner,
 	}
 }

@@ -115,6 +115,7 @@ func (g *Game) MoveUnit(player, unit, tile uuid.UUID) error {
 				UUID: tile,
 			},
 		},
+		UnitMovement: true,
 	})
 	if err != nil {
 		return errors.Wrap(err)
