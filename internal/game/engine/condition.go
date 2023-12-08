@@ -1,6 +1,8 @@
 package engine
 
 import (
+	"context"
+
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -12,15 +14,15 @@ type ICondition interface {
 	GetUUID() uuid.UUID
 	GetType() string
 	GetArgs() interface{}
-	Pass(engine IEngine, state IState, event IEvent, targets ...uuid.UUID) (bool, error)
+	Pass(ctx context.Context, engine IEngine, state IState) (bool, error)
 }
 
 type Conditions []ICondition
 
-func (c Conditions) Pass(engine IEngine, state IState, event IEvent, targets ...uuid.UUID) (bool, error) {
+func (c Conditions) Pass(ctx context.Context, engine IEngine, state IState) (bool, error) {
 	pass := true
 	for _, condition := range c {
-		p, err := condition.Pass(engine, state, event, targets...)
+		p, err := condition.Pass(ctx, engine, state)
 		if err != nil {
 			return false, errors.Wrap(err)
 		}

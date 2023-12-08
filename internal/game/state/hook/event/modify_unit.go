@@ -1,6 +1,8 @@
 package event
 
 import (
+	"context"
+
 	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
@@ -8,7 +10,6 @@ import (
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/maths"
-	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
 const (
@@ -21,13 +22,13 @@ type ModifyUnitArgs struct {
 	Amount     int
 }
 
-func ModifyUnitAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
+func ModifyUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
 	var a ModifyUnitArgs
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
 
-	unitChoice, err := GetUnitChoice(engine, state, a.ChooseUnit, targets...)
+	unitChoice, err := GetUnitChoice(ctx, a.ChooseUnit, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}

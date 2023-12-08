@@ -1,6 +1,8 @@
 package event
 
 import (
+	"context"
+
 	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
@@ -8,7 +10,6 @@ import (
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
-	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
 const (
@@ -19,7 +20,7 @@ type RefreshMovementArgs struct {
 	ChooseUnits parse.Choose
 }
 
-func RefreshMovementAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
+func RefreshMovementAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
 	var a RefreshMovementArgs
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
@@ -28,7 +29,7 @@ func RefreshMovementAffect(engine *en.Engine, state *st.State, args interface{},
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	choices, err := choose.Retrieve(engine, state, targets...)
+	choices, err := choose.Retrieve(ctx, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}

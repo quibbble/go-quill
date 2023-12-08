@@ -1,6 +1,7 @@
 package choose
 
 import (
+	"context"
 	"slices"
 
 	"github.com/mitchellh/mapstructure"
@@ -19,11 +20,12 @@ type AdjacentArgs struct {
 	Types []string
 }
 
-func RetrieveAdjacent(engine en.IEngine, state en.IState, args interface{}, targets ...uuid.UUID) ([]uuid.UUID, error) {
+func RetrieveAdjacent(ctx context.Context, args interface{}, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
 	var c AdjacentArgs
 	if err := mapstructure.Decode(args, &c); err != nil {
 		return nil, errors.ErrInterfaceConversion
 	}
+	targets := ctx.Value(en.TargetsCtx).([]uuid.UUID)
 	if len(targets) != 1 {
 		return nil, errors.ErrInvalidSliceLength
 	}

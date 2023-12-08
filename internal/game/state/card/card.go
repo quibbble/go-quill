@@ -1,6 +1,7 @@
 package card
 
 import (
+	"context"
 	"slices"
 
 	en "github.com/quibbble/go-quill/internal/game/engine"
@@ -232,16 +233,17 @@ func (c *Card) GetHooks() []en.IHook {
 }
 
 func (c *Card) Playable(engine en.IEngine, state en.IState) (bool, error) {
-	return c.Conditions.Pass(engine, state, nil)
+	return c.Conditions.Pass(context.Background(), engine, state)
 }
 
-func (c *Card) NextTargets(engine en.IEngine, state en.IState, targets ...uuid.UUID) ([]uuid.UUID, error) {
+func (c *Card) NextTargets(ctx context.Context, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
+	targets := ctx.Value(en.TargetsCtx).([]uuid.UUID)
 	if len(targets) > len(c.Targets) {
 		return nil, errors.ErrIndexOutOfBounds
 	}
 	last := -1
 	for i, target := range targets {
-		choices, err := c.Targets[i].Retrieve(engine, state, targets...)
+		choices, err := c.Targets[i].Retrieve(ctx, engine, state)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
@@ -255,7 +257,7 @@ func (c *Card) NextTargets(engine en.IEngine, state en.IState, targets ...uuid.U
 		return []uuid.UUID{}, nil
 	}
 	// get the next set of valid targets in the target chain
-	return c.Targets[last+1].Retrieve(engine, state)
+	return c.Targets[last+1].Retrieve(ctx, engine, state)
 }
 
 func (c *Card) GetTraits(typ string) []st.ITrait {

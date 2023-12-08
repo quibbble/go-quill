@@ -1,6 +1,8 @@
 package event
 
 import (
+	"context"
+
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
@@ -9,32 +11,32 @@ import (
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
-func GetPlayerChoice(engine *en.Engine, state *st.State, raw parse.Choose, targets ...uuid.UUID) (uuid.UUID, error) {
-	return getTypeChoice(engine, state, st.PlayerUUID, raw, targets...)
+func GetPlayerChoice(ctx context.Context, raw parse.Choose, engine *en.Engine, state *st.State) (uuid.UUID, error) {
+	return getTypeChoice(ctx, raw, st.PlayerUUID, engine, state)
 }
 
-func GetUnitChoice(engine *en.Engine, state *st.State, raw parse.Choose, targets ...uuid.UUID) (uuid.UUID, error) {
-	return getTypeChoice(engine, state, st.UnitUUID, raw, targets...)
+func GetUnitChoice(ctx context.Context, raw parse.Choose, engine *en.Engine, state *st.State) (uuid.UUID, error) {
+	return getTypeChoice(ctx, raw, st.UnitUUID, engine, state)
 }
 
-func GetItemChoice(engine *en.Engine, state *st.State, raw parse.Choose, targets ...uuid.UUID) (uuid.UUID, error) {
-	return getTypeChoice(engine, state, st.ItemUUID, raw, targets...)
+func GetItemChoice(ctx context.Context, raw parse.Choose, engine *en.Engine, state *st.State) (uuid.UUID, error) {
+	return getTypeChoice(ctx, raw, st.ItemUUID, engine, state)
 }
 
-func GetSpellChoice(engine *en.Engine, state *st.State, raw parse.Choose, targets ...uuid.UUID) (uuid.UUID, error) {
-	return getTypeChoice(engine, state, st.SpellUUID, raw, targets...)
+func GetSpellChoice(ctx context.Context, raw parse.Choose, engine *en.Engine, state *st.State) (uuid.UUID, error) {
+	return getTypeChoice(ctx, raw, st.SpellUUID, engine, state)
 }
 
-func GetTileChoice(engine *en.Engine, state *st.State, raw parse.Choose, targets ...uuid.UUID) (uuid.UUID, error) {
-	return getTypeChoice(engine, state, st.TileUUID, raw, targets...)
+func GetTileChoice(ctx context.Context, raw parse.Choose, engine *en.Engine, state *st.State) (uuid.UUID, error) {
+	return getTypeChoice(ctx, raw, st.TileUUID, engine, state)
 }
 
-func GetChoice(engine *en.Engine, state *st.State, raw parse.Choose, targets ...uuid.UUID) (uuid.UUID, error) {
+func GetChoice(ctx context.Context, raw parse.Choose, engine *en.Engine, state *st.State) (uuid.UUID, error) {
 	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), raw.Type, raw.Args)
 	if err != nil {
 		return uuid.Nil, errors.Wrap(err)
 	}
-	choices, err := choose.Retrieve(engine, state, targets...)
+	choices, err := choose.Retrieve(ctx, engine, state)
 	if err != nil {
 		return uuid.Nil, errors.Wrap(err)
 	}
@@ -44,8 +46,8 @@ func GetChoice(engine *en.Engine, state *st.State, raw parse.Choose, targets ...
 	return choices[0], nil
 }
 
-func getTypeChoice(engine *en.Engine, state *st.State, typ rune, raw parse.Choose, targets ...uuid.UUID) (uuid.UUID, error) {
-	choice, err := GetChoice(engine, state, raw, targets...)
+func getTypeChoice(ctx context.Context, raw parse.Choose, typ rune, engine *en.Engine, state *st.State) (uuid.UUID, error) {
+	choice, err := GetChoice(ctx, raw, engine, state)
 	if err != nil {
 		return uuid.Nil, errors.Wrap(err)
 	}

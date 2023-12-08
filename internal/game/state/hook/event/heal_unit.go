@@ -1,13 +1,14 @@
 package event
 
 import (
+	"context"
+
 	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
-	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
 const (
@@ -19,13 +20,13 @@ type HealUnitArgs struct {
 	ChooseUnit parse.Choose
 }
 
-func HealUnitAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
+func HealUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
 	var a HealUnitArgs
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
 
-	unitChoice, err := GetUnitChoice(engine, state, a.ChooseUnit, targets...)
+	unitChoice, err := GetUnitChoice(ctx, a.ChooseUnit, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}

@@ -1,12 +1,13 @@
 package engine
 
 import (
+	"context"
+
 	"github.com/quibbble/go-quill/pkg/errors"
-	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
 type IEngine interface {
-	Do(event IEvent, state IState, targets ...uuid.UUID) error
+	Do(ctx context.Context, event IEvent, state IState) error
 	Register(hook IHook)
 	DeRegister(hook IHook)
 	Events() []IEvent
@@ -29,7 +30,7 @@ func NewEngine() *Engine {
 	}
 }
 
-func (e *Engine) Do(event IEvent, state IState, targets ...uuid.UUID) error {
+func (e *Engine) Do(ctx context.Context, event IEvent, state IState) error {
 
 	if state.GameOver() {
 		return nil
@@ -40,19 +41,21 @@ func (e *Engine) Do(event IEvent, state IState, targets ...uuid.UUID) error {
 	for i, hook := range e.hooks {
 		if hook.Trigger(Before, event.GetType()) {
 
-			pass, err := hook.Pass(e, state, event, targets...)
+			hookCtx := context.WithValue(context.WithValue(ctx, HookEventCtx, event), HookCardCtx, hook.GetCardUUID())
+
+			pass, err := hook.Pass(hookCtx, e, state)
 			if err != nil {
 				return errors.Wrap(err)
 			}
 			if pass {
 				for _, event := range hook.Events() {
-					if err := e.Do(event, state, hook.GetCardUUID()); err != nil {
+					if err := e.Do(hookCtx, event, state); err != nil {
 						return errors.Wrap(err)
 					}
 				}
 			}
 
-			pass, err = hook.Reuse(e, state, event, targets...)
+			pass, err = hook.Reuse(hookCtx, e, state)
 			if err != nil {
 				return errors.Wrap(err)
 			}
@@ -63,26 +66,28 @@ func (e *Engine) Do(event IEvent, state IState, targets ...uuid.UUID) error {
 	}
 
 	e.events = append(e.events, event)
-	if err = event.Affect(e, state, targets...); err != nil {
+	if err = event.Affect(ctx, e, state); err != nil {
 		return errors.Wrap(err)
 	}
 
 	for i, hook := range e.hooks {
 		if hook.Trigger(After, event.GetType()) {
 
-			pass, err := hook.Pass(e, state, event, targets...)
+			hookCtx := context.WithValue(context.WithValue(ctx, HookEventCtx, event), HookCardCtx, hook.GetCardUUID())
+
+			pass, err := hook.Pass(hookCtx, e, state)
 			if err != nil {
 				return errors.Wrap(err)
 			}
 			if pass {
 				for _, event := range hook.Events() {
-					if err := e.Do(event, state, hook.GetCardUUID()); err != nil {
+					if err := e.Do(hookCtx, event, state); err != nil {
 						return errors.Wrap(err)
 					}
 				}
 			}
 
-			pass, err = hook.Reuse(e, state, event, targets...)
+			pass, err = hook.Reuse(hookCtx, e, state)
 			if err != nil {
 				return errors.Wrap(err)
 			}

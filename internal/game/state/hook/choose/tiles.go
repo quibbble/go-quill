@@ -1,6 +1,8 @@
 package choose
 
 import (
+	"context"
+
 	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
@@ -14,7 +16,7 @@ type TilesArgs struct {
 	Empty bool
 }
 
-func RetrieveTiles(engine en.IEngine, state en.IState, args interface{}, targets ...uuid.UUID) ([]uuid.UUID, error) {
+func RetrieveTiles(ctx context.Context, args interface{}, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
 	var c TilesArgs
 	if err := mapstructure.Decode(args, &c); err != nil {
 		return nil, errors.ErrInterfaceConversion

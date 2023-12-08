@@ -1,6 +1,8 @@
 package choose
 
 import (
+	"context"
+
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
@@ -11,7 +13,7 @@ type Choose struct {
 
 	typ      string
 	args     interface{}
-	retrieve func(engine en.IEngine, state en.IState, args interface{}, targets ...uuid.UUID) ([]uuid.UUID, error)
+	retrieve func(ctx context.Context, args interface{}, engine en.IEngine, state en.IState) ([]uuid.UUID, error)
 }
 
 func NewChoose(uuid uuid.UUID, typ string, args interface{}) (en.IChoose, error) {
@@ -27,6 +29,6 @@ func NewChoose(uuid uuid.UUID, typ string, args interface{}) (en.IChoose, error)
 	}, nil
 }
 
-func (c *Choose) Retrieve(engine en.IEngine, state en.IState, targets ...uuid.UUID) ([]uuid.UUID, error) {
-	return c.retrieve(engine, state, c.args, targets...)
+func (c *Choose) Retrieve(ctx context.Context, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
+	return c.retrieve(ctx, c.args, engine, state)
 }

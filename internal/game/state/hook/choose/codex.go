@@ -1,6 +1,7 @@
 package choose
 
 import (
+	"context"
 	"slices"
 
 	"github.com/mitchellh/mapstructure"
@@ -20,11 +21,12 @@ type CodexArgs struct {
 	Codex string
 }
 
-func RetrieveCodex(engine en.IEngine, state en.IState, args interface{}, targets ...uuid.UUID) ([]uuid.UUID, error) {
+func RetrieveCodex(ctx context.Context, args interface{}, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
 	var c CodexArgs
 	if err := mapstructure.Decode(args, &c); err != nil {
 		return nil, errors.ErrInterfaceConversion
 	}
+	targets := ctx.Value(en.TargetsCtx).([]uuid.UUID)
 	if len(targets) != 1 {
 		return nil, errors.ErrInvalidSliceLength
 	}

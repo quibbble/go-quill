@@ -1,6 +1,7 @@
 package game
 
 import (
+	"context"
 	"math/rand"
 
 	en "github.com/quibbble/go-quill/internal/game/engine"
@@ -92,7 +93,8 @@ func (g *Game) PlayCard(player, card uuid.UUID, targets ...uuid.UUID) error {
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	if err := g.Engine.Do(event, g.State, targets...); err != nil {
+	ctx := context.WithValue(context.WithValue(context.Background(), en.CardCtx, card), en.TargetsCtx, targets)
+	if err := g.Engine.Do(ctx, event, g.State); err != nil {
 		return errors.Wrap(err)
 	}
 	return nil
@@ -120,7 +122,7 @@ func (g *Game) MoveUnit(player, unit, tile uuid.UUID) error {
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	if err := g.Engine.Do(event, g.State); err != nil {
+	if err := g.Engine.Do(context.Background(), event, g.State); err != nil {
 		return errors.Wrap(err)
 	}
 	return nil
@@ -154,7 +156,7 @@ func (g *Game) AttackUnit(player, attacker, defender uuid.UUID) error {
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	if err := g.Engine.Do(event, g.State); err != nil {
+	if err := g.Engine.Do(context.Background(), event, g.State); err != nil {
 		return errors.Wrap(err)
 	}
 	return nil
@@ -180,7 +182,7 @@ func (g *Game) SackCard(player, card uuid.UUID, option string) error {
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	if err := g.Engine.Do(event, g.State); err != nil {
+	if err := g.Engine.Do(context.Background(), event, g.State); err != nil {
 		return errors.Wrap(err)
 	}
 	return nil
@@ -194,7 +196,7 @@ func (g *Game) EndTurn(player uuid.UUID) error {
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	if err := g.Engine.Do(event, g.State); err != nil {
+	if err := g.Engine.Do(context.Background(), event, g.State); err != nil {
 		return errors.Wrap(err)
 	}
 	return nil
@@ -222,7 +224,7 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
-		c, err := ch.NewChoices(choose1, choose2).Retrieve(g.Engine, g.State)
+		c, err := ch.NewChoices(choose1, choose2).Retrieve(context.Background(), g.Engine, g.State)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
@@ -252,7 +254,8 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 				if err != nil {
 					return nil, errors.Wrap(err)
 				}
-				choices, err := ch.NewChoices(choose1, choose2).Retrieve(g.Engine, g.State, unit.GetUUID())
+				ctx := context.WithValue(context.Background(), en.CardCtx, unit.GetUUID())
+				choices, err := ch.NewChoices(choose1, choose2).Retrieve(ctx, g.Engine, g.State)
 				if err != nil {
 					return nil, errors.Wrap(err)
 				}
@@ -284,7 +287,8 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 			if playable, err := c.Playable(g.Engine, g.State); err != nil || !playable || c.GetCost() > g.Mana[player].Amount {
 				return nil, errors.Errorf("'%s' not playable", targets[0])
 			}
-			return c.NextTargets(g.Engine, g.State, targets[1:]...)
+			ctx := context.WithValue(context.Background(), en.TargetsCtx, targets[1:])
+			return c.NextTargets(ctx, g.Engine, g.State)
 		} else if x1, y1, err := g.Board.GetUnitXY(targets[0]); err == nil {
 			unit := g.Board.XYs[x1][y1].Unit.(*cd.UnitCard)
 			if unit.Type != cd.CreatureUnit {
@@ -307,7 +311,8 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 					if err != nil {
 						return nil, errors.Wrap(err)
 					}
-					moveChoices, err = ch.NewChoices(moveChoose1, moveChoose2).Retrieve(g.Engine, g.State, unit.GetUUID())
+					ctx := context.WithValue(context.Background(), en.CardCtx, unit.GetUUID())
+					moveChoices, err = ch.NewChoices(moveChoose1, moveChoose2).Retrieve(ctx, g.Engine, g.State)
 					if err != nil {
 						return nil, errors.Wrap(err)
 					}
@@ -330,7 +335,8 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 					if err != nil {
 						return nil, errors.Wrap(err)
 					}
-					attackChoices, err = ch.NewChoices(attackChoose1, attackChoose2).Retrieve(g.Engine, g.State, unit.GetUUID())
+					ctx := context.WithValue(context.Background(), en.CardCtx, unit.GetUUID())
+					attackChoices, err = ch.NewChoices(attackChoose1, attackChoose2).Retrieve(ctx, g.Engine, g.State)
 					if err != nil {
 						return nil, errors.Wrap(err)
 					}

@@ -1,6 +1,8 @@
 package event
 
 import (
+	"context"
+
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
@@ -9,7 +11,6 @@ import (
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
-	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
 const (
@@ -18,7 +19,7 @@ const (
 
 type EndTurnArgs struct{}
 
-func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
+func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
 	// poison trait check on player's units
 	for _, col := range state.Board.XYs {
 		for _, tile := range col {
@@ -41,7 +42,7 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 						},
 						affect: DamageUnitAffect,
 					}
-					if err := engine.Do(event, state); err != nil {
+					if err := engine.Do(context.Background(), event, state); err != nil {
 						return errors.Wrap(err)
 					}
 				}
@@ -107,7 +108,7 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 			},
 		}
 		for _, event := range events {
-			if err := engine.Do(event, state); err != nil {
+			if err := engine.Do(context.Background(), event, state); err != nil {
 				return errors.Wrap(err)
 			}
 		}
@@ -207,7 +208,7 @@ func EndTurnAffect(engine *en.Engine, state *st.State, args interface{}, targets
 	}
 
 	for _, event := range events {
-		if err := engine.Do(event, state); err != nil {
+		if err := engine.Do(context.Background(), event, state); err != nil {
 			return errors.Wrap(err)
 		}
 	}

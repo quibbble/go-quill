@@ -1,13 +1,14 @@
 package event
 
 import (
+	"context"
+
 	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
-	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
 const SackCardEvent = "SackCard"
@@ -23,13 +24,13 @@ type SackCardArgs struct {
 	ChooseCard   parse.Choose
 }
 
-func SackCardAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
+func SackCardAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
 	var a SackCardArgs
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
 
-	playerChoice, err := GetPlayerChoice(engine, state, a.ChoosePlayer, targets...)
+	playerChoice, err := GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -105,7 +106,7 @@ func SackCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 	}
 
 	for _, event := range events {
-		if err := engine.Do(event, state); err != nil {
+		if err := engine.Do(context.Background(), event, state); err != nil {
 			return errors.Wrap(err)
 		}
 	}

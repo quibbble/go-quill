@@ -1,6 +1,8 @@
 package event
 
 import (
+	"context"
+
 	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
@@ -20,13 +22,13 @@ type RemoveTraitFromCardArgs struct {
 	ChooseCard parse.Choose
 }
 
-func RemoveTraitFromCardAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
+func RemoveTraitFromCardAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
 	var a RemoveTraitFromCardArgs
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
 
-	choice, err := GetChoice(engine, state, a.ChooseCard, targets...)
+	choice, err := GetChoice(ctx, a.ChooseCard, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -58,7 +60,7 @@ func RemoveTraitFromCardAffect(engine *en.Engine, state *st.State, args interfac
 				},
 				affect: KillUnitAffect,
 			}
-			if err := engine.Do(event, state); err != nil {
+			if err := engine.Do(context.Background(), event, state); err != nil {
 				return errors.Wrap(err)
 			}
 		}

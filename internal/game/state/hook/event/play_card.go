@@ -1,6 +1,8 @@
 package event
 
 import (
+	"context"
+
 	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
@@ -21,17 +23,17 @@ type PlayCardArgs struct {
 	ChooseCard   parse.Choose
 }
 
-func PlayCardAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
+func PlayCardAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
 	var a PlayCardArgs
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
 
-	playerChoice, err := GetPlayerChoice(engine, state, a.ChoosePlayer, targets...)
+	playerChoice, err := GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	cardChoice, err := GetChoice(engine, state, a.ChooseCard, targets...)
+	cardChoice, err := GetChoice(ctx, a.ChooseCard, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -44,7 +46,7 @@ func PlayCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	next, err := card.NextTargets(engine, state, targets...)
+	next, err := card.NextTargets(ctx, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -56,6 +58,8 @@ func PlayCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 	if state.Mana[playerChoice].Amount < card.GetCost() {
 		return errors.Errorf("player '%s' does not have enough mana to play '%s'", playerChoice, card.GetUUID())
 	}
+
+	targets := ctx.Value(en.TargetsCtx).([]uuid.UUID)
 
 	// purity trait check
 	if card.GetUUID().Type() == st.SpellUUID {
@@ -70,7 +74,7 @@ func PlayCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 		}
 	}
 
-	if err := engine.Do(&Event{
+	if err := engine.Do(context.Background(), &Event{
 		uuid: state.Gen.New(st.EventUUID),
 		typ:  DrainManaEvent,
 		args: &DrainManaArgs{
@@ -172,7 +176,7 @@ func PlayCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 	// apply card event and then any additional events attached to the card
 	events := append([]en.IEvent{event}, card.GetEvents()...)
 	for _, event := range events {
-		if err := engine.Do(event, state, targets...); err != nil {
+		if err := engine.Do(ctx, event, state); err != nil {
 			return errors.Wrap(err)
 		}
 	}

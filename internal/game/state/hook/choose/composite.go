@@ -1,6 +1,8 @@
 package choose
 
 import (
+	"context"
+
 	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
@@ -15,7 +17,7 @@ type CompositeArgs struct {
 	Choices []parse.Choose
 }
 
-func RetrieveComposite(engine en.IEngine, state en.IState, args interface{}, targets ...uuid.UUID) ([]uuid.UUID, error) {
+func RetrieveComposite(ctx context.Context, args interface{}, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
 	var c CompositeArgs
 	if err := mapstructure.Decode(args, &c); err != nil {
 		return nil, errors.ErrInterfaceConversion
@@ -31,5 +33,5 @@ func RetrieveComposite(engine en.IEngine, state en.IState, args interface{}, tar
 	ch := &Choices{
 		Choices: choices,
 	}
-	return ch.Retrieve(engine, state, targets...)
+	return ch.Retrieve(ctx, engine, state)
 }

@@ -1,6 +1,8 @@
 package event
 
 import (
+	"context"
+
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	"github.com/quibbble/go-quill/pkg/errors"
@@ -12,7 +14,7 @@ type Event struct {
 
 	typ    string
 	args   interface{}
-	affect func(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error
+	affect func(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error
 }
 
 func NewEvent(uuid uuid.UUID, typ string, args interface{}) (en.IEvent, error) {
@@ -40,7 +42,7 @@ func (e *Event) GetArgs() interface{} {
 	return e.args
 }
 
-func (e *Event) Affect(engine en.IEngine, state en.IState, targets ...uuid.UUID) error {
+func (e *Event) Affect(ctx context.Context, engine en.IEngine, state en.IState) error {
 	eng, ok := engine.(*en.Engine)
 	if !ok {
 		return errors.ErrInterfaceConversion
@@ -49,5 +51,5 @@ func (e *Event) Affect(engine en.IEngine, state en.IState, targets ...uuid.UUID)
 	if !ok {
 		return errors.ErrInterfaceConversion
 	}
-	return e.affect(eng, sta, e.args, targets...)
+	return e.affect(ctx, e.args, eng, sta)
 }

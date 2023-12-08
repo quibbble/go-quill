@@ -1,4 +1,4 @@
 # go-quill
 
 ## TODO
-- Make adjacent and codex choices have internal choice for selecting unit
+- Make adjacent codex and connected choices have internal choice for selecting unit

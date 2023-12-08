@@ -1,6 +1,8 @@
 package event
 
 import (
+	"context"
+
 	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
@@ -22,12 +24,12 @@ type AttackUnitArgs struct {
 	ChooseDefender parse.Choose
 }
 
-func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
+func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
 	var a AttackUnitArgs
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	attackerChoice, err := GetUnitChoice(engine, state, a.ChooseAttacker, targets...)
+	attackerChoice, err := GetUnitChoice(ctx, a.ChooseAttacker, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -37,7 +39,7 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 	}
 	attacker := state.Board.XYs[aX][aY].Unit.(*cd.UnitCard)
 
-	defenderChoice, err := GetUnitChoice(engine, state, a.ChooseDefender, targets...)
+	defenderChoice, err := GetUnitChoice(ctx, a.ChooseDefender, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -104,7 +106,7 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 			},
 		}
 		for _, event := range events {
-			if err := engine.Do(event, state); err != nil {
+			if err := engine.Do(context.Background(), event, state); err != nil {
 				return errors.Wrap(err)
 			}
 		}
@@ -122,7 +124,8 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 		if err != nil {
 			return errors.Wrap(err)
 		}
-		uuids, err := choose.Retrieve(engine, state, defender.UUID)
+		ctx := context.WithValue(context.Background(), en.TargetsCtx, []uuid.UUID{defender.UUID})
+		uuids, err := choose.Retrieve(ctx, engine, state)
 		if err != nil {
 			return errors.Wrap(err)
 		}
@@ -176,7 +179,7 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 				}
 			}
 
-			if err := engine.Do(event, state); err != nil {
+			if err := engine.Do(context.Background(), event, state); err != nil {
 				return errors.Wrap(err)
 			}
 
@@ -189,7 +192,7 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 					if err != nil {
 						return errors.Wrap(err)
 					}
-					if err := engine.Do(event, state); err != nil {
+					if err := engine.Do(context.Background(), event, state); err != nil {
 						return errors.Wrap(err)
 					}
 				}
@@ -211,7 +214,7 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 					if err != nil {
 						return errors.Wrap(err)
 					}
-					if err := engine.Do(event, state); err != nil {
+					if err := engine.Do(context.Background(), event, state); err != nil {
 						return errors.Wrap(err)
 					}
 				}
@@ -234,7 +237,7 @@ func AttackUnitAffect(engine *en.Engine, state *st.State, args interface{}, targ
 				},
 				affect: DamageUnitAffect,
 			}
-			if err := engine.Do(event, state); err != nil {
+			if err := engine.Do(context.Background(), event, state); err != nil {
 				return errors.Wrap(err)
 			}
 		}

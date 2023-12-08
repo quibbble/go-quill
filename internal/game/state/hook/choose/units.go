@@ -1,6 +1,7 @@
 package choose
 
 import (
+	"context"
 	"slices"
 
 	"github.com/mitchellh/mapstructure"
@@ -17,7 +18,7 @@ type UnitsArgs struct {
 	Types []string
 }
 
-func RetrieveUnits(engine en.IEngine, state en.IState, args interface{}, targets ...uuid.UUID) ([]uuid.UUID, error) {
+func RetrieveUnits(ctx context.Context, args interface{}, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
 	var c UnitsArgs
 	if err := mapstructure.Decode(args, &c); err != nil {
 		return nil, errors.ErrInterfaceConversion

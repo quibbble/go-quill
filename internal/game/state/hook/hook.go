@@ -1,6 +1,8 @@
 package hook
 
 import (
+	"context"
+
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -43,14 +45,14 @@ func (h *Hook) Trigger(when en.When, typ string) bool {
 	return h.when == when && h.typ == typ
 }
 
-func (h *Hook) Pass(engine en.IEngine, state en.IState, event en.IEvent, targets ...uuid.UUID) (bool, error) {
-	return h.conditions.Pass(engine, state, event, targets...)
+func (h *Hook) Pass(ctx context.Context, engine en.IEngine, state en.IState) (bool, error) {
+	return h.conditions.Pass(ctx, engine, state)
 }
 
 func (h *Hook) Events() []en.IEvent {
 	return h.events
 }
 
-func (h *Hook) Reuse(engine en.IEngine, state en.IState, event en.IEvent, targets ...uuid.UUID) (bool, error) {
-	return h.reuse.Pass(engine, state, event, targets...)
+func (h *Hook) Reuse(ctx context.Context, engine en.IEngine, state en.IState) (bool, error) {
+	return h.reuse.Pass(ctx, engine, state)
 }

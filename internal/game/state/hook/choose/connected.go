@@ -1,6 +1,7 @@
 package choose
 
 import (
+	"context"
 	"slices"
 
 	"github.com/mitchellh/mapstructure"
@@ -17,11 +18,12 @@ type ConnectedArgs struct {
 	ConnectionType string
 }
 
-func RetrieveConnected(engine en.IEngine, state en.IState, args interface{}, targets ...uuid.UUID) ([]uuid.UUID, error) {
+func RetrieveConnected(ctx context.Context, args interface{}, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
 	var c ConnectedArgs
 	if err := mapstructure.Decode(args, &c); err != nil {
 		return nil, errors.ErrInterfaceConversion
 	}
+	targets := ctx.Value(en.TargetsCtx).([]uuid.UUID)
 	if len(targets) != 1 {
 		return nil, errors.ErrInvalidSliceLength
 	}
@@ -56,7 +58,8 @@ func RetrieveConnected(engine en.IEngine, state en.IState, args interface{}, tar
 
 		connected = append(connected, item)
 
-		conns, err := choose.Retrieve(engine, state, item)
+		ctx := context.WithValue(context.Background(), en.TargetsCtx, []uuid.UUID{item})
+		conns, err := choose.Retrieve(ctx, engine, state)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}

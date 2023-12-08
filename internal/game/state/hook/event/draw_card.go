@@ -1,12 +1,13 @@
 package event
 
 import (
+	"context"
+
 	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
-	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
 const DrawCardEvent = "DrawCard"
@@ -15,13 +16,13 @@ type DrawCardArgs struct {
 	ChoosePlayer parse.Choose
 }
 
-func DrawCardAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
+func DrawCardAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
 	var a DrawCardArgs
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
 
-	playerChoice, err := GetPlayerChoice(engine, state, a.ChoosePlayer, targets...)
+	playerChoice, err := GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -41,7 +42,7 @@ func DrawCardAffect(engine *en.Engine, state *st.State, args interface{}, target
 			},
 			affect: BurnCardAffect,
 		}
-		if err := engine.Do(event, state); err != nil {
+		if err := engine.Do(context.Background(), event, state); err != nil {
 			return errors.Wrap(err)
 		}
 	}

@@ -1,6 +1,8 @@
 package choose
 
 import (
+	"context"
+
 	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
@@ -15,7 +17,7 @@ type OwnedTilesArgs struct {
 	ChoosePlayer parse.Choose
 }
 
-func RetrieveOwnedTiles(engine en.IEngine, state en.IState, args interface{}, targets ...uuid.UUID) ([]uuid.UUID, error) {
+func RetrieveOwnedTiles(ctx context.Context, args interface{}, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
 	var c OwnedTilesArgs
 	if err := mapstructure.Decode(args, &c); err != nil {
 		return nil, errors.ErrInterfaceConversion
@@ -24,7 +26,7 @@ func RetrieveOwnedTiles(engine en.IEngine, state en.IState, args interface{}, ta
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
-	choices, err := choose.Retrieve(engine, state, targets...)
+	choices, err := choose.Retrieve(ctx, engine, state)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}

@@ -1,6 +1,8 @@
 package state
 
 import (
+	"context"
+
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/uuid"
@@ -16,7 +18,7 @@ type ICard interface {
 	GetEvents() []en.IEvent
 	GetHooks() []en.IHook
 	Playable(engine en.IEngine, state en.IState) (bool, error)
-	NextTargets(engine en.IEngine, state en.IState, targets ...uuid.UUID) ([]uuid.UUID, error)
+	NextTargets(ctx context.Context, engine en.IEngine, state en.IState) ([]uuid.UUID, error)
 	GetTraits(typ string) []ITrait
 	AddTrait(engine en.IEngine, trait ITrait) error
 	RemoveTrait(engine en.IEngine, trait uuid.UUID) error

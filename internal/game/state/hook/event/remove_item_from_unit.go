@@ -1,6 +1,8 @@
 package event
 
 import (
+	"context"
+
 	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
@@ -8,7 +10,6 @@ import (
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
-	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
 const (
@@ -20,17 +21,17 @@ type RemoveItemFromUnitArgs struct {
 	ChooseUnit parse.Choose
 }
 
-func RemoveItemFromUnitAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
+func RemoveItemFromUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
 	var a RemoveItemFromUnitArgs
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
 
-	itemChoice, err := GetItemChoice(engine, state, a.ChooseItem, targets...)
+	itemChoice, err := GetItemChoice(ctx, a.ChooseItem, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	unitChoice, err := GetUnitChoice(engine, state, a.ChooseUnit, targets...)
+	unitChoice, err := GetUnitChoice(ctx, a.ChooseUnit, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -58,7 +59,7 @@ func RemoveItemFromUnitAffect(engine *en.Engine, state *st.State, args interface
 			},
 			affect: AddTraitToCardAffect,
 		}
-		if err := engine.Do(event, state); err != nil {
+		if err := engine.Do(context.Background(), event, state); err != nil {
 			return errors.Wrap(err)
 		}
 

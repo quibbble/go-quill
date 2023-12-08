@@ -1,6 +1,10 @@
 package engine
 
-import "github.com/quibbble/go-quill/pkg/uuid"
+import (
+	"context"
+
+	"github.com/quibbble/go-quill/pkg/uuid"
+)
 
 type When string
 
@@ -17,7 +21,7 @@ type IHook interface {
 	GetCardUUID() uuid.UUID
 	GetType() string
 	Trigger(when When, typ string) bool
-	Pass(engine IEngine, state IState, event IEvent, targets ...uuid.UUID) (bool, error)
+	Pass(ctx context.Context, engine IEngine, state IState) (bool, error)
 	Events() []IEvent
-	Reuse(engine IEngine, state IState, event IEvent, targets ...uuid.UUID) (bool, error)
+	Reuse(ctx context.Context, engine IEngine, state IState) (bool, error)
 }

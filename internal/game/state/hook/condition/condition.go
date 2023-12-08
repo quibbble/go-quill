@@ -1,6 +1,8 @@
 package condition
 
 import (
+	"context"
+
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	"github.com/quibbble/go-quill/pkg/errors"
@@ -13,7 +15,7 @@ type Condition struct {
 	typ  string
 	not  bool
 	args interface{}
-	pass func(engine *en.Engine, state *st.State, args interface{}, event en.IEvent, targets ...uuid.UUID) (bool, error)
+	pass func(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) (bool, error)
 }
 
 func NewCondition(uuid uuid.UUID, typ string, not bool, args interface{}) (en.ICondition, error) {
@@ -42,7 +44,7 @@ func (c *Condition) GetArgs() interface{} {
 	return c.args
 }
 
-func (c *Condition) Pass(engine en.IEngine, state en.IState, event en.IEvent, targets ...uuid.UUID) (bool, error) {
+func (c *Condition) Pass(ctx context.Context, engine en.IEngine, state en.IState) (bool, error) {
 	eng, ok := engine.(*en.Engine)
 	if !ok {
 		return false, errors.ErrInterfaceConversion
@@ -51,7 +53,7 @@ func (c *Condition) Pass(engine en.IEngine, state en.IState, event en.IEvent, ta
 	if !ok {
 		return false, errors.ErrInterfaceConversion
 	}
-	pass, err := c.pass(eng, sta, c.args, event, targets...)
+	pass, err := c.pass(ctx, c.args, eng, sta)
 	if err != nil {
 		return false, errors.Wrap(err)
 	}

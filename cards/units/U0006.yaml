@@ -1,0 +1,56 @@
+ID: U0006
+Name: Well
+Description: "While in play gain +1 base energy."
+Cost: 1
+Conditions:
+Targets: # SET BY PARSER
+Type: Structure
+DamageType: Physical
+Attack: 1
+Health: 1
+Cooldown: -1
+Movement: 0
+Codex: "00000000"
+Traits:
+Hooks:
+- Wben: After
+  Type: KillUnit
+  Conditions:
+  - Type: KillUnitAppliedTo
+    Not: false
+    Args:
+      ChooseUnit:
+        Type: Self
+  - Type: UnitMissing
+    Not: false
+    Args:
+      ChooseUnit:
+        Type: Self
+  Events:
+  - Type: DrainMana
+    Args:
+      ChoosePlayer:
+        Type: SelfOwner
+      Amount: 1
+  - Type: DrainBaseMana
+    Args:
+      ChoosePlayer:
+        Type: SelfOwner
+      Amount: 1
+  ReuseConditions:
+  - Type: KillUnitAppliedTo
+    Not: true
+    Args:
+      ChooseUnit:
+        Type: Self
+Events:
+  - Type: GainMana
+    Args:
+      ChoosePlayer:
+        Type: SelfOwner
+      Amount: 1
+  - Type: GainBaseMana
+    Args:
+      ChoosePlayer:
+        Type: SelfOwner
+    Amount: 1

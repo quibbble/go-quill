@@ -1,15 +1,16 @@
 package event
 
 import (
-	"github.com/quibbble/go-quill/internal/game/engine"
-	"github.com/quibbble/go-quill/internal/game/state"
-	"github.com/quibbble/go-quill/pkg/uuid"
+	"context"
+
+	en "github.com/quibbble/go-quill/internal/game/engine"
+	st "github.com/quibbble/go-quill/internal/game/state"
 )
 
-var EventMap map[string]func(engine *engine.Engine, state *state.State, args interface{}, targets ...uuid.UUID) error
+var EventMap map[string]func(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error
 
 func init() {
-	EventMap = map[string]func(engine *engine.Engine, state *state.State, args interface{}, targets ...uuid.UUID) error{
+	EventMap = map[string]func(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error{
 		DamageUnitEvent:         DamageUnitAffect,
 		DamageUnitsEvent:        DamageUnitsAffect,
 		KillUnitEvent:           KillUnitAffect,

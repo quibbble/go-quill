@@ -1,6 +1,8 @@
 package event
 
 import (
+	"context"
+
 	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
@@ -8,7 +10,6 @@ import (
 	tr "github.com/quibbble/go-quill/internal/game/state/card/trait"
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
-	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
 const (
@@ -21,21 +22,21 @@ type PlaceUnitArgs struct {
 	ChooseTile   parse.Choose
 }
 
-func PlaceUnitAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
+func PlaceUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
 	var a PlaceUnitArgs
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
 
-	playerChoice, err := GetPlayerChoice(engine, state, a.ChoosePlayer, targets...)
+	playerChoice, err := GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	unitChoice, err := GetUnitChoice(engine, state, a.ChooseUnit, targets...)
+	unitChoice, err := GetUnitChoice(ctx, a.ChooseUnit, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	tileChoice, err := GetTileChoice(engine, state, a.ChooseTile, targets...)
+	tileChoice, err := GetTileChoice(ctx, a.ChooseTile, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -70,7 +71,7 @@ func PlaceUnitAffect(engine *en.Engine, state *st.State, args interface{}, targe
 		if err != nil {
 			return errors.Wrap(err)
 		}
-		if err := engine.Do(event, state); err != nil {
+		if err := engine.Do(context.Background(), event, state); err != nil {
 			return errors.Wrap(err)
 		}
 	}

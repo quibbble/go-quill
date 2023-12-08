@@ -1,6 +1,8 @@
 package event
 
 import (
+	"context"
+
 	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
@@ -9,7 +11,6 @@ import (
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
-	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
 const (
@@ -21,7 +22,7 @@ type AddTraitToCardArgs struct {
 	ChooseCard parse.Choose
 }
 
-func AddTraitToCardAffect(engine *en.Engine, state *st.State, args interface{}, targets ...uuid.UUID) error {
+func AddTraitToCardAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
 	var a AddTraitToCardArgs
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
@@ -31,7 +32,7 @@ func AddTraitToCardAffect(engine *en.Engine, state *st.State, args interface{}, 
 		return errors.Wrap(err)
 	}
 
-	choice, err := GetChoice(engine, state, a.ChooseCard, targets...)
+	choice, err := GetChoice(ctx, a.ChooseCard, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -63,7 +64,7 @@ func AddTraitToCardAffect(engine *en.Engine, state *st.State, args interface{}, 
 				},
 				affect: KillUnitAffect,
 			}
-			if err := engine.Do(event, state); err != nil {
+			if err := engine.Do(context.Background(), event, state); err != nil {
 				return errors.Wrap(err)
 			}
 		}

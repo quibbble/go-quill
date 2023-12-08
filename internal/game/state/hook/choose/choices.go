@@ -1,6 +1,8 @@
 package choose
 
 import (
+	"context"
+
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
@@ -17,10 +19,10 @@ func NewChoices(choices ...en.IChoose) en.IChoose {
 	}
 }
 
-func (c *Choices) Retrieve(engine en.IEngine, state en.IState, targets ...uuid.UUID) ([]uuid.UUID, error) {
+func (c *Choices) Retrieve(ctx context.Context, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
 	lists := make([][]uuid.UUID, 0)
 	for _, choice := range c.Choices {
-		uuids, err := choice.Retrieve(engine, state, targets...)
+		uuids, err := choice.Retrieve(ctx, engine, state)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
