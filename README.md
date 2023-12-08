@@ -1,5 +1,4 @@
 # go-quill
 
 ## TODO
-- Spell tests
-- Item tests
+- Make adjacent and codex choices have internal choice for selecting unit

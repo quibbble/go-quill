@@ -2,6 +2,11 @@ ID: I0001
 Name: Sword
 Description: "Gain +2 attack."
 Cost: 1
+Targets:
+- Type: Units
+  Args:
+    Types:
+    - Creature
 HeldTraits:
 - Type: Buff
   Args:

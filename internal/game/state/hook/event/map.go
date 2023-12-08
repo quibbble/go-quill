@@ -20,10 +20,12 @@ func init() {
 		PlaceUnitEvent:          PlaceUnitAffect,
 		SwapUnitsEvent:          SwapUnitsAffect,
 		SummonUnitEvent:         SummonUnitAffect,
+		ModifyUnitEvent:         ModifyUnitAffect,
 		AddItemToUnitEvent:      AddItemToUnitAffect,
 		RemoveItemFromUnitEvent: RemoveItemFromUnitAffect,
-		RefreshMovementEvent:    RefreshMovementAffect,
-		CooldownEvent:           CooldownAffect,
+
+		RefreshMovementEvent: RefreshMovementAffect,
+		CooldownEvent:        CooldownAffect,
 
 		PlayCardEvent:       PlayCardAffect,
 		DiscardCardEvent:    DiscardCardAffect,

@@ -16,4 +16,21 @@ Targets:
           Type: CurrentPlayer
 Hooks:
 Events:
-# TODO
+- Type: KillUnit
+  Args:
+    ChooseUnit:
+      Type: Target
+      Args:
+        Index: 0
+- Type: DrawCard
+  Args:
+    ChoosePlayer:
+      Type: CurrentPlayer
+- Type: DrawCard
+  Args:
+    ChoosePlayer:
+      Type: CurrentPlayer
+- Type: DrawCard
+  Args:
+    ChoosePlayer:
+      Type: CurrentPlayer

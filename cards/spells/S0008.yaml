@@ -9,4 +9,11 @@ Targets:
     - Creature
 Hooks:
 Events:
-# TODO
+- Type: ModifyUnit
+  Args:
+    ChooseUnit: 
+      Type: Target
+      Args:
+        Index: 0
+    Stat: Cooldown
+    Amount: -2

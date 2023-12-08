@@ -23,5 +23,6 @@ func init() {
 		CurrentPlayerChoice:  RetrieveCurrentPlayer,
 		OpposingPlayerChoice: RetrieveOpposingPlayer,
 		TargetOwnerChoice:    RetrieveTargetOwner,
+		RandomChoice:         RetrieveRandom,
 	}
 }

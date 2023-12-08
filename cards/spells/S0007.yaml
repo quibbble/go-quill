@@ -10,4 +10,28 @@ Targets:
     - Structure
 Hooks:
 Events:
-# TODO
+- Type: MoveUnit
+  Args:
+    ChooseUnit:
+      Type: Target
+      Args:
+        Index: 0
+    ChooseTile:
+      Type: Random
+      Args:
+        Choose:
+          Type: Composite
+          Args:
+            Choices:
+            - Type: Adjacent
+              Args:
+                Types:
+                - Tile
+            - Type: Tiles
+              Args:
+                Empty: true
+    UnitMovement: false
+- Type: DrawCard
+  Args:
+    ChoosePlayer:
+      Type: CurrentPlayer

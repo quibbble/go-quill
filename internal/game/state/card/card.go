@@ -11,12 +11,12 @@ import (
 )
 
 const (
-	CostStat      = "Cost"
-	AttackStat    = "Attack"
-	HealthStat    = "Health"
-	MovementStat  = "Movement"
-	CooldownState = "Cooldown"
-	RangeState    = "Range"
+	CostStat     = "Cost"
+	AttackStat   = "Attack"
+	HealthStat   = "Health"
+	MovementStat = "Movement"
+	CooldownStat = "Cooldown"
+	RangeState   = "Range"
 )
 
 type Card struct {
