@@ -10,6 +10,7 @@ Targets:
     - Structure
 - Type: Composite
   Args:
+    SetFunction: Intersect
     Choices:
     - Type: Units
       Args:

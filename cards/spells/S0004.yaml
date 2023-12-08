@@ -5,7 +5,8 @@ Cost: 3
 Targets:
 Hooks:
 - When: After
-  Type: GainMana
+  Types: 
+  - GainMana
   Conditions:
   - Type: ManaAbove
     Args:

@@ -224,7 +224,7 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
-		c, err := ch.NewChoices(choose1, choose2).Retrieve(context.Background(), g.Engine, g.State)
+		c, err := ch.NewChoices(ch.SetIntersect, choose1, choose2).Retrieve(context.Background(), g.Engine, g.State)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
@@ -261,7 +261,7 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 					return nil, errors.Wrap(err)
 				}
 				ctx := context.WithValue(context.Background(), en.CardCtx, unit.GetUUID())
-				choices, err := ch.NewChoices(choose1, choose2).Retrieve(ctx, g.Engine, g.State)
+				choices, err := ch.NewChoices(ch.SetIntersect, choose1, choose2).Retrieve(ctx, g.Engine, g.State)
 				if err != nil {
 					return nil, errors.Wrap(err)
 				}
@@ -324,7 +324,7 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 						return nil, errors.Wrap(err)
 					}
 					ctx := context.WithValue(context.Background(), en.CardCtx, unit.GetUUID())
-					moveChoices, err = ch.NewChoices(moveChoose1, moveChoose2).Retrieve(ctx, g.Engine, g.State)
+					moveChoices, err = ch.NewChoices(ch.SetIntersect, moveChoose1, moveChoose2).Retrieve(ctx, g.Engine, g.State)
 					if err != nil {
 						return nil, errors.Wrap(err)
 					}
@@ -354,7 +354,7 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 						return nil, errors.Wrap(err)
 					}
 					ctx := context.WithValue(context.Background(), en.CardCtx, unit.GetUUID())
-					attackChoices, err = ch.NewChoices(attackChoose1, attackChoose2).Retrieve(ctx, g.Engine, g.State)
+					attackChoices, err = ch.NewChoices(ch.SetIntersect, attackChoose1, attackChoose2).Retrieve(ctx, g.Engine, g.State)
 					if err != nil {
 						return nil, errors.Wrap(err)
 					}

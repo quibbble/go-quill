@@ -83,7 +83,7 @@ func KillUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 		if err != nil {
 			return errors.Wrap(err)
 		}
-		choices := ch.NewChoices(choose1, choose2)
+		choices := ch.NewChoices(ch.SetIntersect, choose1, choose2)
 		bases, err := choices.Retrieve(context.Background(), engine, state)
 		if err != nil {
 			return errors.Wrap(err)

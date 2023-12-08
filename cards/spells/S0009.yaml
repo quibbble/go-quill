@@ -5,6 +5,7 @@ Cost: 4
 Targets:
 - Type: Composite
   Args:
+    SetFunction: Intersect
     Choices:
     - Type: Units
       Args:

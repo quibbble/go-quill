@@ -133,7 +133,7 @@ func NewCard(builders *Builders, id string, player uuid.UUID) (st.ICard, error) 
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
-		hook, err := builders.BuildHook(builders.Gen.New(st.HookUUID), uuid, h.When, h.Type, hookConditions, hookEvents, hookReuseConditions)
+		hook, err := builders.BuildHook(builders.Gen.New(st.HookUUID), uuid, h.When, h.Types, hookConditions, hookEvents, hookReuseConditions)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}

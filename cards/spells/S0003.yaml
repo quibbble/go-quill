@@ -9,7 +9,8 @@ Targets:
     - Creature
 Hooks:
 - When: After
-  Type: DamageUnit
+  Types: 
+  - DamageUnit
   Conditions:
   - Type: UnitEventMatches
     Not: false

@@ -13,8 +13,10 @@ Movement: 0
 Codex: "00000000"
 Traits:
 Hooks:
-- Wben: After
-  Type: KillUnit OR RescindUnit # TODO
+- When: After
+  Types: 
+  - KillUnit
+  - RescindUnit
   Conditions:
   - Type: UnitEventMatches
     Not: false
@@ -24,14 +26,14 @@ Hooks:
   Events:
   - Type: DrainMana
     Args:
+      Amount: 1
       ChoosePlayer:
         Type: SelfOwner
-      Amount: 1
   - Type: DrainBaseMana
     Args:
+      Amount: 1
       ChoosePlayer:
         Type: SelfOwner
-      Amount: 1
   ReuseConditions:
   - Type: UnitEventMatches
     Not: true
@@ -41,11 +43,11 @@ Hooks:
 Events:
 - Type: GainMana
   Args:
+    Amount: 1
     ChoosePlayer:
       Type: SelfOwner
-    Amount: 1
 - Type: GainBaseMana
   Args:
+    Amount: 1
     ChoosePlayer:
       Type: SelfOwner
-    Amount: 1

@@ -60,7 +60,7 @@ type Choose struct {
 
 type Hook struct {
 	When            string
-	Type            string
+	Types           []string
 	Conditions      []Condition
 	Events          []Event
 	ReuseConditions []Condition

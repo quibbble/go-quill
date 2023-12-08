@@ -57,6 +57,7 @@ func ParseCard(id string) (ICard, error) {
 			{
 				Type: "Composite",
 				Args: map[string]interface{}{
+					"SetFunction": "Intersect",
 					"Choices": []Choose{
 						{
 							Type: "Tiles",

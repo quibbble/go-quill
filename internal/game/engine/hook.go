@@ -13,13 +13,13 @@ const (
 	After  When = "After"
 )
 
-type BuildHook func(uuid, cardUUID uuid.UUID, when, typ string, conditions []ICondition, events []IEvent, reuse []ICondition) (IHook, error)
+type BuildHook func(uuid, cardUUID uuid.UUID, when string, types []string, conditions []ICondition, events []IEvent, reuse []ICondition) (IHook, error)
 
 // Hooks are always registered by a card
 type IHook interface {
 	GetUUID() uuid.UUID
 	GetCardUUID() uuid.UUID
-	GetType() string
+	GetTypes() []string
 	Trigger(when When, typ string) bool
 	Pass(ctx context.Context, engine IEngine, state IState) (bool, error)
 	Events() []IEvent

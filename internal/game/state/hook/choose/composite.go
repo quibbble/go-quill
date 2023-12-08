@@ -14,7 +14,8 @@ import (
 const CompositeChoice = "Composite"
 
 type CompositeArgs struct {
-	Choices []parse.Choose
+	SetFunction string
+	Choices     []parse.Choose
 }
 
 func RetrieveComposite(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
@@ -31,7 +32,8 @@ func RetrieveComposite(ctx context.Context, args interface{}, engine *en.Engine,
 		choices = append(choices, choose)
 	}
 	ch := &Choices{
-		Choices: choices,
+		SetFunction: c.SetFunction,
+		Choices:     choices,
 	}
 	return ch.Retrieve(ctx, engine, state)
 }

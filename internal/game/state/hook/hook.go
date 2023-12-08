@@ -2,6 +2,7 @@ package hook
 
 import (
 	"context"
+	"slices"
 
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	"github.com/quibbble/go-quill/pkg/uuid"
@@ -11,18 +12,18 @@ type Hook struct {
 	uuid       uuid.UUID
 	cardUUID   uuid.UUID // the card that registered the hook
 	when       en.When
-	typ        string
+	types      []string
 	conditions en.Conditions
 	events     []en.IEvent
 	reuse      en.Conditions
 }
 
-func NewHook(uuid, cardUUID uuid.UUID, when, typ string, conditions []en.ICondition, events []en.IEvent, reuse []en.ICondition) (en.IHook, error) {
+func NewHook(uuid, cardUUID uuid.UUID, when string, types []string, conditions []en.ICondition, events []en.IEvent, reuse []en.ICondition) (en.IHook, error) {
 	return &Hook{
 		uuid:       uuid,
 		cardUUID:   cardUUID,
 		when:       en.When(when),
-		typ:        typ,
+		types:      types,
 		conditions: conditions,
 		events:     events,
 		reuse:      reuse,
@@ -37,12 +38,12 @@ func (h *Hook) GetCardUUID() uuid.UUID {
 	return h.cardUUID
 }
 
-func (h *Hook) GetType() string {
-	return h.typ
+func (h *Hook) GetTypes() []string {
+	return h.types
 }
 
 func (h *Hook) Trigger(when en.When, typ string) bool {
-	return h.when == when && h.typ == typ
+	return h.when == when && slices.Contains(h.types, typ)
 }
 
 func (h *Hook) Pass(ctx context.Context, engine en.IEngine, state en.IState) (bool, error) {
