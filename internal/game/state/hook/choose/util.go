@@ -1,11 +1,10 @@
-package event
+package choose
 
 import (
 	"context"
 
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
-	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
@@ -31,12 +30,20 @@ func GetTileChoice(ctx context.Context, raw parse.Choose, engine *en.Engine, sta
 	return getTypeChoice(ctx, raw, st.TileUUID, engine, state)
 }
 
-func GetChoice(ctx context.Context, raw parse.Choose, engine *en.Engine, state *st.State) (uuid.UUID, error) {
-	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), raw.Type, raw.Args)
+func GetChoices(ctx context.Context, raw parse.Choose, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
+	choose, err := NewChoose(state.Gen.New(st.ChooseUUID), raw.Type, raw.Args)
 	if err != nil {
-		return uuid.Nil, errors.Wrap(err)
+		return nil, errors.Wrap(err)
 	}
 	choices, err := choose.Retrieve(ctx, engine, state)
+	if err != nil {
+		return nil, errors.Wrap(err)
+	}
+	return choices, nil
+}
+
+func GetChoice(ctx context.Context, raw parse.Choose, engine *en.Engine, state *st.State) (uuid.UUID, error) {
+	choices, err := GetChoices(ctx, raw, engine, state)
 	if err != nil {
 		return uuid.Nil, errors.Wrap(err)
 	}

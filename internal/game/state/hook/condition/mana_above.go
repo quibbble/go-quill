@@ -6,7 +6,7 @@ import (
 	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
-	ev "github.com/quibbble/go-quill/internal/game/state/hook/event"
+	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 )
@@ -24,7 +24,7 @@ func PassManaAbove(ctx context.Context, args interface{}, engine *en.Engine, sta
 		return false, errors.ErrInterfaceConversion
 	}
 
-	playerChoice, err := ev.GetPlayerChoice(ctx, p.ChoosePlayer, engine, state)
+	playerChoice, err := ch.GetPlayerChoice(ctx, p.ChoosePlayer, engine, state)
 	if err != nil {
 		return false, errors.Wrap(err)
 	}

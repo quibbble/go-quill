@@ -11,23 +11,23 @@ import (
 	"github.com/quibbble/go-quill/pkg/errors"
 )
 
-const UnitMissingCondition = "UnitMissing"
+const ManaBelowCondition = "ManaBelow"
 
-type UnitMissingArgs struct {
-	ChooseUnit parse.Choose
+type ManaBelowArgs struct {
+	ChoosePlayer parse.Choose
+	Amount       int
 }
 
-func PassUnitMissing(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) (bool, error) {
-	var p UnitMissingArgs
+func PassManaBelow(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) (bool, error) {
+	var p ManaBelowArgs
 	if err := mapstructure.Decode(args, &p); err != nil {
 		return false, errors.ErrInterfaceConversion
 	}
 
-	unitChoice, err := ch.GetUnitChoice(ctx, p.ChooseUnit, engine, state)
+	playerChoice, err := ch.GetPlayerChoice(ctx, p.ChoosePlayer, engine, state)
 	if err != nil {
 		return false, errors.Wrap(err)
 	}
 
-	_, _, err = state.Board.GetUnitXY(unitChoice)
-	return err != nil, nil
+	return state.Mana[playerChoice].Amount < p.Amount, nil
 }

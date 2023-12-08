@@ -12,10 +12,12 @@ Hooks:
   Types: 
   - DamageUnit
   Conditions:
-  - Type: UnitEventMatches
+  - Type: Match
     Not: false
     Args:
-      ChooseUnit:
+      ChooseA:
+        Type: EventUnit
+      ChooseB:
         Type: Target
         Args:
           Index: 0
@@ -32,10 +34,12 @@ Hooks:
       ChoosePlayer:
         Type: CurrentPlayer
   ReuseConditions:
-  - Type: UnitEventMatches
+  - Type: Match
     Not: true
     Args:
-      ChooseUnit:
+      ChooseA:
+        Type: EventUnit
+      ChooseB:
         Type: Target
         Args:
           Index: 0

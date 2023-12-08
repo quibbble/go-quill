@@ -30,7 +30,7 @@ func DamageUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 		return errors.ErrInterfaceConversion
 	}
 
-	unitChoice, err := GetUnitChoice(ctx, a.ChooseUnit, engine, state)
+	unitChoice, err := ch.GetUnitChoice(ctx, a.ChooseUnit, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}

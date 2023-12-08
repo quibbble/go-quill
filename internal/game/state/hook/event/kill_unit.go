@@ -27,7 +27,7 @@ func KillUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 		return errors.ErrInterfaceConversion
 	}
 
-	unitChoice, err := GetUnitChoice(ctx, a.ChooseUnit, engine, state)
+	unitChoice, err := ch.GetUnitChoice(ctx, a.ChooseUnit, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}

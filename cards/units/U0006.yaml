@@ -18,10 +18,12 @@ Hooks:
   - KillUnit
   - RescindUnit
   Conditions:
-  - Type: UnitEventMatches
+  - Type: Match
     Not: false
     Args:
-      ChooseUnit:
+      ChooseA:
+        Type: EventUnit
+      ChooseB:
         Type: Self
   Events:
   - Type: DrainMana
@@ -35,10 +37,12 @@ Hooks:
       ChoosePlayer:
         Type: SelfOwner
   ReuseConditions:
-  - Type: UnitEventMatches
+  - Type: Match
     Not: true
     Args:
-      ChooseUnit:
+      ChooseA:
+        Type: EventUnit
+      ChooseB:
         Type: Self
 Events:
 - Type: GainMana

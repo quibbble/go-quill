@@ -7,6 +7,7 @@ import (
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
+	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 )
@@ -26,12 +27,12 @@ func DiscardCardAffect(ctx context.Context, args interface{}, engine *en.Engine,
 		return errors.ErrInterfaceConversion
 	}
 
-	playerChoice, err := GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
+	playerChoice, err := ch.GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
 
-	cardChoice, err := GetChoice(ctx, a.ChooseCard, engine, state)
+	cardChoice, err := ch.GetChoice(ctx, a.ChooseCard, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}

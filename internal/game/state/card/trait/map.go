@@ -49,6 +49,8 @@ func init() {
 		EnemiesTrait:   {},
 		EnrageTrait:    {},
 		AssassinTrait:  {},
+		HasteTrait:     {},
+		TiredTrait:     {},
 	}
 
 	types := []interface{}{
@@ -72,6 +74,8 @@ func init() {
 		EnemiesArgs{},
 		EnrageArgs{},
 		AssassinArgs{},
+		HasteArgs{},
+		TiredArgs{},
 	}
 	for _, v := range types {
 		ArgsTypeRegistry[reflect.TypeOf(v).String()] = reflect.TypeOf(v)

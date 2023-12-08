@@ -28,7 +28,7 @@ func RemoveTraitFromCardAffect(ctx context.Context, args interface{}, engine *en
 		return errors.ErrInterfaceConversion
 	}
 
-	choice, err := GetChoice(ctx, a.ChooseCard, engine, state)
+	choice, err := ch.GetChoice(ctx, a.ChooseCard, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}

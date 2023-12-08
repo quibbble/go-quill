@@ -8,6 +8,7 @@ import (
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
 	tr "github.com/quibbble/go-quill/internal/game/state/card/trait"
+	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 )
@@ -28,15 +29,15 @@ func PlaceUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, s
 		return errors.ErrInterfaceConversion
 	}
 
-	playerChoice, err := GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
+	playerChoice, err := ch.GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	unitChoice, err := GetUnitChoice(ctx, a.ChooseUnit, engine, state)
+	unitChoice, err := ch.GetUnitChoice(ctx, a.ChooseUnit, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	tileChoice, err := GetTileChoice(ctx, a.ChooseTile, engine, state)
+	tileChoice, err := ch.GetTileChoice(ctx, a.ChooseTile, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -61,6 +62,12 @@ func PlaceUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, s
 	if err := state.Hand[playerChoice].RemoveCard(unitChoice); err != nil {
 		return errors.Wrap(err)
 	}
+
+	// haste trait check
+	if len(unit.GetTraits(tr.HasteTrait)) > 0 {
+		unit.Cooldown = 0
+	}
+
 	state.Board.XYs[tX][tY].Unit = unit
 
 	// battle cry trait check

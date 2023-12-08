@@ -29,11 +29,11 @@ func PlayCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 		return errors.ErrInterfaceConversion
 	}
 
-	playerChoice, err := GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
+	playerChoice, err := ch.GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	cardChoice, err := GetChoice(ctx, a.ChooseCard, engine, state)
+	cardChoice, err := ch.GetChoice(ctx, a.ChooseCard, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}

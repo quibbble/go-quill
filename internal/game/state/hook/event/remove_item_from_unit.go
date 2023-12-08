@@ -27,11 +27,11 @@ func RemoveItemFromUnitAffect(ctx context.Context, args interface{}, engine *en.
 		return errors.ErrInterfaceConversion
 	}
 
-	itemChoice, err := GetItemChoice(ctx, a.ChooseItem, engine, state)
+	itemChoice, err := ch.GetItemChoice(ctx, a.ChooseItem, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	unitChoice, err := GetUnitChoice(ctx, a.ChooseUnit, engine, state)
+	unitChoice, err := ch.GetUnitChoice(ctx, a.ChooseUnit, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}

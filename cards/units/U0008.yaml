@@ -1,0 +1,65 @@
+ID: U0008
+Name: Rot Eater
+Description: "Gain +1 Attack and +1 Health when an adjacent unit dies."
+Cost: 3
+Conditions:
+Targets: # SET BY PARSER
+Type: Creature
+DamageType: Physical
+Attack: 1
+Health: 1
+Cooldown: 2
+Movement: 1
+Codex: "00001111"
+Traits:
+Hooks:
+- When: Before
+  Types: 
+  - KillUnit
+  Conditions:
+  - Type: Match
+    Not: true
+    Args:
+      ChooseA:
+        Type: EventUnit
+      ChooseB:
+        Type: Self
+  - Type: Contains
+    Args:
+      Choices:
+        Type: Adjacent
+        Args:
+          Types:
+          - Creature
+          ChooseUnitOrTile:
+            Type: EventUnit
+      Choice:
+        Type: Self
+  Events:
+  - Type: AddTraitToCard
+    Args:
+      Trait:
+        Type: Buff
+        Args:
+          Stat: Attack
+          Amount: 1        
+      ChooseCard:
+        Type: Self
+  - Type: AddTraitToCard
+    Args:
+      Trait:
+        Type: Buff
+        Args:
+          Stat: Health
+          Amount: 1        
+      ChooseCard:
+        Type: Self
+  ReuseConditions:
+  - Type: Match
+    Not: false
+    Args:
+      ChooseA:
+        Type: EventUnit
+      ChooseB:
+        Type: Self
+Events:

@@ -20,13 +20,14 @@ type ICondition interface {
 type Conditions []ICondition
 
 func (c Conditions) Pass(ctx context.Context, engine IEngine, state IState) (bool, error) {
-	pass := true
 	for _, condition := range c {
 		p, err := condition.Pass(ctx, engine, state)
 		if err != nil {
 			return false, errors.Wrap(err)
 		}
-		pass = p && pass
+		if !p {
+			return false, nil
+		}
 	}
-	return pass, nil
+	return true, nil
 }

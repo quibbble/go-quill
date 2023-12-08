@@ -28,7 +28,7 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	attackerChoice, err := GetUnitChoice(ctx, a.ChooseAttacker, engine, state)
+	attackerChoice, err := ch.GetUnitChoice(ctx, a.ChooseAttacker, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -38,7 +38,7 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 	}
 	attacker := state.Board.XYs[aX][aY].Unit.(*cd.UnitCard)
 
-	defenderChoice, err := GetUnitChoice(ctx, a.ChooseDefender, engine, state)
+	defenderChoice, err := ch.GetUnitChoice(ctx, a.ChooseDefender, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}

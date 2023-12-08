@@ -1,0 +1,60 @@
+ID: U0009
+Name: Library
+Description: "When cooldown is 0 'Library' is destroyed. Draw 2 cards."
+Cost: 2
+Conditions:
+Targets: # SET BY PARSER
+Type: Structure
+DamageType: Physical
+Attack: 0
+Health: 5
+Cooldown: 3
+Movement: 0
+Codex: "00000000"
+Traits:
+Hooks:
+- When: After
+  Types:
+  - Cooldown
+  - ModifyUnit
+  - KillUnit
+  Conditions:
+  - Type: UnitMissing
+    Not: true
+    Args:
+      ChooseUnit:
+        Type: Self
+  - Type: StatBelow
+    Not: false
+    Args:
+      Stat: Cooldown
+      Amount: 1
+      ChooseUnit:
+        Type: Self
+  Events:
+  - Type: KillUnit
+    Args:
+      ChooseUnit:
+        Type: Self
+  - Type: DrawCard
+    Args:
+      ChoosePlayer:
+        Type: CurrentPlayer
+  - Type: DrawCard
+    Args:
+      ChoosePlayer:
+        Type: CurrentPlayer
+  ReuseConditions:
+  - Type: UnitMissing
+    Not: true
+    Args:
+      ChooseUnit:
+        Type: Self
+  - Type: StatAbove
+    Not: false
+    Args:
+      Stat: Cooldown
+      Amount: 0
+      ChooseUnit:
+        Type: Self
+Events:

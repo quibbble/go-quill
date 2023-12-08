@@ -28,15 +28,15 @@ func AddItemToUnitAffect(ctx context.Context, args interface{}, engine *en.Engin
 		return errors.ErrInterfaceConversion
 	}
 
-	playerChoice, err := GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
+	playerChoice, err := ch.GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	itemChoice, err := GetItemChoice(ctx, a.ChooseItem, engine, state)
+	itemChoice, err := ch.GetItemChoice(ctx, a.ChooseItem, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	unitChoice, err := GetUnitChoice(ctx, a.ChooseUnit, engine, state)
+	unitChoice, err := ch.GetUnitChoice(ctx, a.ChooseUnit, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}

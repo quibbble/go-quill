@@ -1,14 +1,12 @@
 # go-quill
 
 ## TODO
+- Change cooldown and refresh movement events to list of ModifyUnit events
 - Pillage/enrage/battle cry/death cry should have []hook []event args
-- Add haste trait
 - Add cursed X trait
-- Add Dominion trait
+- Add dominion trait
 - Add friendly fire trait (attacked by friendly unit heals it)
 - Add invincible trait
-- Add harvester
-- Add Ilmire Rot Eater
 - Add tethered recruit
 - Add tempo theft
 - Add traps

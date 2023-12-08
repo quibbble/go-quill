@@ -69,6 +69,7 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 					ChooseUnits: parse.Choose{
 						Type: ch.CompositeChoice,
 						Args: &ch.CompositeArgs{
+							SetFunction: ch.SetIntersect,
 							Choices: []parse.Choose{
 								{
 									Type: ch.OwnedUnitsChoice,
@@ -136,6 +137,7 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 				ChooseUnits: parse.Choose{
 					Type: ch.CompositeChoice,
 					Args: &ch.CompositeArgs{
+						SetFunction: ch.SetIntersect,
 						Choices: []parse.Choose{
 							{
 								Type: ch.OwnedUnitsChoice,
@@ -167,6 +169,7 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 				ChooseUnits: parse.Choose{
 					Type: ch.CompositeChoice,
 					Args: &ch.CompositeArgs{
+						SetFunction: ch.SetIntersect,
 						Choices: []parse.Choose{
 							{
 								Type: ch.OwnedUnitsChoice,

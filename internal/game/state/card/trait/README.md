@@ -19,3 +19,5 @@
 - spiky X - deal X extra damage when being attacked
 - enrage EVENT - after taking damage and still living apply event
 - assassin X - attacking a unit from behind deals X extra damage
+- haste - on place/summon cooldown is set to 0
+- tired - does not cooldown
