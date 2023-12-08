@@ -4,10 +4,10 @@
 
 | **Type**         | **Description**                                                             | **Args**                                  |
 |------------------|-----------------------------------------------------------------------------|-------------------------------------------|
-| `Adjacent`       | Retrieve all `Types` adjacent to `ChooseUnitOrTile`.                        | `Types` - `ChooseUnitOrTile`              |
-| `Codex`          | Retrieve all `Types` matching `Codex` to `ChooseUnitOrTile`.                | `Types` - `Codex` - `ChooseUnitOrTile`    |
-| `Composite`      | Apply `SetFunction` to all `Choices`.                                       | `SetFunction` - `Choices`                 |
-| `Connected`      | Retrieve all `Types` connected to `ChooseUnit` using `ConnectionType`.      | `Types` - `ConnectionType` - `ChooseUnit` |
+| `Adjacent`       | Retrieve all `Types` adjacent to `ChooseUnitOrTile`.                        | `Types`, `ChooseUnitOrTile`               |
+| `Codex`          | Retrieve all `Types` matching `Codex` to `ChooseUnitOrTile`.                | `Types`, `Codex`, `ChooseUnitOrTile`      |
+| `Composite`      | Apply `SetFunction` to all `Choices`.                                       | `SetFunction`, `Choices`                  |
+| `Connected`      | Retrieve all `Types` connected to `ChooseUnit` using `ConnectionType`.      | `Types`, `ConnectionType`, `ChooseUnit`   |
 | `CurrentPlayer`  | Retrieve the player who has the active turn.                                |                                           |
 | `EventUnit`      | Retrieve the unit affected by event found in the `HookEvent` context.       |                                           |
 | `OpposingPlayer` | Retrieve the player who does not have the active turn.                      |                                           |
