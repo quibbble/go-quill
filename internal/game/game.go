@@ -287,45 +287,53 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 			return c.NextTargets(g.Engine, g.State, targets[1:]...)
 		} else if x1, y1, err := g.Board.GetUnitXY(targets[0]); err == nil {
 			unit := g.Board.XYs[x1][y1].Unit.(*cd.UnitCard)
+			if unit.Type != cd.CreatureUnit {
+				return nil, errors.Errorf("'%s' unit may not move or attack", unit.Type)
+			}
 			switch len(targets) {
 			case 1:
-				moveChoose1, err := ch.NewChoose(g.State.Gen.New(st.ChooseUUID), ch.CodexChoice, &ch.CodexArgs{
-					Types: []string{"Tile"},
-					Codex: unit.Codex,
-				})
-				if err != nil {
-					return nil, errors.Wrap(err)
-				}
-				moveChoose2, err := ch.NewChoose(g.State.Gen.New(st.ChooseUUID), ch.TilesChoice, &ch.TilesArgs{
-					Empty: true,
-				})
-				if err != nil {
-					return nil, errors.Wrap(err)
-				}
-				moveChoices, err := ch.NewChoices(moveChoose1, moveChoose2).Retrieve(g.Engine, g.State, unit.GetUUID())
-				if err != nil {
-					return nil, errors.Wrap(err)
+				var moveChoices, attackChoices []uuid.UUID
+				if unit.Movement > 0 {
+					moveChoose1, err := ch.NewChoose(g.State.Gen.New(st.ChooseUUID), ch.CodexChoice, &ch.CodexArgs{
+						Types: []string{"Tile"},
+						Codex: unit.Codex,
+					})
+					if err != nil {
+						return nil, errors.Wrap(err)
+					}
+					moveChoose2, err := ch.NewChoose(g.State.Gen.New(st.ChooseUUID), ch.TilesChoice, &ch.TilesArgs{
+						Empty: true,
+					})
+					if err != nil {
+						return nil, errors.Wrap(err)
+					}
+					moveChoices, err = ch.NewChoices(moveChoose1, moveChoose2).Retrieve(g.Engine, g.State, unit.GetUUID())
+					if err != nil {
+						return nil, errors.Wrap(err)
+					}
 				}
 
-				attackChoose1, err := ch.NewChoose(g.State.Gen.New(st.ChooseUUID), ch.CodexChoice, &ch.CodexArgs{
-					Types: []string{"Unit"},
-					Codex: unit.Codex,
-				})
-				if err != nil {
-					return nil, errors.Wrap(err)
-				}
-				attackChoose2, err := ch.NewChoose(g.State.Gen.New(st.ChooseUUID), ch.OwnedUnitsChoice, &ch.OwnedUnitsArgs{
-					ChoosePlayer: parse.Choose{
-						Type: ch.OpposingPlayerChoice,
-						Args: &ch.OpposingPlayerArgs{},
-					},
-				})
-				if err != nil {
-					return nil, errors.Wrap(err)
-				}
-				attackChoices, err := ch.NewChoices(attackChoose1, attackChoose2).Retrieve(g.Engine, g.State, unit.GetUUID())
-				if err != nil {
-					return nil, errors.Wrap(err)
+				if unit.Cooldown == 0 {
+					attackChoose1, err := ch.NewChoose(g.State.Gen.New(st.ChooseUUID), ch.CodexChoice, &ch.CodexArgs{
+						Types: []string{"Unit"},
+						Codex: unit.Codex,
+					})
+					if err != nil {
+						return nil, errors.Wrap(err)
+					}
+					attackChoose2, err := ch.NewChoose(g.State.Gen.New(st.ChooseUUID), ch.OwnedUnitsChoice, &ch.OwnedUnitsArgs{
+						ChoosePlayer: parse.Choose{
+							Type: ch.OpposingPlayerChoice,
+							Args: &ch.OpposingPlayerArgs{},
+						},
+					})
+					if err != nil {
+						return nil, errors.Wrap(err)
+					}
+					attackChoices, err = ch.NewChoices(attackChoose1, attackChoose2).Retrieve(g.Engine, g.State, unit.GetUUID())
+					if err != nil {
+						return nil, errors.Wrap(err)
+					}
 				}
 
 				choices := append(moveChoices, attackChoices...)
@@ -340,6 +348,9 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 					if err != nil {
 						return nil, errors.Wrap(err)
 					}
+					if unit.Cooldown != 0 {
+						return nil, errors.Errorf("'%s' may not attack due to cooldown stat", unit.GetUUID())
+					}
 					if !unit.CheckCodex(x1, y1, x2, y2) {
 						return nil, errors.Errorf("invalid attack for unit '%s'", unit.GetUUID())
 					}
@@ -348,6 +359,9 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 					x2, y2, err := g.Board.GetTileXY(targets[1])
 					if err != nil {
 						return nil, errors.Wrap(err)
+					}
+					if unit.Movement <= 0 {
+						return nil, errors.Errorf("'%s' may not move due to movement stat", unit.GetUUID())
 					}
 					if !unit.CheckCodex(x1, y1, x2, y2) {
 						return nil, errors.Errorf("invalid move for unit '%s'", unit.GetUUID())
