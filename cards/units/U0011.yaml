@@ -1,0 +1,17 @@
+ID: U0011
+Name: Recruit
+Description: "After attacking 'Recruit moves to a random adjacent space.'"
+Cost: 2
+Conditions:
+Targets: # SET BY PARSER
+Type: Creature
+DamageType: Physical
+Attack: 3
+Health: 2
+Cooldown: 2
+Movement: 1
+Codex: "11000000"
+Traits:
+Hooks:
+# TODO
+Events:

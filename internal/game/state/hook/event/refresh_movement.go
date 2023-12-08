@@ -39,7 +39,25 @@ func RefreshMovementAffect(ctx context.Context, args interface{}, engine *en.Eng
 			return errors.Wrap(err)
 		}
 		unit := state.Board.XYs[x][y].Unit.(*cd.UnitCard)
-		unit.Movement = unit.GetInit().(*parse.UnitCard).Movement
+
+		event := &Event{
+			uuid: state.Gen.New(st.EventUUID),
+			typ:  ModifyUnitEvent,
+			args: &ModifyUnitArgs{
+				ChooseUnit: parse.Choose{
+					Type: ch.UUIDChoice,
+					Args: &ch.UUIDArgs{
+						UUID: unit.GetUUID(),
+					},
+				},
+				Stat:   cd.MovementStat,
+				Amount: unit.GetInit().(*parse.UnitCard).Movement - unit.Movement,
+			},
+			affect: ModifyUnitAffect,
+		}
+		if err := engine.Do(ctx, event, state); err != nil {
+			return errors.Wrap(err)
+		}
 	}
 	return nil
 }

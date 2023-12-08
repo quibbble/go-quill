@@ -15,17 +15,15 @@ Traits:
 Hooks:
 - When: After
   Types:
-  - Cooldown
   - ModifyUnit
-  - KillUnit
   Conditions:
-  - Type: UnitMissing
-    Not: true
+  - Type: Match
     Args:
-      ChooseUnit:
+      ChooseA:
+        Type: EventUnit
+      ChooseB:
         Type: Self
   - Type: StatBelow
-    Not: false
     Args:
       Stat: Cooldown
       Amount: 1

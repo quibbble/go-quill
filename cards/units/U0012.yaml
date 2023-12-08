@@ -1,0 +1,17 @@
+ID: U0013
+Name: Glutton
+Description: "On death gain +1 base energy."
+Cost: 2
+Conditions:
+Targets: # SET BY PARSER
+Type: Creature
+DamageType: Physical
+Attack: 1
+Health: 3
+Cooldown: 2
+Movement: 1
+Codex: "11110000"
+Traits:
+Hooks:
+# TODO
+Events:

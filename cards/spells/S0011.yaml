@@ -1,0 +1,18 @@
+ID: S0011
+Name: Return
+Description: "Target 'Creature' or 'Structure' is returned to owner's hand."
+Cost: 3
+Targets:
+- Type: Units
+  Args:
+    Types:
+    - Creature
+    - Structure
+Hooks:
+Events:
+- Type: RescindUnit
+  Args:
+    ChooseUnit:
+      Type: Target
+      Args:
+        Index: 0

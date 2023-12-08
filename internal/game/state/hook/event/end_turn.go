@@ -50,6 +50,80 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 		}
 	}
 
+	// update units movement and cooldown
+	events := []*Event{
+		{
+			uuid: state.Gen.New(st.EventUUID),
+			typ:  RefreshMovementEvent,
+			args: &RefreshMovementArgs{
+				ChooseUnits: parse.Choose{
+					Type: ch.CompositeChoice,
+					Args: &ch.CompositeArgs{
+						SetFunction: ch.SetIntersect,
+						Choices: []parse.Choose{
+							{
+								Type: ch.OwnedUnitsChoice,
+								Args: &ch.OwnedUnitsArgs{
+									ChoosePlayer: parse.Choose{
+										Type: ch.CurrentPlayerChoice,
+										Args: &ch.CurrentPlayerArgs{},
+									},
+								},
+							},
+							{
+								Type: ch.UnitsChoice,
+								Args: &ch.UnitsArgs{
+									Types: []string{
+										cd.CreatureUnit,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			affect: RefreshMovementAffect,
+		},
+		{
+			uuid: state.Gen.New(st.EventUUID),
+			typ:  CooldownEvent,
+			args: &CooldownArgs{
+				ChooseUnits: parse.Choose{
+					Type: ch.CompositeChoice,
+					Args: &ch.CompositeArgs{
+						SetFunction: ch.SetIntersect,
+						Choices: []parse.Choose{
+							{
+								Type: ch.OwnedUnitsChoice,
+								Args: &ch.OwnedUnitsArgs{
+									ChoosePlayer: parse.Choose{
+										Type: ch.CurrentPlayerChoice,
+										Args: &ch.CurrentPlayerArgs{},
+									},
+								},
+							},
+							{
+								Type: ch.UnitsChoice,
+								Args: &ch.UnitsArgs{
+									Types: []string{
+										cd.CreatureUnit,
+										cd.StructureUnit,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			affect: CooldownAffect,
+		},
+	}
+	for _, event := range events {
+		if err := engine.Do(context.Background(), event, state); err != nil {
+			return errors.Wrap(err)
+		}
+	}
+
 	state.Turn++
 	player := state.GetTurn()
 
@@ -116,8 +190,8 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 		size = state.Deck[player].GetSize()
 	}
 
-	// refresh mana, refresh units movement, and draw a card
-	events := []*Event{
+	// refresh mana and draw a card
+	events = []*Event{
 		{
 			uuid: state.Gen.New(st.EventUUID),
 			typ:  GainManaEvent,
@@ -129,71 +203,6 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 				Amount: state.Mana[player].BaseAmount - state.Mana[player].Amount,
 			},
 			affect: GainManaAffect,
-		},
-		{
-			uuid: state.Gen.New(st.EventUUID),
-			typ:  RefreshMovementEvent,
-			args: &RefreshMovementArgs{
-				ChooseUnits: parse.Choose{
-					Type: ch.CompositeChoice,
-					Args: &ch.CompositeArgs{
-						SetFunction: ch.SetIntersect,
-						Choices: []parse.Choose{
-							{
-								Type: ch.OwnedUnitsChoice,
-								Args: &ch.OwnedUnitsArgs{
-									ChoosePlayer: parse.Choose{
-										Type: ch.CurrentPlayerChoice,
-										Args: &ch.CurrentPlayerArgs{},
-									},
-								},
-							},
-							{
-								Type: ch.UnitsChoice,
-								Args: &ch.UnitsArgs{
-									Types: []string{
-										cd.CreatureUnit,
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-			affect: RefreshMovementAffect,
-		},
-		{
-			uuid: state.Gen.New(st.EventUUID),
-			typ:  CooldownEvent,
-			args: &CooldownArgs{
-				ChooseUnits: parse.Choose{
-					Type: ch.CompositeChoice,
-					Args: &ch.CompositeArgs{
-						SetFunction: ch.SetIntersect,
-						Choices: []parse.Choose{
-							{
-								Type: ch.OwnedUnitsChoice,
-								Args: &ch.OwnedUnitsArgs{
-									ChoosePlayer: parse.Choose{
-										Type: ch.CurrentPlayerChoice,
-										Args: &ch.CurrentPlayerArgs{},
-									},
-								},
-							},
-							{
-								Type: ch.UnitsChoice,
-								Args: &ch.UnitsArgs{
-									Types: []string{
-										cd.CreatureUnit,
-										cd.StructureUnit,
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-			affect: CooldownAffect,
 		},
 		{
 			uuid: state.Gen.New(st.EventUUID),

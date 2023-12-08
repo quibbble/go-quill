@@ -1,0 +1,16 @@
+ID: U0010
+Name: Hound
+Description: ""
+Cost: 2
+Conditions:
+Targets: # SET BY PARSER
+Type: Creature
+DamageType: Physical
+Attack: 2
+Health: 3
+Cooldown: 2
+Movement: 1
+Codex: "00001111"
+Traits:
+Hooks:
+Events:

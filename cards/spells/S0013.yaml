@@ -1,0 +1,13 @@
+ID: S0013
+Name: Recruiting
+Description: "Deal 2 'Magic' damage to a 'Creature' or 'Structure'. If it dies summon a 'Recruit' randomly in your zone."
+Cost: 3
+Targets:
+- Type: Units
+  Args:
+    Types:
+    - Creature
+    - Structure
+Hooks:
+Events:
+# TODO

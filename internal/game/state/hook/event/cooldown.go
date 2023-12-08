@@ -46,9 +46,23 @@ func CooldownAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 			continue
 		}
 
-		unit.Cooldown--
-		if unit.Cooldown < 0 {
-			unit.Cooldown = 0
+		event := &Event{
+			uuid: state.Gen.New(st.EventUUID),
+			typ:  ModifyUnitEvent,
+			args: &ModifyUnitArgs{
+				ChooseUnit: parse.Choose{
+					Type: ch.UUIDChoice,
+					Args: &ch.UUIDArgs{
+						UUID: unit.GetUUID(),
+					},
+				},
+				Stat:   cd.CooldownStat,
+				Amount: -1,
+			},
+			affect: ModifyUnitAffect,
+		}
+		if err := engine.Do(ctx, event, state); err != nil {
+			return errors.Wrap(err)
 		}
 	}
 	return nil

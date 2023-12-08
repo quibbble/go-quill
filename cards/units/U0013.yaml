@@ -1,0 +1,17 @@
+ID: U0013
+Name: Reaver
+Description: "Gain +X attack where X is your current energy."
+Cost: 3
+Conditions:
+Targets: # SET BY PARSER
+Type: Creature
+DamageType: Physical
+Attack: 0
+Health: 4
+Cooldown: 2
+Movement: 1
+Codex: "00001111"
+Traits:
+Hooks:
+# TODO
+Events:
