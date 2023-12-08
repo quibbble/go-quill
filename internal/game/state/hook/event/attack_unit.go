@@ -12,7 +12,6 @@ import (
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
-	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
 const (
@@ -120,12 +119,17 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 		choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), ch.CodexChoice, &ch.CodexArgs{
 			Types: []string{cd.CreatureUnit, cd.StructureUnit},
 			Codex: attacker.Codex,
+			ChooseUnitOrTile: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: &ch.UUIDArgs{
+					UUID: defender.UUID,
+				},
+			},
 		})
 		if err != nil {
 			return errors.Wrap(err)
 		}
-		ctx := context.WithValue(context.Background(), en.TargetsCtx, []uuid.UUID{defender.UUID})
-		uuids, err := choose.Retrieve(ctx, engine, state)
+		uuids, err := choose.Retrieve(context.Background(), engine, state)
 		if err != nil {
 			return errors.Wrap(err)
 		}

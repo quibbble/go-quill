@@ -40,8 +40,7 @@ func FriendsTraitCheck(engine *en.Engine, state *st.State) error {
 					if err != nil {
 						return errors.Wrap(err)
 					}
-					ctx := context.WithValue(context.Background(), en.TargetsCtx, []uuid.UUID{tile.Unit.GetUUID()})
-					after, err := ch.NewChoices(choose1, choose2).Retrieve(ctx, engine, state)
+					after, err := ch.NewChoices(choose1, choose2).Retrieve(context.WithValue(context.Background(), en.CardCtx, tile.Unit.GetUUID()), engine, state)
 					if err != nil {
 						return errors.Wrap(err)
 					}
@@ -74,11 +73,11 @@ func EnemiesTraitCheck(engine *en.Engine, state *st.State) error {
 					if before == nil {
 						before = make([]uuid.UUID, 0)
 					}
-					choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), args.ChooseUnits.Type, args.ChooseUnits.Args)
+					choose1, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), args.ChooseUnits.Type, args.ChooseUnits.Args)
 					if err != nil {
 						return errors.Wrap(err)
 					}
-					owned, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), ch.OwnedUnitsChoice, &ch.OwnedUnitsArgs{
+					choose2, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), ch.OwnedUnitsChoice, &ch.OwnedUnitsArgs{
 						ChoosePlayer: parse.Choose{
 							Type: ch.UUIDChoice,
 							Args: &ch.UUIDArgs{
@@ -89,8 +88,7 @@ func EnemiesTraitCheck(engine *en.Engine, state *st.State) error {
 					if err != nil {
 						return errors.Wrap(err)
 					}
-					ctx := context.WithValue(context.Background(), en.TargetsCtx, []uuid.UUID{tile.Unit.GetUUID()})
-					after, err := ch.NewChoices(choose, owned).Retrieve(ctx, engine, state)
+					after, err := ch.NewChoices(choose1, choose2).Retrieve(context.WithValue(context.Background(), en.CardCtx, tile.Unit.GetUUID()), engine, state)
 					if err != nil {
 						return errors.Wrap(err)
 					}

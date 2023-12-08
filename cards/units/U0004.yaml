@@ -20,6 +20,8 @@ Traits:
         Types:
         - Creature
         - Structure
+        ChooseUnitOrTile:
+          Type: Self
     Trait:
       Type: Buff
       Args:

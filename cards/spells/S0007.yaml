@@ -27,6 +27,10 @@ Events:
               Args:
                 Types:
                 - Tile
+                ChooseUnitOrTile:
+                  Type: Target
+                  Args:
+                    Index: 0
             - Type: Tiles
               Args:
                 Empty: true

@@ -16,13 +16,13 @@ type TilesArgs struct {
 	Empty bool
 }
 
-func RetrieveTiles(ctx context.Context, args interface{}, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
+func RetrieveTiles(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
 	var c TilesArgs
 	if err := mapstructure.Decode(args, &c); err != nil {
 		return nil, errors.ErrInterfaceConversion
 	}
 	tiles := make([]uuid.UUID, 0)
-	for _, tile := range state.(*st.State).Board.UUIDs {
+	for _, tile := range state.Board.UUIDs {
 		if (tile.Unit == nil) == c.Empty {
 			tiles = append(tiles, tile.UUID)
 		}

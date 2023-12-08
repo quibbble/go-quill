@@ -16,7 +16,7 @@ type TargetOwnerArgs struct {
 	Index int
 }
 
-func RetrieveTargetOwner(ctx context.Context, args interface{}, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
+func RetrieveTargetOwner(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
 	var c TargetArgs
 	if err := mapstructure.Decode(args, &c); err != nil {
 		return nil, errors.ErrInterfaceConversion
@@ -25,7 +25,7 @@ func RetrieveTargetOwner(ctx context.Context, args interface{}, engine en.IEngin
 	if c.Index < 0 || c.Index >= len(targets) {
 		return nil, errors.ErrIndexOutOfBounds
 	}
-	card := state.(*st.State).GetCard(targets[c.Index])
+	card := state.GetCard(targets[c.Index])
 	if card == nil {
 		return nil, st.ErrNotFound(targets[c.Index])
 	}

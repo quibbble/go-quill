@@ -59,10 +59,8 @@ func KillUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 	if unit.GetID() != "U0001" {
 		// reset and move items and unit to discard
 		for _, item := range unit.Items {
-			if item.Player == unit.Player {
-				item.Reset(state.BuildCard)
-				state.Discard[unit.Player].Add(item)
-			}
+			item.Reset(state.BuildCard)
+			state.Discard[item.Player].Add(item)
 		}
 		unit.Reset(state.BuildCard)
 		state.Discard[unit.Player].Add(unit)

@@ -11,14 +11,14 @@ import (
 	"github.com/quibbble/go-quill/pkg/errors"
 )
 
-const DamageUnitAppliedToCondition = "DamageUnitAppliedTo"
+const UnitEventMatchesCondition = "UnitEventMatches"
 
-type DamageUnitAppliedToArgs struct {
+type UnitEventMatchesToArgs struct {
 	ChooseUnit parse.Choose
 }
 
-func PassDamageUnitAppliedTo(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) (bool, error) {
-	var p DamageUnitAppliedToArgs
+func PassUnitEventMatches(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) (bool, error) {
+	var p UnitEventMatchesToArgs
 	if err := mapstructure.Decode(args, &p); err != nil {
 		return false, errors.ErrInterfaceConversion
 	}
@@ -34,7 +34,7 @@ func PassDamageUnitAppliedTo(ctx context.Context, args interface{}, engine *en.E
 		return false, errors.ErrNilInterface
 	}
 
-	var a ev.DamageUnitArgs
+	var a UnitEventMatchesToArgs
 	if err := mapstructure.Decode(event.GetArgs(), &a); err != nil {
 		return false, errors.ErrInterfaceConversion
 	}

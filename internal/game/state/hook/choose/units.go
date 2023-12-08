@@ -18,13 +18,13 @@ type UnitsArgs struct {
 	Types []string
 }
 
-func RetrieveUnits(ctx context.Context, args interface{}, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
+func RetrieveUnits(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
 	var c UnitsArgs
 	if err := mapstructure.Decode(args, &c); err != nil {
 		return nil, errors.ErrInterfaceConversion
 	}
 	units := make([]uuid.UUID, 0)
-	for _, tile := range state.(*st.State).Board.UUIDs {
+	for _, tile := range state.Board.UUIDs {
 		if tile.Unit != nil {
 			unit := tile.Unit.(*cd.UnitCard)
 			if len(c.Types) == 0 || slices.Contains(c.Types, unit.Type) {

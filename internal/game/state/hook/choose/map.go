@@ -4,13 +4,14 @@ import (
 	"context"
 
 	en "github.com/quibbble/go-quill/internal/game/engine"
+	st "github.com/quibbble/go-quill/internal/game/state"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
-var ChooseMap map[string]func(ctx context.Context, args interface{}, engine en.IEngine, state en.IState) ([]uuid.UUID, error)
+var ChooseMap map[string]func(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error)
 
 func init() {
-	ChooseMap = map[string]func(ctx context.Context, args interface{}, engine en.IEngine, state en.IState) ([]uuid.UUID, error){
+	ChooseMap = map[string]func(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error){
 		AdjacentChoice:       RetrieveAdjacent,
 		CodexChoice:          RetrieveCodex,
 		OwnedUnitsChoice:     RetrieveOwnedUnits,

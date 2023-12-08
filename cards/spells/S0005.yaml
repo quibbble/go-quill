@@ -21,3 +21,7 @@ Events:
         - Creature
         - Structure
         ConnectionType: Adjacent
+        ChooseUnit:
+          Type: Target
+          Args:
+            Index: 0

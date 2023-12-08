@@ -14,6 +14,7 @@ func init() {
 		DamageUnitEvent:         DamageUnitAffect,
 		DamageUnitsEvent:        DamageUnitsAffect,
 		KillUnitEvent:           KillUnitAffect,
+		RescindUnitEvent:        RescindUnitAffect,
 		HealUnitEvent:           HealUnitAffect,
 		HealUnitsEvent:          HealUnitsAffect,
 		MoveUnitEvent:           MoveUnitAffect,

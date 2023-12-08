@@ -3,22 +3,8 @@ package engine
 type Context string
 
 const (
-	CardCtx      Context = "Card"
-	HookCardCtx  Context = "HookCard"
-	HookEventCtx Context = "HookEvent"
-	TargetsCtx   Context = "Targets"
+	CardCtx      Context = "Card"      // passed when a playing a card kicks off some event(s)
+	TargetsCtx   Context = "Targets"   // passed when a playing a card that has a list of required targets
+	HookCardCtx  Context = "HookCard"  // passed when a hook is triggered and represents the card that registered the hook
+	HookEventCtx Context = "HookEvent" // passed when a hook is triggered and represents the event that triggered the hook
 )
-
-// Context
-// - hook, condition, choose, event all have a ctx arg
-// - ctx contains the following
-//   - Card - passed when a card kicks off an event
-//   - HookCard - passed when a hook is triggered
-//   - TriggerEvent - passed when a hook is triggered
-//   - Targets - []uuid.UUID
-
-// Self refers to HookCard when it exists
-// Otherwise Self refers to Card
-// Error if neither are found
-
-// TriggerEvent is used in conditions

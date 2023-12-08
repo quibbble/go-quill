@@ -11,7 +11,7 @@ Hooks:
 - When: After
   Type: DamageUnit
   Conditions:
-  - Type: DamageUnitAppliedTo
+  - Type: UnitEventMatches
     Not: false
     Args:
       ChooseUnit:
@@ -31,7 +31,7 @@ Hooks:
       ChoosePlayer:
         Type: CurrentPlayer
   ReuseConditions:
-  - Type: DamageUnitAppliedTo
+  - Type: UnitEventMatches
     Not: true
     Args:
       ChooseUnit:

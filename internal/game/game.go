@@ -241,6 +241,12 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 				choose1, err := ch.NewChoose(g.Gen.New(st.ChooseUUID), ch.CodexChoice, &ch.CodexArgs{
 					Types: []string{cd.Unit},
 					Codex: unit.Codex,
+					ChooseUnitOrTile: parse.Choose{
+						Type: ch.UUIDChoice,
+						Args: &ch.UUIDArgs{
+							UUID: unit.UUID,
+						},
+					},
 				})
 				if err != nil {
 					return nil, errors.Wrap(err)
@@ -301,6 +307,12 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 					moveChoose1, err := ch.NewChoose(g.State.Gen.New(st.ChooseUUID), ch.CodexChoice, &ch.CodexArgs{
 						Types: []string{"Tile"},
 						Codex: unit.Codex,
+						ChooseUnitOrTile: parse.Choose{
+							Type: ch.UUIDChoice,
+							Args: &ch.UUIDArgs{
+								UUID: unit.UUID,
+							},
+						},
 					})
 					if err != nil {
 						return nil, errors.Wrap(err)
@@ -322,6 +334,12 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 					attackChoose1, err := ch.NewChoose(g.State.Gen.New(st.ChooseUUID), ch.CodexChoice, &ch.CodexArgs{
 						Types: []string{"Unit"},
 						Codex: unit.Codex,
+						ChooseUnitOrTile: parse.Choose{
+							Type: ch.UUIDChoice,
+							Args: &ch.UUIDArgs{
+								UUID: unit.UUID,
+							},
+						},
 					})
 					if err != nil {
 						return nil, errors.Wrap(err)

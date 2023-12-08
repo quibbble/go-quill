@@ -8,6 +8,7 @@ import (
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -17,20 +18,31 @@ const CodexChoice = "Codex"
 var codexXYs = [][]int{{0, 1}, {0, -1}, {-1, 0}, {1, 0}, {-1, 1}, {1, -1}, {-1, -1}, {1, 1}}
 
 type CodexArgs struct {
-	Types []string
-	Codex string
+	Types            []string
+	Codex            string
+	ChooseUnitOrTile parse.Choose
 }
 
-func RetrieveCodex(ctx context.Context, args interface{}, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
+func RetrieveCodex(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
 	var c CodexArgs
 	if err := mapstructure.Decode(args, &c); err != nil {
 		return nil, errors.ErrInterfaceConversion
 	}
-	targets := ctx.Value(en.TargetsCtx).([]uuid.UUID)
-	if len(targets) != 1 {
+
+	choose, err := NewChoose(state.Gen.New(st.ChooseUUID), c.ChooseUnitOrTile.Type, c.ChooseUnitOrTile.Args)
+	if err != nil {
+		return nil, errors.Wrap(err)
+	}
+	choices, err := choose.Retrieve(ctx, engine, state)
+	if err != nil {
+		return nil, errors.Wrap(err)
+	}
+	if len(choices) != 1 {
 		return nil, errors.ErrInvalidSliceLength
 	}
-	x, y, err := state.(*st.State).Board.GetUnitXY(targets[0])
+	choice := choices[0]
+
+	x, y, err := state.Board.GetUnitXY(choice)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
@@ -41,7 +53,7 @@ func RetrieveCodex(ctx context.Context, args interface{}, engine en.IEngine, sta
 			if x < 0 || x > st.Cols || y < 0 || y > st.Rows {
 				continue
 			}
-			tile := state.(*st.State).Board.XYs[x][y]
+			tile := state.Board.XYs[x][y]
 			if slices.Contains(c.Types, "Tile") {
 				codex = append(codex, tile.UUID)
 			} else if tile.Unit != nil {

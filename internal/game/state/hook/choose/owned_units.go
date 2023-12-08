@@ -17,12 +17,12 @@ type OwnedUnitsArgs struct {
 	ChoosePlayer parse.Choose
 }
 
-func RetrieveOwnedUnits(ctx context.Context, args interface{}, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
+func RetrieveOwnedUnits(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
 	var c OwnedUnitsArgs
 	if err := mapstructure.Decode(args, &c); err != nil {
 		return nil, errors.ErrInterfaceConversion
 	}
-	choose, err := NewChoose(state.(*st.State).Gen.New(st.ChooseUUID), c.ChoosePlayer.Type, c.ChoosePlayer.Args)
+	choose, err := NewChoose(state.Gen.New(st.ChooseUUID), c.ChoosePlayer.Type, c.ChoosePlayer.Args)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
@@ -34,7 +34,7 @@ func RetrieveOwnedUnits(ctx context.Context, args interface{}, engine en.IEngine
 		return nil, errors.ErrInvalidSliceLength
 	}
 	owned := make([]uuid.UUID, 0)
-	for _, tile := range state.(*st.State).Board.UUIDs {
+	for _, tile := range state.Board.UUIDs {
 		if tile.Unit != nil && tile.Unit.GetPlayer() == choices[0] {
 			owned = append(owned, tile.Unit.GetUUID())
 		}

@@ -14,14 +14,9 @@ Codex: "00000000"
 Traits:
 Hooks:
 - Wben: After
-  Type: KillUnit
+  Type: KillUnit OR RescindUnit # TODO
   Conditions:
-  - Type: KillUnitAppliedTo
-    Not: false
-    Args:
-      ChooseUnit:
-        Type: Self
-  - Type: UnitMissing
+  - Type: UnitEventMatches
     Not: false
     Args:
       ChooseUnit:
@@ -38,19 +33,19 @@ Hooks:
         Type: SelfOwner
       Amount: 1
   ReuseConditions:
-  - Type: KillUnitAppliedTo
+  - Type: UnitEventMatches
     Not: true
     Args:
       ChooseUnit:
         Type: Self
 Events:
-  - Type: GainMana
-    Args:
-      ChoosePlayer:
-        Type: SelfOwner
-      Amount: 1
-  - Type: GainBaseMana
-    Args:
-      ChoosePlayer:
-        Type: SelfOwner
+- Type: GainMana
+  Args:
+    ChoosePlayer:
+      Type: SelfOwner
+    Amount: 1
+- Type: GainBaseMana
+  Args:
+    ChoosePlayer:
+      Type: SelfOwner
     Amount: 1

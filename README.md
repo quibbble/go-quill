@@ -1,4 +1,6 @@
 # go-quill
 
 ## TODO
-- Make adjacent codex and connected choices have internal choice for selecting unit
+- Hooks rename Type to Types and make a list
+- Networking Layer
+- More cards

@@ -17,12 +17,12 @@ type RandomArgs struct {
 	Choose parse.Choose
 }
 
-func RetrieveRandom(ctx context.Context, args interface{}, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
+func RetrieveRandom(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
 	var c RandomArgs
 	if err := mapstructure.Decode(args, &c); err != nil {
 		return nil, errors.ErrInterfaceConversion
 	}
-	choose, err := NewChoose(state.(*st.State).Gen.New(st.ChooseUUID), c.Choose.Type, c.Choose.Args)
+	choose, err := NewChoose(state.Gen.New(st.ChooseUUID), c.Choose.Type, c.Choose.Args)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
@@ -33,5 +33,5 @@ func RetrieveRandom(ctx context.Context, args interface{}, engine en.IEngine, st
 	if len(choices) == 0 {
 		return choices, nil
 	}
-	return []uuid.UUID{choices[state.(*st.State).Rand.Intn(len(choices))]}, nil
+	return []uuid.UUID{choices[state.Rand.Intn(len(choices))]}, nil
 }

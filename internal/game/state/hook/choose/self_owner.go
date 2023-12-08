@@ -13,11 +13,11 @@ const SelfOwnerChoice = "SelfOwner"
 
 type SelfOwnerArgs struct{}
 
-func RetrieveSelfOwner(ctx context.Context, args interface{}, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
+func RetrieveSelfOwner(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
 
 	cardCtx := ctx.Value(en.HookCardCtx)
 	if cardCtx == nil {
-		cardCtx := ctx.Value(en.CardCtx)
+		cardCtx = ctx.Value(en.CardCtx)
 		if cardCtx == nil {
 			return nil, errors.ErrMissingContext
 		}
@@ -25,7 +25,7 @@ func RetrieveSelfOwner(ctx context.Context, args interface{}, engine en.IEngine,
 
 	cardUUID := cardCtx.(uuid.UUID)
 
-	card := state.(*st.State).GetCard(cardUUID)
+	card := state.GetCard(cardUUID)
 	if card == nil {
 		return nil, st.ErrNotFound(cardUUID)
 	}

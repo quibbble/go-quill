@@ -17,12 +17,12 @@ type OwnedTilesArgs struct {
 	ChoosePlayer parse.Choose
 }
 
-func RetrieveOwnedTiles(ctx context.Context, args interface{}, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
+func RetrieveOwnedTiles(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
 	var c OwnedTilesArgs
 	if err := mapstructure.Decode(args, &c); err != nil {
 		return nil, errors.ErrInterfaceConversion
 	}
-	choose, err := NewChoose(state.(*st.State).Gen.New(st.ChooseUUID), c.ChoosePlayer.Type, c.ChoosePlayer.Args)
+	choose, err := NewChoose(state.Gen.New(st.ChooseUUID), c.ChoosePlayer.Type, c.ChoosePlayer.Args)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
@@ -34,8 +34,8 @@ func RetrieveOwnedTiles(ctx context.Context, args interface{}, engine en.IEngine
 		return nil, errors.ErrInvalidSliceLength
 	}
 	owned := make([]uuid.UUID, 0)
-	min, max := state.(*st.State).Board.GetPlayableRowRange(choices[0])
-	for _, col := range state.(*st.State).Board.XYs {
+	min, max := state.Board.GetPlayableRowRange(choices[0])
+	for _, col := range state.Board.XYs {
 		for y, tile := range col {
 			if min <= y && y <= max {
 				owned = append(owned, tile.UUID)

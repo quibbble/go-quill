@@ -12,6 +12,6 @@ const OpposingPlayerChoice = "OpposingPlayer"
 
 type OpposingPlayerArgs struct{}
 
-func RetrieveOpposingPlayer(ctx context.Context, args interface{}, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
-	return []uuid.UUID{state.(*st.State).GetOpponent(state.(*st.State).GetTurn())}, nil
+func RetrieveOpposingPlayer(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
+	return []uuid.UUID{state.GetOpponent(state.GetTurn())}, nil
 }

@@ -8,6 +8,7 @@ import (
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
+	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -17,19 +18,30 @@ const AdjacentChoice = "Adjacent"
 var adjacentXYs = [][]int{{-1, -1}, {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}}
 
 type AdjacentArgs struct {
-	Types []string
+	Types            []string
+	ChooseUnitOrTile parse.Choose
 }
 
-func RetrieveAdjacent(ctx context.Context, args interface{}, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
+func RetrieveAdjacent(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
 	var c AdjacentArgs
 	if err := mapstructure.Decode(args, &c); err != nil {
 		return nil, errors.ErrInterfaceConversion
 	}
-	targets := ctx.Value(en.TargetsCtx).([]uuid.UUID)
-	if len(targets) != 1 {
+
+	choose, err := NewChoose(state.Gen.New(st.ChooseUUID), c.ChooseUnitOrTile.Type, c.ChooseUnitOrTile.Args)
+	if err != nil {
+		return nil, errors.Wrap(err)
+	}
+	choices, err := choose.Retrieve(ctx, engine, state)
+	if err != nil {
+		return nil, errors.Wrap(err)
+	}
+	if len(choices) != 1 {
 		return nil, errors.ErrInvalidSliceLength
 	}
-	x, y, err := state.(*st.State).Board.GetUnitXY(targets[0])
+	choice := choices[0]
+
+	x, y, err := state.Board.GetUnitXY(choice)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
@@ -40,7 +52,7 @@ func RetrieveAdjacent(ctx context.Context, args interface{}, engine en.IEngine, 
 			continue
 		}
 
-		tile := state.(*st.State).Board.XYs[x][y]
+		tile := state.Board.XYs[x][y]
 		if slices.Contains(c.Types, "Tile") {
 			adjacent = append(adjacent, tile.UUID)
 		} else if tile.Unit != nil {
