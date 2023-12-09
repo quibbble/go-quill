@@ -18,7 +18,7 @@
 | **Name**           | **Requirements**                                             |
 |--------------------|--------------------------------------------------------------|
 | `Amount`           | An integer.                                                  |
-| `Choice`           | `Choose`.                                                    |
-| `Choices`          | List of `Choose`.                                            |
-| `Choose{X}`        | `Choose`.                                                    |
+| `Choice`           | [Choose](./choose.md).                                       |
+| `Choices`          | List of [Choose](./choose.md).                               |
+| `Choose{X}`        | [Choose](./choose.md).                                       |
 | `Stat`             | `Cost`, `Attack`, `Health`, `Movement`, `Cooldown`, `Range`. |

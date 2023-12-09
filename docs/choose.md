@@ -26,8 +26,8 @@
 
 | **Name**           | **Requirements**                                                                                 |
 |--------------------|--------------------------------------------------------------------------------------------------|
-| `Choices`          | List of `Choose`.                                                                                |
-| `Choose{X}`        | `Choose`.                                                                                        |
+| `Choices`          | List of [Choose](.).                                                                             |
+| `Choose{X}`        | [Choose](.).                                                                                     |
 | `Codex`            | An eight character string containing only 0 or 1 i.e. `11001111`.                                |
 | `ConnectionType`   | `Adjacent` or `Codex`                                                                            |
 | `Empty`            | `true` or `false`.                                                                               |

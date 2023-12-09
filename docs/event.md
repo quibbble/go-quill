@@ -41,8 +41,8 @@
 | **Name**           | **Requirements**                                             |
 |--------------------|--------------------------------------------------------------|
 | `Amount`           | An integer.                                                  |
-| `Choose{X}`        | `Choose`.                                                    |
+| `Choose{X}`        | [Choose](./choose.md).                                       |
 | `DamageType`       | `Physical`, `Magic`, `Pure`.                                 |
 | `ID`               | A five character string representing a card i.e. `U0001`.    |
 | `Stat`             | `Cost`, `Attack`, `Health`, `Movement`, `Cooldown`, `Range`. |
-| `Trait`            | `Trait`.                                                     |
+| `Trait`            | [Trait](./trait.md).                                         |

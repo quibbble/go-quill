@@ -1,5 +1,12 @@
 # Quill Docs
 
+## Key Terms
+- [Event](./event.md) - provides ways to affect change on the game state.
+- [Condition](./condition.md) - provides requirements that must be passed before event(s) can happen.
+- [Hook](./hook.md) - provides ways to trigger side affect event(s) before/after an event happens.
+- [Choose](./choose.md) - provides a unified way to select units/tiles/players.
+- [Trait](./trait.md) - added to cards and provide special characteristics to their holder.
+
 ## Card
 
 Cards are created and stored in YAML files then parsed and converted into card objects in the game. This makes it easy to create and modify cards on the file.
@@ -14,10 +21,10 @@ Name: Name
 Description: "Description."
 Cost: 3
 Conditions: # list of conditions required to play this card.
-Targets: # list of choices that are validated against a list of targets passed by a user when playing a card.
+Targets: # list of chooses that are validated against a list of targets passed by a user when playing a card.
 Hooks: # list of hooks that are registered to the game engine on card play.
 Events: # list of events that are performed on the game state on card play.
-Traits: # list of spell characteristics that the card holds.
+Traits: # list of special characteristics that the card holds.
 ```
 
 ### Items
