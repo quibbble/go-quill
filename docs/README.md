@@ -9,7 +9,7 @@
 
 ## Card
 
-Cards are created and stored in YAML files then parsed and converted into card objects in the game. This makes it easy to create and modify cards on the file.
+Cards are created and stored in YAML files then parsed and converted into card objects in the game. This makes it easy to create and modify cards on the fly.
 
 ### Core
 
