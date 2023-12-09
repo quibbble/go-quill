@@ -87,7 +87,7 @@ func KillUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 		choose2, err := ch.NewChoose(state.Gen.New(en.ChooseUUID), ch.OwnedUnitsChoice, ch.OwnedUnitsArgs{
 			ChoosePlayer: parse.Choose{
 				Type: ch.UUIDChoice,
-				Args: &ch.UUIDArgs{
+				Args: ch.UUIDArgs{
 					UUID: unit.Player,
 				},
 			},
@@ -104,10 +104,10 @@ func KillUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 			if err := engine.Do(context.Background(), &Event{
 				uuid: state.Gen.New(en.EventUUID),
 				typ:  EndGameEvent,
-				args: &EndGameArgs{
+				args: EndGameArgs{
 					ChooseWinner: parse.Choose{
 						Type: ch.UUIDChoice,
-						Args: &ch.UUIDArgs{
+						Args: ch.UUIDArgs{
 							UUID: state.GetOpponent(unit.Player),
 						},
 					},

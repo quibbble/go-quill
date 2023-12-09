@@ -47,12 +47,12 @@ func DamageUnitsAffect(ctx context.Context, args interface{}, engine *en.Engine,
 		event := &Event{
 			uuid: state.Gen.New(en.EventUUID),
 			typ:  DamageUnitEvent,
-			args: &DamageUnitArgs{
+			args: DamageUnitArgs{
 				DamageType: a.DamageType,
 				Amount:     a.Amount,
 				ChooseUnit: parse.Choose{
 					Type: ch.UUIDChoice,
-					Args: &ch.UUIDArgs{
+					Args: ch.UUIDArgs{
 						UUID: choice,
 					},
 				},

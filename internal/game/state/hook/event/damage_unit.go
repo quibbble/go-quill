@@ -50,10 +50,10 @@ func DamageUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 		event := &Event{
 			uuid: state.Gen.New(en.EventUUID),
 			typ:  KillUnitEvent,
-			args: &KillUnitArgs{
+			args: KillUnitArgs{
 				ChooseUnit: parse.Choose{
 					Type: ch.UUIDChoice,
-					Args: &ch.UUIDArgs{
+					Args: ch.UUIDArgs{
 						UUID: unit.UUID,
 					},
 				},

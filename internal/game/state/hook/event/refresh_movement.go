@@ -43,10 +43,10 @@ func RefreshMovementAffect(ctx context.Context, args interface{}, engine *en.Eng
 		event := &Event{
 			uuid: state.Gen.New(en.EventUUID),
 			typ:  ModifyUnitEvent,
-			args: &ModifyUnitArgs{
+			args: ModifyUnitArgs{
 				ChooseUnit: parse.Choose{
 					Type: ch.UUIDChoice,
-					Args: &ch.UUIDArgs{
+					Args: ch.UUIDArgs{
 						UUID: unit.GetUUID(),
 					},
 				},

@@ -49,10 +49,10 @@ func CooldownAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 		event := &Event{
 			uuid: state.Gen.New(en.EventUUID),
 			typ:  ModifyUnitEvent,
-			args: &ModifyUnitArgs{
+			args: ModifyUnitArgs{
 				ChooseUnit: parse.Choose{
 					Type: ch.UUIDChoice,
-					Args: &ch.UUIDArgs{
+					Args: ch.UUIDArgs{
 						UUID: unit.GetUUID(),
 					},
 				},

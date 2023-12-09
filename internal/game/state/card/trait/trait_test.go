@@ -20,7 +20,7 @@ func Test_ModifyingTraitArgs(t *testing.T) {
 			Args interface{}
 		}{
 			Type: ch.UUIDChoice,
-			Args: &ch.UUIDArgs{
+			Args: ch.UUIDArgs{
 				UUID: gen.New(en.UnitUUID),
 			},
 		},
@@ -29,7 +29,7 @@ func Test_ModifyingTraitArgs(t *testing.T) {
 			Args interface{}
 		}{
 			Type: BuffTrait,
-			Args: &BuffArgs{
+			Args: BuffArgs{
 				Stat:   cd.AttackStat,
 				Amount: 1,
 			},

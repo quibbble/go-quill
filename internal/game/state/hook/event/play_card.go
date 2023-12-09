@@ -77,10 +77,10 @@ func PlayCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 	if err := engine.Do(context.Background(), &Event{
 		uuid: state.Gen.New(en.EventUUID),
 		typ:  DrainManaEvent,
-		args: &DrainManaArgs{
+		args: DrainManaArgs{
 			ChoosePlayer: parse.Choose{
 				Type: ch.CurrentPlayerChoice,
-				Args: &ch.CurrentPlayerArgs{},
+				Args: ch.CurrentPlayerArgs{},
 			},
 			Amount: maths.MaxInt(card.GetCost(), 0),
 		},
@@ -104,22 +104,22 @@ func PlayCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 		event = &Event{
 			uuid: state.Gen.New(en.EventUUID),
 			typ:  AddItemToUnitEvent,
-			args: &AddItemToUnitArgs{
+			args: AddItemToUnitArgs{
 				ChoosePlayer: parse.Choose{
 					Type: ch.UUIDChoice,
-					Args: &ch.UUIDArgs{
+					Args: ch.UUIDArgs{
 						UUID: playerChoice,
 					},
 				},
 				ChooseItem: parse.Choose{
 					Type: ch.UUIDChoice,
-					Args: &ch.UUIDArgs{
+					Args: ch.UUIDArgs{
 						UUID: card.GetUUID(),
 					},
 				},
 				ChooseUnit: parse.Choose{
 					Type: ch.UUIDChoice,
-					Args: &ch.UUIDArgs{
+					Args: ch.UUIDArgs{
 						UUID: targets[0],
 					},
 				},
@@ -130,14 +130,14 @@ func PlayCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 		event = &Event{
 			uuid: state.Gen.New(en.EventUUID),
 			typ:  DiscardCardEvent,
-			args: &DiscardCardArgs{
+			args: DiscardCardArgs{
 				ChoosePlayer: parse.Choose{
 					Type: ch.CurrentPlayerChoice,
-					Args: &ch.CurrentPlayerArgs{},
+					Args: ch.CurrentPlayerArgs{},
 				},
 				ChooseCard: parse.Choose{
 					Type: ch.UUIDChoice,
-					Args: &ch.UUIDArgs{
+					Args: ch.UUIDArgs{
 						UUID: card.GetUUID(),
 					},
 				},
@@ -151,20 +151,20 @@ func PlayCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 		event = &Event{
 			uuid: state.Gen.New(en.EventUUID),
 			typ:  PlaceUnitEvent,
-			args: &PlaceUnitArgs{
+			args: PlaceUnitArgs{
 				ChoosePlayer: parse.Choose{
 					Type: ch.CurrentPlayerChoice,
-					Args: &ch.CurrentPlayerArgs{},
+					Args: ch.CurrentPlayerArgs{},
 				},
 				ChooseUnit: parse.Choose{
 					Type: ch.UUIDChoice,
-					Args: &ch.UUIDArgs{
+					Args: ch.UUIDArgs{
 						UUID: card.GetUUID(),
 					},
 				},
 				ChooseTile: parse.Choose{
 					Type: ch.UUIDChoice,
-					Args: &ch.UUIDArgs{
+					Args: ch.UUIDArgs{
 						UUID: targets[0],
 					},
 				},

@@ -34,7 +34,7 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 					event := &Event{
 						uuid: state.Gen.New(en.EventUUID),
 						typ:  DamageUnitEvent,
-						args: &DamageUnitArgs{
+						args: DamageUnitArgs{
 							DamageType: dg.MagicDamage,
 							Amount:     args.Amount,
 							ChooseUnit: parse.Choose{
@@ -59,24 +59,24 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 		{
 			uuid: state.Gen.New(en.EventUUID),
 			typ:  RefreshMovementEvent,
-			args: &RefreshMovementArgs{
+			args: RefreshMovementArgs{
 				ChooseUnits: parse.Choose{
 					Type: ch.CompositeChoice,
-					Args: &ch.CompositeArgs{
+					Args: ch.CompositeArgs{
 						SetFunction: ch.SetIntersect,
 						Choices: []parse.Choose{
 							{
 								Type: ch.OwnedUnitsChoice,
-								Args: &ch.OwnedUnitsArgs{
+								Args: ch.OwnedUnitsArgs{
 									ChoosePlayer: parse.Choose{
 										Type: ch.CurrentPlayerChoice,
-										Args: &ch.CurrentPlayerArgs{},
+										Args: ch.CurrentPlayerArgs{},
 									},
 								},
 							},
 							{
 								Type: ch.UnitsChoice,
-								Args: &ch.UnitsArgs{
+								Args: ch.UnitsArgs{
 									Types: []string{
 										cd.CreatureUnit,
 									},
@@ -91,24 +91,24 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 		{
 			uuid: state.Gen.New(en.EventUUID),
 			typ:  CooldownEvent,
-			args: &CooldownArgs{
+			args: CooldownArgs{
 				ChooseUnits: parse.Choose{
 					Type: ch.CompositeChoice,
-					Args: &ch.CompositeArgs{
+					Args: ch.CompositeArgs{
 						SetFunction: ch.SetIntersect,
 						Choices: []parse.Choose{
 							{
 								Type: ch.OwnedUnitsChoice,
-								Args: &ch.OwnedUnitsArgs{
+								Args: ch.OwnedUnitsArgs{
 									ChoosePlayer: parse.Choose{
 										Type: ch.CurrentPlayerChoice,
-										Args: &ch.CurrentPlayerArgs{},
+										Args: ch.CurrentPlayerArgs{},
 									},
 								},
 							},
 							{
 								Type: ch.UnitsChoice,
-								Args: &ch.UnitsArgs{
+								Args: ch.UnitsArgs{
 									Types: []string{
 										cd.CreatureUnit,
 										cd.StructureUnit,
@@ -141,26 +141,26 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 			{
 				uuid: state.Gen.New(en.EventUUID),
 				typ:  DamageUnitsEvent,
-				args: &DamageUnitsArgs{
+				args: DamageUnitsArgs{
 					DamageType: dg.PureDamage,
 					Amount:     state.Recycle[player],
 					ChooseUnits: parse.Choose{
 						Type: ch.CompositeChoice,
-						Args: &ch.CompositeArgs{
+						Args: ch.CompositeArgs{
 							SetFunction: ch.SetIntersect,
 							Choices: []parse.Choose{
 								{
 									Type: ch.OwnedUnitsChoice,
-									Args: &ch.OwnedUnitsArgs{
+									Args: ch.OwnedUnitsArgs{
 										ChoosePlayer: parse.Choose{
 											Type: ch.CurrentPlayerChoice,
-											Args: &ch.CurrentPlayerArgs{},
+											Args: ch.CurrentPlayerArgs{},
 										},
 									},
 								},
 								{
 									Type: ch.UnitsChoice,
-									Args: &ch.UnitsArgs{
+									Args: ch.UnitsArgs{
 										Types: []string{
 											cd.BaseUnit,
 										},
@@ -175,10 +175,10 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 			{
 				uuid: state.Gen.New(en.EventUUID),
 				typ:  RecycleDeckEvent,
-				args: &RecycleDeckArgs{
+				args: RecycleDeckArgs{
 					ChoosePlayer: parse.Choose{
 						Type: ch.UUIDChoice,
-						Args: &ch.UUIDArgs{
+						Args: ch.UUIDArgs{
 							UUID: player,
 						},
 					},
@@ -199,10 +199,10 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 		{
 			uuid: state.Gen.New(en.EventUUID),
 			typ:  GainManaEvent,
-			args: &GainManaArgs{
+			args: GainManaArgs{
 				ChoosePlayer: parse.Choose{
 					Type: ch.CurrentPlayerChoice,
-					Args: &ch.CurrentPlayerArgs{},
+					Args: ch.CurrentPlayerArgs{},
 				},
 				Amount: state.Mana[player].BaseAmount - state.Mana[player].Amount,
 			},
@@ -211,10 +211,10 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 		{
 			uuid: state.Gen.New(en.EventUUID),
 			typ:  DrawCardEvent,
-			args: &DrawCardArgs{
+			args: DrawCardArgs{
 				ChoosePlayer: parse.Choose{
 					Type: ch.UUIDChoice,
-					Args: &ch.UUIDArgs{
+					Args: ch.UUIDArgs{
 						UUID: player,
 					},
 				},

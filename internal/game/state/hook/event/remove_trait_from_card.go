@@ -53,7 +53,7 @@ func RemoveTraitFromCardAffect(ctx context.Context, args interface{}, engine *en
 			event := &Event{
 				uuid: state.Gen.New(en.EventUUID),
 				typ:  KillUnitEvent,
-				args: &KillUnitArgs{
+				args: KillUnitArgs{
 					ChooseUnit: parse.Choose{
 						Type: ch.UUIDChoice,
 						Args: ch.UUIDArgs{

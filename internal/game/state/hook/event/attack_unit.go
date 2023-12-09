@@ -68,16 +68,16 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 			{
 				uuid: state.Gen.New(en.EventUUID),
 				typ:  RemoveItemFromUnitEvent,
-				args: &RemoveItemFromUnitArgs{
+				args: RemoveItemFromUnitArgs{
 					ChooseItem: parse.Choose{
 						Type: ch.UUIDChoice,
-						Args: &ch.UUIDArgs{
+						Args: ch.UUIDArgs{
 							UUID: item.UUID,
 						},
 					},
 					ChooseUnit: parse.Choose{
 						Type: ch.UUIDChoice,
-						Args: &ch.UUIDArgs{
+						Args: ch.UUIDArgs{
 							UUID: defender.UUID,
 						},
 					},
@@ -87,16 +87,16 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 			{
 				uuid: state.Gen.New(en.EventUUID),
 				typ:  AddItemToUnitEvent,
-				args: &AddItemToUnitArgs{
+				args: AddItemToUnitArgs{
 					ChooseItem: parse.Choose{
 						Type: ch.UUIDChoice,
-						Args: &ch.UUIDArgs{
+						Args: ch.UUIDArgs{
 							UUID: item.UUID,
 						},
 					},
 					ChooseUnit: parse.Choose{
 						Type: ch.UUIDChoice,
-						Args: &ch.UUIDArgs{
+						Args: ch.UUIDArgs{
 							UUID: attacker.UUID,
 						},
 					},
@@ -121,7 +121,7 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 			Codex: attacker.Codex,
 			ChooseUnitOrTile: parse.Choose{
 				Type: ch.UUIDChoice,
-				Args: &ch.UUIDArgs{
+				Args: ch.UUIDArgs{
 					UUID: defender.UUID,
 				},
 			},
@@ -152,12 +152,12 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 			event = &Event{
 				uuid: state.Gen.New(en.EventUUID),
 				typ:  DamageUnitEvent,
-				args: &DamageUnitArgs{
+				args: DamageUnitArgs{
 					DamageType: attacker.DamageType,
 					Amount:     attackerDamage,
 					ChooseUnit: parse.Choose{
 						Type: ch.UUIDChoice,
-						Args: &ch.UUIDArgs{
+						Args: ch.UUIDArgs{
 							UUID: defender.UUID,
 						},
 					},
@@ -171,10 +171,10 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 				event = &Event{
 					uuid: state.Gen.New(en.EventUUID),
 					typ:  KillUnitEvent,
-					args: &KillUnitArgs{
+					args: KillUnitArgs{
 						ChooseUnit: parse.Choose{
 							Type: ch.UUIDChoice,
-							Args: &ch.UUIDArgs{
+							Args: ch.UUIDArgs{
 								UUID: defender.UUID,
 							},
 						},
@@ -225,7 +225,7 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 						Trait: args.Trait,
 						ChooseCard: parse.Choose{
 							Type: ch.UUIDChoice,
-							Args: &ch.UUIDArgs{
+							Args: ch.UUIDArgs{
 								UUID: defender.UUID,
 							},
 						},
@@ -244,12 +244,12 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 			event := &Event{
 				uuid: state.Gen.New(en.EventUUID),
 				typ:  DamageUnitEvent,
-				args: &DamageUnitArgs{
+				args: DamageUnitArgs{
 					DamageType: defender.DamageType,
 					Amount:     defenderDamage,
 					ChooseUnit: parse.Choose{
 						Type: ch.UUIDChoice,
-						Args: &ch.UUIDArgs{
+						Args: ch.UUIDArgs{
 							UUID: attacker.UUID,
 						},
 					},

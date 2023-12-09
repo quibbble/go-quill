@@ -39,10 +39,10 @@ func SackCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 		{
 			uuid: state.Gen.New(en.EventUUID),
 			typ:  DiscardCardEvent,
-			args: &DiscardCardArgs{
+			args: DiscardCardArgs{
 				ChoosePlayer: parse.Choose{
 					Type: ch.CurrentPlayerChoice,
-					Args: &ch.CurrentPlayerArgs{},
+					Args: ch.CurrentPlayerArgs{},
 				},
 				ChooseCard: a.ChooseCard,
 			},
@@ -55,10 +55,10 @@ func SackCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 		events = append(events, &Event{
 			uuid: state.Gen.New(en.EventUUID),
 			typ:  GainBaseManaEvent,
-			args: &GainBaseManaArgs{
+			args: GainBaseManaArgs{
 				ChoosePlayer: parse.Choose{
 					Type: ch.CurrentPlayerChoice,
-					Args: &ch.CurrentPlayerArgs{},
+					Args: ch.CurrentPlayerArgs{},
 				},
 				Amount: 1,
 			},
@@ -66,10 +66,10 @@ func SackCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 		}, &Event{
 			uuid: state.Gen.New(en.EventUUID),
 			typ:  GainManaEvent,
-			args: &GainManaArgs{
+			args: GainManaArgs{
 				ChoosePlayer: parse.Choose{
 					Type: ch.CurrentPlayerChoice,
-					Args: &ch.CurrentPlayerArgs{},
+					Args: ch.CurrentPlayerArgs{},
 				},
 				Amount: 1,
 			},
@@ -79,10 +79,10 @@ func SackCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 		events = append(events, &Event{
 			uuid: state.Gen.New(en.EventUUID),
 			typ:  DrawCardEvent,
-			args: &DrawCardArgs{
+			args: DrawCardArgs{
 				ChoosePlayer: parse.Choose{
 					Type: ch.UUIDChoice,
-					Args: &ch.UUIDArgs{
+					Args: ch.UUIDArgs{
 						UUID: playerChoice,
 					},
 				},
@@ -91,10 +91,10 @@ func SackCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 		}, &Event{
 			uuid: state.Gen.New(en.EventUUID),
 			typ:  DrawCardEvent,
-			args: &DrawCardArgs{
+			args: DrawCardArgs{
 				ChoosePlayer: parse.Choose{
 					Type: ch.UUIDChoice,
-					Args: &ch.UUIDArgs{
+					Args: ch.UUIDArgs{
 						UUID: playerChoice,
 					},
 				},

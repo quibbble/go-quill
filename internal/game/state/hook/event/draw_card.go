@@ -38,7 +38,7 @@ func DrawCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 		event := &Event{
 			uuid: state.Gen.New(en.EventUUID),
 			typ:  BurnCardEvent,
-			args: &BurnCardArgs{
+			args: BurnCardArgs{
 				ChoosePlayer: a.ChoosePlayer,
 			},
 			affect: BurnCardAffect,

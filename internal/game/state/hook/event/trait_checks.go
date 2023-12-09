@@ -36,7 +36,7 @@ func FriendsTraitCheck(engine *en.Engine, state *st.State) error {
 					choose2, err := ch.NewChoose(state.Gen.New(en.ChooseUUID), ch.OwnedUnitsChoice, &ch.OwnedUnitsArgs{
 						ChoosePlayer: parse.Choose{
 							Type: ch.UUIDChoice,
-							Args: &ch.UUIDArgs{
+							Args: ch.UUIDArgs{
 								UUID: tile.Unit.GetPlayer(),
 							},
 						},
@@ -87,7 +87,7 @@ func EnemiesTraitCheck(engine *en.Engine, state *st.State) error {
 					choose2, err := ch.NewChoose(state.Gen.New(en.ChooseUUID), ch.OwnedUnitsChoice, &ch.OwnedUnitsArgs{
 						ChoosePlayer: parse.Choose{
 							Type: ch.UUIDChoice,
-							Args: &ch.UUIDArgs{
+							Args: ch.UUIDArgs{
 								UUID: state.GetOpponent(tile.Unit.GetPlayer()),
 							},
 						},
@@ -131,13 +131,13 @@ func updateUnits(engine *en.Engine, state *st.State, before, after []uuid.UUID, 
 				event, err := NewEvent(state.Gen.New(en.EventUUID), RemoveTraitFromCard, &RemoveTraitFromCardArgs{
 					ChooseTrait: parse.Choose{
 						Type: ch.UUIDChoice,
-						Args: &ch.UUIDArgs{
+						Args: ch.UUIDArgs{
 							UUID: t.GetUUID(),
 						},
 					},
 					ChooseCard: parse.Choose{
 						Type: ch.UUIDChoice,
-						Args: &ch.UUIDArgs{
+						Args: ch.UUIDArgs{
 							UUID: u,
 						},
 					},
@@ -165,7 +165,7 @@ func updateUnits(engine *en.Engine, state *st.State, before, after []uuid.UUID, 
 			},
 			ChooseCard: parse.Choose{
 				Type: ch.UUIDChoice,
-				Args: &ch.UUIDArgs{
+				Args: ch.UUIDArgs{
 					UUID: u,
 				},
 			},
