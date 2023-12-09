@@ -19,14 +19,14 @@ const (
 type UnitCard struct {
 	*Card
 
-	Type       string
-	DamageType string
-	Attack     int
-	Health     int
-	Cooldown   int
-	Range      int
-	Movement   int
-	Codex      string
+	Type                   string
+	DamageType             string
+	Attack                 int
+	Health                 int
+	Cooldown, BaseCooldown int
+	Movement, BaseMovement int
+	Range                  int
+	Codex                  string
 
 	// Items that apply held traits to this card
 	Items []*ItemCard

@@ -12,6 +12,7 @@ import (
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
+	"github.com/quibbble/go-quill/pkg/maths"
 )
 
 const (
@@ -264,7 +265,7 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 
 	// if attacker still on board then reset cooldown
 	if _, _, err := state.Board.GetUnitXY(attacker.UUID); err == nil {
-		attacker.Cooldown = attacker.GetInit().(*parse.UnitCard).Cooldown
+		attacker.Cooldown = maths.MaxInt(0, attacker.BaseCooldown)
 
 		// berserk trait check - if defender was killed then allow attacker to attack again
 		_, _, err := state.Board.GetUnitXY(defender.UUID)

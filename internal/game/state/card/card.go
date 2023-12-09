@@ -12,12 +12,14 @@ import (
 )
 
 const (
-	CostStat     = "Cost"
-	AttackStat   = "Attack"
-	HealthStat   = "Health"
-	MovementStat = "Movement"
-	CooldownStat = "Cooldown"
-	RangeState   = "Range"
+	CostStat         = "Cost"
+	AttackStat       = "Attack"
+	HealthStat       = "Health"
+	MovementStat     = "Movement"
+	BaseMovementStat = "BaseMovement"
+	CooldownStat     = "Cooldown"
+	BaseCooldownStat = "BaseCooldown"
+	RangeState       = "Range"
 )
 
 type Builders struct {
@@ -168,16 +170,18 @@ func NewCard(builders *Builders, id string, player uuid.UUID) (st.ICard, error) 
 		}, nil
 	} else if unitOk {
 		return &UnitCard{
-			Card:       core,
-			Type:       unit.Type,
-			DamageType: unit.DamageType,
-			Attack:     unit.Attack,
-			Health:     unit.Health,
-			Cooldown:   unit.Cooldown,
-			Range:      unit.Range,
-			Movement:   unit.Movement,
-			Codex:      unit.Codex,
-			Items:      make([]*ItemCard, 0),
+			Card:         core,
+			Type:         unit.Type,
+			DamageType:   unit.DamageType,
+			Attack:       unit.Attack,
+			Health:       unit.Health,
+			Cooldown:     unit.Cooldown,
+			BaseCooldown: unit.Cooldown,
+			Movement:     unit.Movement,
+			BaseMovement: unit.Movement,
+			Range:        unit.Range,
+			Codex:        unit.Codex,
+			Items:        make([]*ItemCard, 0),
 		}, nil
 	}
 	return nil, errors.ErrNilInterface

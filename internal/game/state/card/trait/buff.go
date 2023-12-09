@@ -39,6 +39,10 @@ func AddBuff(engine *en.Engine, args interface{}, card st.ICard) error {
 		unit.Attack += a.Amount
 	case cd.HealthStat:
 		unit.Health += a.Amount
+	case cd.BaseCooldownStat:
+		unit.BaseCooldown -= a.Amount
+	case cd.BaseMovementStat:
+		unit.BaseMovement += a.Amount
 	case cd.RangeState:
 		unit.Range += a.Amount
 	default:
@@ -70,6 +74,10 @@ func RemoveBuff(engine *en.Engine, args interface{}, card st.ICard) error {
 		if unit.Health > initHealth {
 			unit.Health = initHealth
 		}
+	case cd.BaseCooldownStat:
+		unit.BaseCooldown += a.Amount
+	case cd.BaseMovementStat:
+		unit.BaseMovement -= a.Amount
 	case cd.RangeState:
 		unit.Range -= a.Amount
 	default:

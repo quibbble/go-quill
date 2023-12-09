@@ -1,0 +1,14 @@
+ID: I0007
+Name: Infected Blade
+Description: "Holding unit becomes poisoned. If it dies from poison then this item passed to another unit on the same side."
+Cost: 2
+Targets:
+- Type: Units
+  Args:
+    Types:
+    - Creature
+Hooks: # TODO
+HeldTraits:
+- Type: Poison
+  Args:
+    Amount: 1

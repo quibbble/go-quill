@@ -10,6 +10,7 @@ import (
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
+	"github.com/quibbble/go-quill/pkg/maths"
 )
 
 const (
@@ -51,7 +52,7 @@ func RefreshMovementAffect(ctx context.Context, args interface{}, engine *en.Eng
 					},
 				},
 				Stat:   cd.MovementStat,
-				Amount: unit.GetInit().(*parse.UnitCard).Movement - unit.Movement,
+				Amount: maths.MaxInt(0, unit.BaseMovement) - unit.Movement,
 			},
 			affect: ModifyUnitAffect,
 		}

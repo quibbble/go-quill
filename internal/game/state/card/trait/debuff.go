@@ -38,6 +38,10 @@ func AddDebuff(engine *en.Engine, args interface{}, card st.ICard) error {
 		unit.Attack -= a.Amount
 	case cd.HealthStat:
 		unit.Health -= a.Amount
+	case cd.BaseCooldownStat:
+		unit.BaseCooldown += a.Amount
+	case cd.BaseMovementStat:
+		unit.BaseMovement -= a.Amount
 	case cd.RangeState:
 		unit.Range -= a.Amount
 	default:
@@ -66,6 +70,10 @@ func RemoveDebuff(engine *en.Engine, args interface{}, card st.ICard) error {
 		unit.Attack += a.Amount
 	case cd.HealthStat:
 		unit.Health += a.Amount
+	case cd.BaseCooldownStat:
+		unit.BaseCooldown -= a.Amount
+	case cd.BaseMovementStat:
+		unit.BaseMovement += a.Amount
 	case cd.RangeState:
 		unit.Range += a.Amount
 	default:

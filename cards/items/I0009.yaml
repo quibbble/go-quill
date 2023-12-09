@@ -1,0 +1,24 @@
+ID: I0008
+Name: Eternal Sword
+Description: "On death summon a 'Hound' in holding unit's place."
+Cost: 2
+Targets:
+- Type: Composite
+  Args:
+    Choices:
+    - Type: Units
+      Args:
+        Types:
+        - Creature
+    - Type: OwnedUnits
+      Args:
+        ChoosesPlayer: CurrentPlayer
+Hooks:
+HeldTraits:
+- Type: DeathCry
+  Args:
+    Events:
+    - Type: SummonUnit
+      Args:
+        ChoosePlayer:
+          Type: # TODO

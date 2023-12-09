@@ -10,6 +10,7 @@ import (
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
+	"github.com/quibbble/go-quill/pkg/maths"
 )
 
 const StatBelowCondition = "StatBelow"
@@ -42,15 +43,19 @@ func PassStatBelow(ctx context.Context, args interface{}, engine *en.Engine, sta
 		unit := card.(*cd.UnitCard)
 		switch p.Stat {
 		case cd.AttackStat:
-			return p.Amount > unit.Attack, nil
+			return p.Amount > maths.MaxInt(unit.Attack, 0), nil
 		case cd.HealthStat:
-			return p.Amount > unit.Health, nil
+			return p.Amount > maths.MaxInt(unit.Health, 0), nil
 		case cd.CooldownStat:
-			return p.Amount > unit.Cooldown, nil
+			return p.Amount > maths.MaxInt(unit.Cooldown, 0), nil
+		case cd.BaseCooldownStat:
+			return p.Amount > maths.MaxInt(unit.BaseCooldown, 0), nil
 		case cd.MovementStat:
-			return p.Amount > unit.Movement, nil
+			return p.Amount > maths.MaxInt(unit.Movement, 0), nil
+		case cd.BaseMovementStat:
+			return p.Amount > maths.MaxInt(unit.BaseMovement, 0), nil
 		case cd.RangeState:
-			return p.Amount > unit.Range, nil
+			return p.Amount > maths.MaxInt(unit.Range, 0), nil
 		}
 	}
 	return false, errors.Errorf("'%s' is not a valid stat", p.Stat)

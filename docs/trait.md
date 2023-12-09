@@ -29,12 +29,12 @@
 
 ## Args
 
-| **Name**           | **Requirements**                                                  |
-|--------------------|-------------------------------------------------------------------|
-| `Amount`           | An integer.                                                       |
-| `Choose{X}`        | [Choose](./choose.md).                                            |
-| `Code`             | An eight character string containing only 0 or 1 i.e. `11001111`. |
-| `Events`           | List of [Event](./event.md).                                      |
-| `Hooks`            | List of [Hook](./hook.md).                                        |
-| `Stat`             | `Cost`, `Attack`, `Health`, `Movement`, `Cooldown`, `Range`.      |
-| `Trait`            | [Trait](./trait.md).                                              |
+| **Name**           | **Requirements**                                                     |
+|--------------------|----------------------------------------------------------------------|
+| `Amount`           | An integer.                                                          |
+| `Choose{X}`        | [Choose](./choose.md).                                               |
+| `Code`             | An eight character string containing only 0 or 1 i.e. `11001111`.    |
+| `Events`           | List of [Event](./event.md).                                         |
+| `Hooks`            | List of [Hook](./hook.md).                                           |
+| `Stat`             | `Cost`, `Attack`, `Health`, `BaseMovement`, `BaseCooldown`, `Range`. |
+| `Trait`            | [Trait](./trait.md).                                                 
