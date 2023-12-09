@@ -1,6 +1,7 @@
 # go-quill
 
 ## TODO
+- All other args (events, conditions, etc) should not be set as pointers and should have SetArgs() functions as well
 - Add cursed X trait
 - Add dominion trait
 - Add friendly fire trait (attacked by friendly unit heals it)

@@ -66,7 +66,10 @@ func DamageUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 	} else {
 		// enrage trait check
 		for _, trait := range unit.GetTraits(tr.EnrageTrait) {
-			args := trait.GetArgs().(tr.EnrageArgs)
+			var args tr.EnrageArgs
+			if err := mapstructure.Decode(trait.GetArgs(), &args); err != nil {
+				return errors.Wrap(err)
+			}
 			for _, h := range args.Hooks {
 				hook, err := state.NewHook(state.Gen, unit.GetUUID(), h)
 				if err != nil {

@@ -3,6 +3,7 @@ package event
 import (
 	"context"
 
+	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
@@ -26,7 +27,10 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 			unit := tile.Unit
 			if unit != nil && unit.GetPlayer() == state.GetTurn() {
 				for _, poison := range unit.GetTraits(tr.PoisonTrait) {
-					args := poison.GetArgs().(tr.PoisonArgs)
+					var args tr.PoisonArgs
+					if err := mapstructure.Decode(poison.GetArgs(), &args); err != nil {
+						return errors.Wrap(err)
+					}
 					event := &Event{
 						uuid: state.Gen.New(en.EventUUID),
 						typ:  DamageUnitEvent,

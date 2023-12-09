@@ -42,7 +42,10 @@ func KillUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 	// death cry trait check
 	deathCrys := unit.GetTraits(tr.DeathCryTrait)
 	for _, deathCry := range deathCrys {
-		args := deathCry.GetArgs().(tr.DeathCryArgs)
+		var args tr.DeathCryArgs
+		if err := mapstructure.Decode(deathCry.GetArgs(), &args); err != nil {
+			return errors.Wrap(err)
+		}
 		for _, h := range args.Hooks {
 			hook, err := state.NewHook(state.Gen, unit.GetUUID(), h)
 			if err != nil {

@@ -191,7 +191,10 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 			if defender.GetID() == "U0001" {
 				pillages := attacker.GetTraits(tr.PillageTrait)
 				for _, pillage := range pillages {
-					args := pillage.GetArgs().(tr.PillageArgs)
+					var args tr.PillageArgs
+					if err := mapstructure.Decode(pillage.GetArgs(), &args); err != nil {
+						return errors.Wrap(err)
+					}
 					for _, h := range args.Hooks {
 						hook, err := state.NewHook(state.Gen, attacker.GetUUID(), h)
 						if err != nil {
@@ -214,7 +217,10 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 			// gift trait check
 			if defender.Type == cd.CreatureUnit {
 				for _, gift := range attacker.GetTraits(tr.GiftTrait) {
-					args := gift.GetArgs().(tr.GiftArgs)
+					var args tr.GiftArgs
+					if err := mapstructure.Decode(gift.GetArgs(), &args); err != nil {
+						return errors.Wrap(err)
+					}
 					event, err := NewEvent(state.Gen.New(en.EventUUID), AddTraitToCard, &AddTraitToCardArgs{
 						Trait: args.Trait,
 						ChooseCard: parse.Choose{

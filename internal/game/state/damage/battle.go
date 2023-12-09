@@ -1,6 +1,7 @@
 package damage
 
 import (
+	"github.com/mitchellh/mapstructure"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
 	tr "github.com/quibbble/go-quill/internal/game/state/card/trait"
@@ -28,7 +29,10 @@ func Battle(state *st.State, attacker, defender *cd.UnitCard) (int, int, error) 
 		defenderSide := state.Board.Sides[defender.Player]
 		if maths.AbsInt(defenderSide-aY) < maths.AbsInt(defenderSide-dY) {
 			for _, trait := range assassins {
-				args := trait.GetArgs().(tr.AssassinArgs)
+				var args tr.AssassinArgs
+				if err := mapstructure.Decode(trait.GetArgs(), &args); err != nil {
+					return 0, 0, errors.Wrap(err)
+				}
 				attackerDamage += args.Amount
 			}
 		}
@@ -42,7 +46,10 @@ func Battle(state *st.State, attacker, defender *cd.UnitCard) (int, int, error) 
 	// spiky trait check
 	spikys := defender.GetTraits(tr.SpikyTrait)
 	for _, spiky := range spikys {
-		args := spiky.GetArgs().(tr.SpikyArgs)
+		var args tr.SpikyArgs
+		if err := mapstructure.Decode(spiky.GetArgs(), &args); err != nil {
+			return 0, 0, errors.Wrap(err)
+		}
 		defenderDamage += args.Amount
 	}
 

@@ -1,10 +1,6 @@
 package trait
 
 import (
-	"fmt"
-	"reflect"
-
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	"github.com/quibbble/go-quill/pkg/errors"
@@ -33,18 +29,10 @@ func NewTrait(uuid uuid.UUID, typ string, args interface{}) (st.ITrait, error) {
 	if !ok {
 		r = dummy
 	}
-	argsType, ok := ArgsTypeRegistry[fmt.Sprintf("trait.%sArgs", typ)]
-	if !ok {
-		return nil, errors.ErrMissingMapKey
-	}
-	typedArgs := reflect.New(argsType).Elem().Interface()
-	if err := mapstructure.Decode(args, &typedArgs); err != nil {
-		return nil, errors.ErrInterfaceConversion
-	}
 	return &Trait{
 		uuid:   uuid,
 		typ:    typ,
-		args:   typedArgs,
+		args:   args,
 		add:    a,
 		remove: r,
 	}, nil

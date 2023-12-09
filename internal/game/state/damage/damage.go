@@ -3,6 +3,7 @@ package damage
 import (
 	"slices"
 
+	"github.com/mitchellh/mapstructure"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
 	tr "github.com/quibbble/go-quill/internal/game/state/card/trait"
 	"github.com/quibbble/go-quill/pkg/errors"
@@ -21,9 +22,17 @@ func Damage(unit *cd.UnitCard, amount int, typ string) (int, error) {
 	reduction := 0
 	for _, trait := range unit.Traits {
 		if typ == PhysicalDamage && trait.GetType() == tr.ShieldTrait {
-			reduction += trait.GetArgs().(tr.ShieldArgs).Amount
+			var args tr.ShieldArgs
+			if err := mapstructure.Decode(trait.GetArgs(), &args); err != nil {
+				return 0, errors.Wrap(err)
+			}
+			reduction += args.Amount
 		} else if typ == MagicDamage && trait.GetType() == tr.WardTrait {
-			reduction += trait.GetArgs().(tr.WardArgs).Amount
+			var args tr.WardArgs
+			if err := mapstructure.Decode(trait.GetArgs(), &args); err != nil {
+				return 0, errors.Wrap(err)
+			}
+			reduction += args.Amount
 		}
 	}
 	damage := amount - reduction

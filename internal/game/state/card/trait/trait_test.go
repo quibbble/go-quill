@@ -4,6 +4,7 @@ import (
 	"math/rand"
 	"testing"
 
+	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
@@ -39,9 +40,15 @@ func Test_ModifyingTraitArgs(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	args := trait.GetArgs().(FriendsArgs)
+	var args FriendsArgs
+	if err := mapstructure.Decode(trait.GetArgs(), &args); err != nil {
+		t.Fatal(err)
+	}
 	args.Current = []uuid.UUID{gen.New(en.UnitUUID), gen.New(en.UnitUUID), gen.New(en.UnitUUID)}
 	trait.SetArgs(args)
 
-	assert.True(t, len(trait.GetArgs().(FriendsArgs).Current) > 0)
+	if err := mapstructure.Decode(trait.GetArgs(), &args); err != nil {
+		t.Fatal(err)
+	}
+	assert.True(t, len(args.Current) > 0)
 }
