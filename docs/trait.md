@@ -37,4 +37,4 @@
 | `Events`           | List of [Event](./event.md).                                      |
 | `Hooks`            | List of [Hook](./hook.md).                                        |
 | `Stat`             | `Cost`, `Attack`, `Health`, `Movement`, `Cooldown`, `Range`.      |
-| `Trait`            | [Trait](.).                                                       |
+| `Trait`            | [Trait](./trait.md).                                              |
