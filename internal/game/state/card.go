@@ -32,3 +32,5 @@ type ITrait interface {
 	Add(engine en.IEngine, card ICard) error
 	Remove(engine en.IEngine, card ICard) error
 }
+
+type BuildTrait func(uuid uuid.UUID, typ string, args interface{}) (ITrait, error)

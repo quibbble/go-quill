@@ -62,7 +62,7 @@ func PlayCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 	targets := ctx.Value(en.TargetsCtx).([]uuid.UUID)
 
 	// purity trait check
-	if card.GetUUID().Type() == st.SpellUUID {
+	if card.GetUUID().Type() == en.SpellUUID {
 		for _, target := range targets {
 			if x, y, err := state.Board.GetUnitXY(target); err == nil {
 				unit := state.Board.XYs[x][y].Unit
@@ -75,7 +75,7 @@ func PlayCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 	}
 
 	if err := engine.Do(context.Background(), &Event{
-		uuid: state.Gen.New(st.EventUUID),
+		uuid: state.Gen.New(en.EventUUID),
 		typ:  DrainManaEvent,
 		args: &DrainManaArgs{
 			ChoosePlayer: parse.Choose{
@@ -97,12 +97,12 @@ func PlayCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 	// create event based on card type
 	var event *Event
 	switch card.GetUUID().Type() {
-	case st.ItemUUID:
+	case en.ItemUUID:
 		if len(targets) <= 0 {
 			return errors.ErrIndexOutOfBounds
 		}
 		event = &Event{
-			uuid: state.Gen.New(st.EventUUID),
+			uuid: state.Gen.New(en.EventUUID),
 			typ:  AddItemToUnitEvent,
 			args: &AddItemToUnitArgs{
 				ChoosePlayer: parse.Choose{
@@ -126,9 +126,9 @@ func PlayCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 			},
 			affect: AddItemToUnitAffect,
 		}
-	case st.SpellUUID:
+	case en.SpellUUID:
 		event = &Event{
-			uuid: state.Gen.New(st.EventUUID),
+			uuid: state.Gen.New(en.EventUUID),
 			typ:  DiscardCardEvent,
 			args: &DiscardCardArgs{
 				ChoosePlayer: parse.Choose{
@@ -144,12 +144,12 @@ func PlayCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 			},
 			affect: DiscardCardAffect,
 		}
-	case st.UnitUUID:
+	case en.UnitUUID:
 		if len(targets) <= 0 {
 			return errors.ErrIndexOutOfBounds
 		}
 		event = &Event{
-			uuid: state.Gen.New(st.EventUUID),
+			uuid: state.Gen.New(en.EventUUID),
 			typ:  PlaceUnitEvent,
 			args: &PlaceUnitArgs{
 				ChoosePlayer: parse.Choose{

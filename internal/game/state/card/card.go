@@ -20,6 +20,12 @@ const (
 	RangeState   = "Range"
 )
 
+type Builders struct {
+	en.Builders
+	st.BuildTrait
+	*uuid.Gen
+}
+
 type Card struct {
 	Init parse.ICard
 
@@ -41,17 +47,6 @@ type Card struct {
 
 	// Traits that modify this card
 	Traits []st.ITrait
-}
-
-type BuildTrait func(uuid uuid.UUID, typ string, args interface{}) (st.ITrait, error)
-
-type Builders struct {
-	en.BuildCondition
-	en.BuildEvent
-	en.BuildHook
-	en.BuildChoose
-	BuildTrait
-	*uuid.Gen
 }
 
 func NewCard(builders *Builders, id string, player uuid.UUID) (st.ICard, error) {
@@ -84,7 +79,7 @@ func NewCard(builders *Builders, id string, player uuid.UUID) (st.ICard, error) 
 	buildConditions := func(cnds []parse.Condition) ([]en.ICondition, error) {
 		conditions := make([]en.ICondition, 0)
 		for _, c := range cnds {
-			condition, err := builders.BuildCondition(builders.Gen.New(st.ConditionUUID), c.Type, c.Not, c.Args)
+			condition, err := builders.BuildCondition(builders.Gen.New(en.ConditionUUID), c.Type, c.Not, c.Args)
 			if err != nil {
 				return nil, errors.Wrap(err)
 			}
@@ -96,7 +91,7 @@ func NewCard(builders *Builders, id string, player uuid.UUID) (st.ICard, error) 
 	buildEvents := func(evts []parse.Event) ([]en.IEvent, error) {
 		events := make([]en.IEvent, 0)
 		for _, e := range evts {
-			event, err := builders.BuildEvent(builders.Gen.New(st.EventUUID), e.Type, e.Args)
+			event, err := builders.BuildEvent(builders.Gen.New(en.EventUUID), e.Type, e.Args)
 			if err != nil {
 				return nil, errors.Wrap(err)
 			}
@@ -112,7 +107,7 @@ func NewCard(builders *Builders, id string, player uuid.UUID) (st.ICard, error) 
 
 	targets := make([]en.IChoose, 0)
 	for _, t := range crd.Targets {
-		target, err := builders.BuildChoose(builders.Gen.New(st.ChooseUUID), t.Type, t.Args)
+		target, err := builders.BuildChoose(builders.Gen.New(en.ChooseUUID), t.Type, t.Args)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
@@ -121,19 +116,7 @@ func NewCard(builders *Builders, id string, player uuid.UUID) (st.ICard, error) 
 
 	hooks := make([]en.IHook, 0)
 	for _, h := range crd.Hooks {
-		hookConditions, err := buildConditions(h.Conditions)
-		if err != nil {
-			return nil, errors.Wrap(err)
-		}
-		hookEvents, err := buildEvents(h.Events)
-		if err != nil {
-			return nil, errors.Wrap(err)
-		}
-		hookReuseConditions, err := buildConditions(h.ReuseConditions)
-		if err != nil {
-			return nil, errors.Wrap(err)
-		}
-		hook, err := builders.BuildHook(builders.Gen.New(st.HookUUID), uuid, h.When, h.Types, hookConditions, hookEvents, hookReuseConditions)
+		hook, err := builders.NewHook(builders.Gen, uuid, h)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
@@ -147,7 +130,7 @@ func NewCard(builders *Builders, id string, player uuid.UUID) (st.ICard, error) 
 
 	traits := make([]st.ITrait, 0)
 	for _, t := range crd.Traits {
-		trait, err := builders.BuildTrait(builders.Gen.New(st.TraitUUID), t.Type, t.Args)
+		trait, err := builders.BuildTrait(builders.Gen.New(en.TraitUUID), t.Type, t.Args)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
@@ -169,7 +152,7 @@ func NewCard(builders *Builders, id string, player uuid.UUID) (st.ICard, error) 
 	if itemOk {
 		heldTraits := make([]st.ITrait, 0)
 		for _, trait := range item.HeldTraits {
-			trait, err := builders.BuildTrait(builders.Gen.New(st.TraitUUID), trait.Type, trait.Args)
+			trait, err := builders.BuildTrait(builders.Gen.New(en.TraitUUID), trait.Type, trait.Args)
 			if err != nil {
 				return nil, errors.Wrap(err)
 			}

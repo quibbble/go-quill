@@ -25,7 +25,7 @@ func RetrieveComposite(ctx context.Context, args interface{}, engine *en.Engine,
 	}
 	choices := make([]en.IChoose, 0)
 	for _, ch := range c.Choices {
-		choose, err := NewChoose(state.Gen.New(st.ChooseUUID), ch.Type, ch.Args)
+		choose, err := NewChoose(state.Gen.New(en.ChooseUUID), ch.Type, ch.Args)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}

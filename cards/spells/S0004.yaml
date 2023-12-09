@@ -19,7 +19,7 @@ Hooks:
       ChoosePlayer:
         Type: CurrentPlayer
   ReuseConditions:
-  - Type: AlwaysFail
+  - Type: Fail
 Events:
 - Type: GainMana
   Args:

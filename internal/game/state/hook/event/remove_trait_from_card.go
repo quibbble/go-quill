@@ -10,7 +10,6 @@ import (
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
-	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
 const (
@@ -18,8 +17,8 @@ const (
 )
 
 type RemoveTraitFromCardArgs struct {
-	Trait      uuid.UUID
-	ChooseCard parse.Choose
+	ChooseTrait parse.Choose
+	ChooseCard  parse.Choose
 }
 
 func RemoveTraitFromCardAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
@@ -28,33 +27,37 @@ func RemoveTraitFromCardAffect(ctx context.Context, args interface{}, engine *en
 		return errors.ErrInterfaceConversion
 	}
 
-	choice, err := ch.GetChoice(ctx, a.ChooseCard, engine, state)
+	traitChoice, err := ch.GetChoice(ctx, a.ChooseTrait, engine, state)
+	if err != nil {
+		return errors.Wrap(err)
+	}
+	cardChoice, err := ch.GetChoice(ctx, a.ChooseCard, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
 
-	card := state.GetCard(choice)
+	card := state.GetCard(cardChoice)
 	if card == nil {
-		return st.ErrNotFound(choice)
+		return st.ErrNotFound(cardChoice)
 	}
-	if card.RemoveTrait(engine, a.Trait); err != nil {
+	if card.RemoveTrait(engine, traitChoice); err != nil {
 		return errors.Wrap(err)
 	}
-	if choice.Type() == st.UnitUUID && card.(*cd.UnitCard).Health <= 0 {
+	if cardChoice.Type() == en.UnitUUID && card.(*cd.UnitCard).Health <= 0 {
 		// kill unit if health to low
-		x, y, err := state.Board.GetUnitXY(choice)
+		x, y, err := state.Board.GetUnitXY(cardChoice)
 		if err != nil {
 			return errors.Wrap(err)
 		}
 		if state.Board.XYs[x][y].Unit.(*cd.UnitCard).Health <= 0 {
 			event := &Event{
-				uuid: state.Gen.New(st.EventUUID),
+				uuid: state.Gen.New(en.EventUUID),
 				typ:  KillUnitEvent,
 				args: &KillUnitArgs{
 					ChooseUnit: parse.Choose{
 						Type: ch.UUIDChoice,
 						Args: ch.UUIDArgs{
-							UUID: choice,
+							UUID: cardChoice,
 						},
 					},
 				},

@@ -3,6 +3,7 @@ package state
 import (
 	"math/rand"
 
+	en "github.com/quibbble/go-quill/internal/game/engine"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -26,16 +27,17 @@ type State struct {
 	Recycle map[uuid.UUID]int
 	Sacked  map[uuid.UUID]bool
 
+	*en.Builders
 	BuildCard
 }
 
 type BuildCard func(id string, player uuid.UUID) (ICard, error)
 
-func NewState(seed int64, build BuildCard, player1, player2 uuid.UUID, deck1, deck2 []string) (*State, error) {
+func NewState(seed int64, buildCard BuildCard, engineBuilders *en.Builders, player1, player2 uuid.UUID, deck1, deck2 []string) (*State, error) {
 	r := rand.New(rand.NewSource(seed))
 	gen := uuid.NewGen(r)
 
-	board, err := NewBoard(build, gen, player1, player2)
+	board, err := NewBoard(buildCard, gen, player1, player2)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
@@ -44,11 +46,11 @@ func NewState(seed int64, build BuildCard, player1, player2 uuid.UUID, deck1, de
 		return nil, errors.Errorf("decks must be of size %d", InitDeckSize)
 	}
 
-	d1, err := NewDeck(seed, build, player1, deck1...)
+	d1, err := NewDeck(seed, buildCard, player1, deck1...)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
-	d2, err := NewDeck(seed, build, player2, deck2...)
+	d2, err := NewDeck(seed, buildCard, player2, deck2...)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
@@ -86,7 +88,8 @@ func NewState(seed int64, build BuildCard, player1, player2 uuid.UUID, deck1, de
 		Recycle: map[uuid.UUID]int{player1: 0, player2: 0},
 		Sacked:  map[uuid.UUID]bool{player1: false, player2: false},
 
-		BuildCard: build,
+		Builders:  engineBuilders,
+		BuildCard: buildCard,
 	}, nil
 }
 

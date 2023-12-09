@@ -25,7 +25,7 @@ func RefreshMovementAffect(ctx context.Context, args interface{}, engine *en.Eng
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.ChooseUnits.Type, a.ChooseUnits.Args)
+	choose, err := ch.NewChoose(state.Gen.New(en.ChooseUUID), a.ChooseUnits.Type, a.ChooseUnits.Args)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -41,7 +41,7 @@ func RefreshMovementAffect(ctx context.Context, args interface{}, engine *en.Eng
 		unit := state.Board.XYs[x][y].Unit.(*cd.UnitCard)
 
 		event := &Event{
-			uuid: state.Gen.New(st.EventUUID),
+			uuid: state.Gen.New(en.EventUUID),
 			typ:  ModifyUnitEvent,
 			args: &ModifyUnitArgs{
 				ChooseUnit: parse.Choose{

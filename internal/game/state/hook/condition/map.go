@@ -11,7 +11,7 @@ var ConditionMap map[string]func(ctx context.Context, args interface{}, engine *
 
 func init() {
 	ConditionMap = map[string]func(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) (bool, error){
-		AlwaysFailCondition:  PassAlwaysFail,
+		FailCondition:        PassFail,
 		UnitMissingCondition: PassUnitMissing,
 		ManaAboveCondition:   PassManaAbove,
 		ManaBelowCondition:   PassManaBelow,

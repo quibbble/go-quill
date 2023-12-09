@@ -28,7 +28,7 @@ func RetrieveAdjacent(ctx context.Context, args interface{}, engine *en.Engine, 
 		return nil, errors.ErrInterfaceConversion
 	}
 
-	choose, err := NewChoose(state.Gen.New(st.ChooseUUID), c.ChooseUnitOrTile.Type, c.ChooseUnitOrTile.Args)
+	choose, err := NewChoose(state.Gen.New(en.ChooseUUID), c.ChooseUnitOrTile.Type, c.ChooseUnitOrTile.Args)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}

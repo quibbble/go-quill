@@ -26,7 +26,7 @@ func CooldownAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.ChooseUnits.Type, a.ChooseUnits.Args)
+	choose, err := ch.NewChoose(state.Gen.New(en.ChooseUUID), a.ChooseUnits.Type, a.ChooseUnits.Args)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -47,7 +47,7 @@ func CooldownAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 		}
 
 		event := &Event{
-			uuid: state.Gen.New(st.EventUUID),
+			uuid: state.Gen.New(en.EventUUID),
 			typ:  ModifyUnitEvent,
 			args: &ModifyUnitArgs{
 				ChooseUnit: parse.Choose{

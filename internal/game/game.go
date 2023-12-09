@@ -21,17 +21,9 @@ var (
 	ErrWrongTurn = func(player uuid.UUID) error { return errors.Errorf("'%s' cannot play on other player's turn", player) }
 )
 
-var build = func(gen *uuid.Gen, id string, player uuid.UUID) (st.ICard, error) {
+var build = func(builders *cd.Builders, id string, player uuid.UUID) (st.ICard, error) {
 	if len(id) == 0 {
 		return nil, parse.ErrInvalidCardID
-	}
-	builders := &cd.Builders{
-		BuildCondition: cn.NewCondition,
-		BuildEvent:     ev.NewEvent,
-		BuildHook:      hk.NewHook,
-		BuildChoose:    ch.NewChoose,
-		BuildTrait:     tr.NewTrait,
-		Gen:            gen,
 	}
 	return cd.NewCard(builders, id, player)
 }
@@ -44,8 +36,19 @@ type Game struct {
 
 func NewGame(seed int64, player1, player2 uuid.UUID, deck1, deck2 map[string]int) (*Game, error) {
 	gen := uuid.NewGen(rand.New(rand.NewSource(seed)))
-	b := func(id string, player uuid.UUID) (st.ICard, error) {
-		return build(gen, id, player)
+	engineBuilders := en.Builders{
+		BuildCondition: cn.NewCondition,
+		BuildEvent:     ev.NewEvent,
+		BuildHook:      hk.NewHook,
+		BuildChoose:    ch.NewChoose,
+	}
+	cardBuilders := cd.Builders{
+		Builders:   engineBuilders,
+		BuildTrait: tr.NewTrait,
+		Gen:        gen,
+	}
+	buildCard := func(id string, player uuid.UUID) (st.ICard, error) {
+		return build(&cardBuilders, id, player)
 	}
 
 	d1 := make([]string, 0)
@@ -63,7 +66,7 @@ func NewGame(seed int64, player1, player2 uuid.UUID, deck1, deck2 map[string]int
 	}
 
 	engine := en.NewEngine()
-	state, err := st.NewState(seed, b, player1, player2, d1, d2)
+	state, err := st.NewState(seed, buildCard, &engineBuilders, player1, player2, d1, d2)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
@@ -78,7 +81,7 @@ func (g *Game) PlayCard(player, card uuid.UUID, targets ...uuid.UUID) error {
 	if player != g.State.GetTurn() {
 		return ErrWrongTurn(player)
 	}
-	event, err := ev.NewEvent(g.Gen.New(st.EventUUID), ev.PlayCardEvent, ev.PlayCardArgs{
+	event, err := ev.NewEvent(g.Gen.New(en.EventUUID), ev.PlayCardEvent, ev.PlayCardArgs{
 		ChoosePlayer: parse.Choose{
 			Type: ch.CurrentPlayerChoice,
 			Args: &ch.CurrentPlayerArgs{},
@@ -104,7 +107,7 @@ func (g *Game) MoveUnit(player, unit, tile uuid.UUID) error {
 	if player != g.State.GetTurn() {
 		return ErrWrongTurn(player)
 	}
-	event, err := ev.NewEvent(g.Gen.New(st.EventUUID), ev.MoveUnitEvent, ev.MoveUnitArgs{
+	event, err := ev.NewEvent(g.Gen.New(en.EventUUID), ev.MoveUnitEvent, ev.MoveUnitArgs{
 		ChooseUnit: parse.Choose{
 			Type: ch.UUIDChoice,
 			Args: &ch.UUIDArgs{
@@ -139,7 +142,7 @@ func (g *Game) AttackUnit(player, attacker, defender uuid.UUID) error {
 	if player != g.State.GetTurn() {
 		return ErrWrongTurn(player)
 	}
-	event, err := ev.NewEvent(g.Gen.New(st.EventUUID), ev.AttackUnitEvent, ev.AttackUnitArgs{
+	event, err := ev.NewEvent(g.Gen.New(en.EventUUID), ev.AttackUnitEvent, ev.AttackUnitArgs{
 		ChooseAttacker: parse.Choose{
 			Type: ch.UUIDChoice,
 			Args: &ch.UUIDArgs{
@@ -166,7 +169,7 @@ func (g *Game) SackCard(player, card uuid.UUID, option string) error {
 	if player != g.State.GetTurn() {
 		return ErrWrongTurn(player)
 	}
-	event, err := ev.NewEvent(g.Gen.New(st.EventUUID), ev.SackCardEvent, ev.SackCardArgs{
+	event, err := ev.NewEvent(g.Gen.New(en.EventUUID), ev.SackCardEvent, ev.SackCardArgs{
 		ChoosePlayer: parse.Choose{
 			Type: ch.CurrentPlayerChoice,
 			Args: &ch.CurrentPlayerArgs{},
@@ -177,7 +180,7 @@ func (g *Game) SackCard(player, card uuid.UUID, option string) error {
 				UUID: card,
 			},
 		},
-		Option: option,
+		SackOption: option,
 	})
 	if err != nil {
 		return errors.Wrap(err)
@@ -192,7 +195,7 @@ func (g *Game) EndTurn(player uuid.UUID) error {
 	if player != g.State.GetTurn() {
 		return ErrWrongTurn(player)
 	}
-	event, err := ev.NewEvent(g.Gen.New(st.EventUUID), ev.EndTurnEvent, ev.EndTurnArgs{})
+	event, err := ev.NewEvent(g.Gen.New(en.EventUUID), ev.EndTurnEvent, ev.EndTurnArgs{})
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -209,13 +212,13 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 	switch len(targets) {
 	case 0:
 		choices := make([]uuid.UUID, 0)
-		choose1, err := ch.NewChoose(g.Gen.New(st.ChooseUUID), ch.UnitsChoice, &ch.UnitsArgs{
+		choose1, err := ch.NewChoose(g.Gen.New(en.ChooseUUID), ch.UnitsChoice, &ch.UnitsArgs{
 			Types: []string{cd.CreatureUnit},
 		})
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
-		choose2, err := ch.NewChoose(g.Gen.New(st.ChooseUUID), ch.OwnedUnitsChoice, &ch.OwnedTilesArgs{
+		choose2, err := ch.NewChoose(g.Gen.New(en.ChooseUUID), ch.OwnedUnitsChoice, &ch.OwnedTilesArgs{
 			ChoosePlayer: parse.Choose{
 				Type: ch.CurrentPlayerChoice,
 				Args: &ch.CurrentPlayerArgs{},
@@ -238,7 +241,7 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 			canMove := unit.Movement > 0
 			canAttack := false
 			if unit.Cooldown == 0 {
-				choose1, err := ch.NewChoose(g.Gen.New(st.ChooseUUID), ch.CodexChoice, &ch.CodexArgs{
+				choose1, err := ch.NewChoose(g.Gen.New(en.ChooseUUID), ch.CodexChoice, &ch.CodexArgs{
 					Types: []string{cd.Unit},
 					Codex: unit.Codex,
 					ChooseUnitOrTile: parse.Choose{
@@ -251,7 +254,7 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 				if err != nil {
 					return nil, errors.Wrap(err)
 				}
-				choose2, err := ch.NewChoose(g.Gen.New(st.ChooseUUID), ch.OwnedUnitsChoice, &ch.OwnedUnitsArgs{
+				choose2, err := ch.NewChoose(g.Gen.New(en.ChooseUUID), ch.OwnedUnitsChoice, &ch.OwnedUnitsArgs{
 					ChoosePlayer: parse.Choose{
 						Type: ch.OpposingPlayerChoice,
 						Args: &ch.OpposingPlayerArgs{},
@@ -304,7 +307,7 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 			case 1:
 				var moveChoices, attackChoices []uuid.UUID
 				if unit.Movement > 0 {
-					moveChoose1, err := ch.NewChoose(g.State.Gen.New(st.ChooseUUID), ch.CodexChoice, &ch.CodexArgs{
+					moveChoose1, err := ch.NewChoose(g.State.Gen.New(en.ChooseUUID), ch.CodexChoice, &ch.CodexArgs{
 						Types: []string{"Tile"},
 						Codex: unit.Codex,
 						ChooseUnitOrTile: parse.Choose{
@@ -317,7 +320,7 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 					if err != nil {
 						return nil, errors.Wrap(err)
 					}
-					moveChoose2, err := ch.NewChoose(g.State.Gen.New(st.ChooseUUID), ch.TilesChoice, &ch.TilesArgs{
+					moveChoose2, err := ch.NewChoose(g.State.Gen.New(en.ChooseUUID), ch.TilesChoice, &ch.TilesArgs{
 						Empty: true,
 					})
 					if err != nil {
@@ -331,7 +334,7 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 				}
 
 				if unit.Cooldown == 0 {
-					attackChoose1, err := ch.NewChoose(g.State.Gen.New(st.ChooseUUID), ch.CodexChoice, &ch.CodexArgs{
+					attackChoose1, err := ch.NewChoose(g.State.Gen.New(en.ChooseUUID), ch.CodexChoice, &ch.CodexArgs{
 						Types: []string{"Unit"},
 						Codex: unit.Codex,
 						ChooseUnitOrTile: parse.Choose{
@@ -344,7 +347,7 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 					if err != nil {
 						return nil, errors.Wrap(err)
 					}
-					attackChoose2, err := ch.NewChoose(g.State.Gen.New(st.ChooseUUID), ch.OwnedUnitsChoice, &ch.OwnedUnitsArgs{
+					attackChoose2, err := ch.NewChoose(g.State.Gen.New(en.ChooseUUID), ch.OwnedUnitsChoice, &ch.OwnedUnitsArgs{
 						ChoosePlayer: parse.Choose{
 							Type: ch.OpposingPlayerChoice,
 							Args: &ch.OpposingPlayerArgs{},
@@ -367,7 +370,7 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 				return choices, nil
 			case 2:
 				switch targets[1].Type() {
-				case st.UnitUUID:
+				case en.UnitUUID:
 					x2, y2, err := g.Board.GetUnitXY(targets[1])
 					if err != nil {
 						return nil, errors.Wrap(err)
@@ -379,7 +382,7 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 						return nil, errors.Errorf("invalid attack for unit '%s'", unit.GetUUID())
 					}
 					return make([]uuid.UUID, 0), nil
-				case st.TileUUID:
+				case en.TileUUID:
 					x2, y2, err := g.Board.GetTileXY(targets[1])
 					if err != nil {
 						return nil, errors.Wrap(err)
@@ -392,7 +395,7 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 					}
 					return make([]uuid.UUID, 0), nil
 				default:
-					return nil, st.ErrInvalidUUIDType(targets[1], st.UnitUUID, st.TileUUID)
+					return nil, en.ErrInvalidUUIDType(targets[1], en.UnitUUID, en.TileUUID)
 				}
 			default:
 				return nil, errors.ErrInvalidSliceLength

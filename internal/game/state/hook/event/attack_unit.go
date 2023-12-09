@@ -66,7 +66,7 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 		state.Hand[attacker.Player].Add(item)
 		events := []*Event{
 			{
-				uuid: state.Gen.New(st.EventUUID),
+				uuid: state.Gen.New(en.EventUUID),
 				typ:  RemoveItemFromUnitEvent,
 				args: &RemoveItemFromUnitArgs{
 					ChooseItem: parse.Choose{
@@ -85,7 +85,7 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 				affect: RemoveItemFromUnitAffect,
 			},
 			{
-				uuid: state.Gen.New(st.EventUUID),
+				uuid: state.Gen.New(en.EventUUID),
 				typ:  AddItemToUnitEvent,
 				args: &AddItemToUnitArgs{
 					ChooseItem: parse.Choose{
@@ -116,7 +116,7 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 
 	// lobber trait check
 	if (len(attacker.GetTraits(tr.LobberTrait)) > 0) && attacker.Range > 0 {
-		choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), ch.CodexChoice, &ch.CodexArgs{
+		choose, err := ch.NewChoose(state.Gen.New(en.ChooseUUID), ch.CodexChoice, &ch.CodexArgs{
 			Types: []string{cd.CreatureUnit, cd.StructureUnit},
 			Codex: attacker.Codex,
 			ChooseUnitOrTile: parse.Choose{
@@ -150,7 +150,7 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 		if attackerDamage > 0 {
 			var event *Event
 			event = &Event{
-				uuid: state.Gen.New(st.EventUUID),
+				uuid: state.Gen.New(en.EventUUID),
 				typ:  DamageUnitEvent,
 				args: &DamageUnitArgs{
 					DamageType: attacker.DamageType,
@@ -169,7 +169,7 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 			if len(attacker.GetTraits(tr.ExecuteTrait)) > 0 &&
 				defender.Health < defender.GetInit().(*parse.UnitCard).Health {
 				event = &Event{
-					uuid: state.Gen.New(st.EventUUID),
+					uuid: state.Gen.New(en.EventUUID),
 					typ:  KillUnitEvent,
 					args: &KillUnitArgs{
 						ChooseUnit: parse.Choose{
@@ -192,12 +192,21 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 				pillages := attacker.GetTraits(tr.PillageTrait)
 				for _, pillage := range pillages {
 					args := pillage.GetArgs().(tr.PillageArgs)
-					event, err := NewEvent(state.Gen.New(st.EventUUID), args.Event.Type, args.Event.Args)
-					if err != nil {
-						return errors.Wrap(err)
+					for _, h := range args.Hooks {
+						hook, err := state.NewHook(state.Gen, attacker.GetUUID(), h)
+						if err != nil {
+							return errors.Wrap(err)
+						}
+						engine.Register(hook)
 					}
-					if err := engine.Do(context.Background(), event, state); err != nil {
-						return errors.Wrap(err)
+					for _, e := range args.Events {
+						event, err := NewEvent(state.Gen.New(en.EventUUID), e.Type, e.Args)
+						if err != nil {
+							return errors.Wrap(err)
+						}
+						if err := engine.Do(context.Background(), event, state); err != nil {
+							return errors.Wrap(err)
+						}
 					}
 				}
 			}
@@ -206,7 +215,7 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 			if defender.Type == cd.CreatureUnit {
 				for _, gift := range attacker.GetTraits(tr.GiftTrait) {
 					args := gift.GetArgs().(tr.GiftArgs)
-					event, err := NewEvent(state.Gen.New(st.EventUUID), AddTraitToCard, &AddTraitToCardArgs{
+					event, err := NewEvent(state.Gen.New(en.EventUUID), AddTraitToCard, &AddTraitToCardArgs{
 						Trait: args.Trait,
 						ChooseCard: parse.Choose{
 							Type: ch.UUIDChoice,
@@ -227,7 +236,7 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 
 		if defenderDamage > 0 && attacker.Range <= 0 {
 			event := &Event{
-				uuid: state.Gen.New(st.EventUUID),
+				uuid: state.Gen.New(en.EventUUID),
 				typ:  DamageUnitEvent,
 				args: &DamageUnitArgs{
 					DamageType: defender.DamageType,

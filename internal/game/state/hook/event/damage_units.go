@@ -26,7 +26,7 @@ func DamageUnitsAffect(ctx context.Context, args interface{}, engine *en.Engine,
 	if err := mapstructure.Decode(args, &a); err != nil {
 		return errors.ErrInterfaceConversion
 	}
-	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.ChooseUnits.Type, a.ChooseUnits.Args)
+	choose, err := ch.NewChoose(state.Gen.New(en.ChooseUUID), a.ChooseUnits.Type, a.ChooseUnits.Args)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -35,8 +35,8 @@ func DamageUnitsAffect(ctx context.Context, args interface{}, engine *en.Engine,
 		return errors.Wrap(err)
 	}
 	for _, choice := range choices {
-		if choice.Type() != st.UnitUUID {
-			return st.ErrInvalidUUIDType(choice, st.UnitUUID)
+		if choice.Type() != en.UnitUUID {
+			return en.ErrInvalidUUIDType(choice, en.UnitUUID)
 		}
 		// it's possible the unit was killed by another affect between choosing and applying
 		// if this happens then just continue
@@ -45,7 +45,7 @@ func DamageUnitsAffect(ctx context.Context, args interface{}, engine *en.Engine,
 			continue
 		}
 		event := &Event{
-			uuid: state.Gen.New(st.EventUUID),
+			uuid: state.Gen.New(en.EventUUID),
 			typ:  DamageUnitEvent,
 			args: &DamageUnitArgs{
 				DamageType: a.DamageType,

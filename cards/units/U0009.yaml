@@ -27,7 +27,7 @@ Hooks:
     Args:
       Stat: Cooldown
       Amount: 1
-      ChooseUnit:
+      ChooseCard:
         Type: Self
   Events:
   - Type: KillUnit
@@ -53,6 +53,6 @@ Hooks:
     Args:
       Stat: Cooldown
       Amount: 0
-      ChooseUnit:
+      ChooseCard:
         Type: Self
 Events:

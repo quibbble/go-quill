@@ -7,5 +7,6 @@ const (
 )
 
 type PillageArgs struct {
-	Event parse.Event
+	Hooks  []parse.Hook
+	Events []parse.Event
 }

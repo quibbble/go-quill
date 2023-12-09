@@ -46,10 +46,15 @@ func RemoveItemFromUnitAffect(ctx context.Context, args interface{}, engine *en.
 	}
 	for _, trait := range item.HeldTraits {
 		event := &Event{
-			uuid: state.Gen.New(st.EventUUID),
+			uuid: state.Gen.New(en.EventUUID),
 			typ:  RemoveTraitFromCard,
 			args: &RemoveTraitFromCardArgs{
-				Trait: trait.GetUUID(),
+				ChooseTrait: parse.Choose{
+					Type: ch.UUIDChoice,
+					Args: &ch.UUIDArgs{
+						UUID: trait.GetUUID(),
+					},
+				},
 				ChooseCard: parse.Choose{
 					Type: ch.UUIDChoice,
 					Args: ch.UUIDArgs{

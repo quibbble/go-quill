@@ -22,7 +22,7 @@ func RetrieveOwnedTiles(ctx context.Context, args interface{}, engine *en.Engine
 	if err := mapstructure.Decode(args, &c); err != nil {
 		return nil, errors.ErrInterfaceConversion
 	}
-	choose, err := NewChoose(state.Gen.New(st.ChooseUUID), c.ChoosePlayer.Type, c.ChoosePlayer.Args)
+	choose, err := NewChoose(state.Gen.New(en.ChooseUUID), c.ChoosePlayer.Type, c.ChoosePlayer.Args)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
@@ -30,7 +30,7 @@ func RetrieveOwnedTiles(ctx context.Context, args interface{}, engine *en.Engine
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
-	if len(choices) != 1 || choices[0].Type() != st.PlayerUUID {
+	if len(choices) != 1 || choices[0].Type() != en.PlayerUUID {
 		return nil, errors.ErrInvalidSliceLength
 	}
 	owned := make([]uuid.UUID, 0)

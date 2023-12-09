@@ -22,7 +22,7 @@ func RetrieveRandom(ctx context.Context, args interface{}, engine *en.Engine, st
 	if err := mapstructure.Decode(args, &c); err != nil {
 		return nil, errors.ErrInterfaceConversion
 	}
-	choose, err := NewChoose(state.Gen.New(st.ChooseUUID), c.Choose.Type, c.Choose.Args)
+	choose, err := NewChoose(state.Gen.New(en.ChooseUUID), c.Choose.Type, c.Choose.Args)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}

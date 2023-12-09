@@ -20,7 +20,7 @@ const (
 
 type SackCardArgs struct {
 	ChoosePlayer parse.Choose
-	Option       string
+	SackOption   string
 	ChooseCard   parse.Choose
 }
 
@@ -37,7 +37,7 @@ func SackCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 
 	events := []*Event{
 		{
-			uuid: state.Gen.New(st.EventUUID),
+			uuid: state.Gen.New(en.EventUUID),
 			typ:  DiscardCardEvent,
 			args: &DiscardCardArgs{
 				ChoosePlayer: parse.Choose{
@@ -50,10 +50,10 @@ func SackCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 		},
 	}
 
-	switch a.Option {
+	switch a.SackOption {
 	case ManaSackOption:
 		events = append(events, &Event{
-			uuid: state.Gen.New(st.EventUUID),
+			uuid: state.Gen.New(en.EventUUID),
 			typ:  GainBaseManaEvent,
 			args: &GainBaseManaArgs{
 				ChoosePlayer: parse.Choose{
@@ -64,7 +64,7 @@ func SackCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 			},
 			affect: GainBaseManaAffect,
 		}, &Event{
-			uuid: state.Gen.New(st.EventUUID),
+			uuid: state.Gen.New(en.EventUUID),
 			typ:  GainManaEvent,
 			args: &GainManaArgs{
 				ChoosePlayer: parse.Choose{
@@ -77,7 +77,7 @@ func SackCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 		})
 	case CardsSackOption:
 		events = append(events, &Event{
-			uuid: state.Gen.New(st.EventUUID),
+			uuid: state.Gen.New(en.EventUUID),
 			typ:  DrawCardEvent,
 			args: &DrawCardArgs{
 				ChoosePlayer: parse.Choose{
@@ -89,7 +89,7 @@ func SackCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 			},
 			affect: DrawCardAffect,
 		}, &Event{
-			uuid: state.Gen.New(st.EventUUID),
+			uuid: state.Gen.New(en.EventUUID),
 			typ:  DrawCardEvent,
 			args: &DrawCardArgs{
 				ChoosePlayer: parse.Choose{
@@ -102,7 +102,7 @@ func SackCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 			affect: DrawCardAffect,
 		})
 	default:
-		return errors.Errorf("invalid sack option '%s'", a.Option)
+		return errors.Errorf("invalid sack option '%s'", a.SackOption)
 	}
 
 	for _, event := range events {

@@ -43,12 +43,21 @@ func KillUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 	deathCrys := unit.GetTraits(tr.DeathCryTrait)
 	for _, deathCry := range deathCrys {
 		args := deathCry.GetArgs().(tr.DeathCryArgs)
-		event, err := NewEvent(state.Gen.New(st.EventUUID), args.Event.Type, args.Event.Args)
-		if err != nil {
-			return errors.Wrap(err)
+		for _, h := range args.Hooks {
+			hook, err := state.NewHook(state.Gen, unit.GetUUID(), h)
+			if err != nil {
+				return errors.Wrap(err)
+			}
+			engine.Register(hook)
 		}
-		if err := engine.Do(context.Background(), event, state); err != nil {
-			return errors.Wrap(err)
+		for _, e := range args.Events {
+			event, err := NewEvent(state.Gen.New(en.EventUUID), e.Type, e.Args)
+			if err != nil {
+				return errors.Wrap(err)
+			}
+			if err := engine.Do(context.Background(), event, state); err != nil {
+				return errors.Wrap(err)
+			}
 		}
 	}
 
@@ -66,13 +75,13 @@ func KillUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 		state.Discard[unit.Player].Add(unit)
 	} else {
 		// check if the game is over
-		choose1, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), ch.UnitsChoice, ch.UnitsArgs{
+		choose1, err := ch.NewChoose(state.Gen.New(en.ChooseUUID), ch.UnitsChoice, ch.UnitsArgs{
 			Types: []string{cd.BaseUnit},
 		})
 		if err != nil {
 			return errors.Wrap(err)
 		}
-		choose2, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), ch.OwnedUnitsChoice, ch.OwnedUnitsArgs{
+		choose2, err := ch.NewChoose(state.Gen.New(en.ChooseUUID), ch.OwnedUnitsChoice, ch.OwnedUnitsArgs{
 			ChoosePlayer: parse.Choose{
 				Type: ch.UUIDChoice,
 				Args: &ch.UUIDArgs{
@@ -90,10 +99,15 @@ func KillUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 		}
 		if len(bases) <= 1 {
 			if err := engine.Do(context.Background(), &Event{
-				uuid: state.Gen.New(st.EventUUID),
+				uuid: state.Gen.New(en.EventUUID),
 				typ:  EndGameEvent,
 				args: &EndGameArgs{
-					Winner: state.GetOpponent(unit.Player),
+					ChooseWinner: parse.Choose{
+						Type: ch.UUIDChoice,
+						Args: &ch.UUIDArgs{
+							UUID: state.GetOpponent(unit.Player),
+						},
+					},
 				},
 				affect: EndGameAffect,
 			}, state); err != nil {

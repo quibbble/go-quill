@@ -74,12 +74,21 @@ func PlaceUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, s
 	battleCrys := unit.GetTraits(tr.BattleCryTrait)
 	for _, battleCry := range battleCrys {
 		args := battleCry.GetArgs().(tr.BattleCryArgs)
-		event, err := NewEvent(state.Gen.New(st.EventUUID), args.Event.Type, args.Event.Args)
-		if err != nil {
-			return errors.Wrap(err)
+		for _, h := range args.Hooks {
+			hook, err := state.NewHook(state.Gen, unit.GetUUID(), h)
+			if err != nil {
+				return errors.Wrap(err)
+			}
+			engine.Register(hook)
 		}
-		if err := engine.Do(context.Background(), event, state); err != nil {
-			return errors.Wrap(err)
+		for _, e := range args.Events {
+			event, err := NewEvent(state.Gen.New(en.EventUUID), e.Type, e.Args)
+			if err != nil {
+				return errors.Wrap(err)
+			}
+			if err := engine.Do(context.Background(), event, state); err != nil {
+				return errors.Wrap(err)
+			}
 		}
 	}
 

@@ -28,7 +28,7 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 				for _, poison := range unit.GetTraits(tr.PoisonTrait) {
 					args := poison.GetArgs().(tr.PoisonArgs)
 					event := &Event{
-						uuid: state.Gen.New(st.EventUUID),
+						uuid: state.Gen.New(en.EventUUID),
 						typ:  DamageUnitEvent,
 						args: &DamageUnitArgs{
 							DamageType: dg.MagicDamage,
@@ -53,7 +53,7 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 	// update units movement and cooldown
 	events := []*Event{
 		{
-			uuid: state.Gen.New(st.EventUUID),
+			uuid: state.Gen.New(en.EventUUID),
 			typ:  RefreshMovementEvent,
 			args: &RefreshMovementArgs{
 				ChooseUnits: parse.Choose{
@@ -85,7 +85,7 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 			affect: RefreshMovementAffect,
 		},
 		{
-			uuid: state.Gen.New(st.EventUUID),
+			uuid: state.Gen.New(en.EventUUID),
 			typ:  CooldownEvent,
 			args: &CooldownArgs{
 				ChooseUnits: parse.Choose{
@@ -135,7 +135,7 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 		state.Recycle[player]++
 		events := []*Event{
 			{
-				uuid: state.Gen.New(st.EventUUID),
+				uuid: state.Gen.New(en.EventUUID),
 				typ:  DamageUnitsEvent,
 				args: &DamageUnitsArgs{
 					DamageType: dg.PureDamage,
@@ -169,7 +169,7 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 				affect: DamageUnitsAffect,
 			},
 			{
-				uuid: state.Gen.New(st.EventUUID),
+				uuid: state.Gen.New(en.EventUUID),
 				typ:  RecycleDeckEvent,
 				args: &RecycleDeckArgs{
 					ChoosePlayer: parse.Choose{
@@ -193,7 +193,7 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 	// refresh mana and draw a card
 	events = []*Event{
 		{
-			uuid: state.Gen.New(st.EventUUID),
+			uuid: state.Gen.New(en.EventUUID),
 			typ:  GainManaEvent,
 			args: &GainManaArgs{
 				ChoosePlayer: parse.Choose{
@@ -205,7 +205,7 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 			affect: GainManaAffect,
 		},
 		{
-			uuid: state.Gen.New(st.EventUUID),
+			uuid: state.Gen.New(en.EventUUID),
 			typ:  DrawCardEvent,
 			args: &DrawCardArgs{
 				ChoosePlayer: parse.Choose{

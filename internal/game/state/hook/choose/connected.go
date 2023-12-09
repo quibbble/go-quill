@@ -26,7 +26,7 @@ func RetrieveConnected(ctx context.Context, args interface{}, engine *en.Engine,
 		return nil, errors.ErrInterfaceConversion
 	}
 
-	choose, err := NewChoose(state.Gen.New(st.ChooseUUID), c.ChooseUnit.Type, c.ChooseUnit.Args)
+	choose, err := NewChoose(state.Gen.New(en.ChooseUUID), c.ChooseUnit.Type, c.ChooseUnit.Args)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
@@ -46,12 +46,12 @@ func RetrieveConnected(ctx context.Context, args interface{}, engine *en.Engine,
 
 	switch c.ConnectionType {
 	case AdjacentChoice:
-		choose, err = NewChoose(state.Gen.New(st.ChooseUUID), AdjacentChoice, &AdjacentArgs{
+		choose, err = NewChoose(state.Gen.New(en.ChooseUUID), AdjacentChoice, &AdjacentArgs{
 			Types:            c.Types,
 			ChooseUnitOrTile: c.ChooseUnit,
 		})
 	case CodexChoice:
-		choose, err = NewChoose(state.Gen.New(st.ChooseUUID), CodexChoice, &CodexArgs{
+		choose, err = NewChoose(state.Gen.New(en.ChooseUUID), CodexChoice, &CodexArgs{
 			Types:            c.Types,
 			ChooseUnitOrTile: c.ChooseUnit,
 		})

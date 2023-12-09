@@ -17,7 +17,7 @@ const StatBelowCondition = "StatBelow"
 type StatBelowArgs struct {
 	Stat       string
 	Amount     int
-	ChooseUnit parse.Choose
+	ChooseCard parse.Choose
 }
 
 func PassStatBelow(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) (bool, error) {
@@ -26,7 +26,7 @@ func PassStatBelow(ctx context.Context, args interface{}, engine *en.Engine, sta
 		return false, errors.ErrInterfaceConversion
 	}
 
-	choice, err := ch.GetChoice(ctx, p.ChooseUnit, engine, state)
+	choice, err := ch.GetChoice(ctx, p.ChooseCard, engine, state)
 	if err != nil {
 		return false, errors.Wrap(err)
 	}
@@ -38,7 +38,7 @@ func PassStatBelow(ctx context.Context, args interface{}, engine *en.Engine, sta
 
 	if p.Stat == cd.CostStat {
 		return p.Amount > card.GetCost(), nil
-	} else if choice.Type() == st.UnitUUID {
+	} else if choice.Type() == en.UnitUUID {
 		unit := card.(*cd.UnitCard)
 		switch p.Stat {
 		case cd.AttackStat:

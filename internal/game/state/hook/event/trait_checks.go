@@ -25,11 +25,11 @@ func FriendsTraitCheck(engine *en.Engine, state *st.State) error {
 					if before == nil {
 						before = make([]uuid.UUID, 0)
 					}
-					choose1, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), args.ChooseUnits.Type, args.ChooseUnits.Args)
+					choose1, err := ch.NewChoose(state.Gen.New(en.ChooseUUID), args.ChooseUnits.Type, args.ChooseUnits.Args)
 					if err != nil {
 						return errors.Wrap(err)
 					}
-					choose2, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), ch.OwnedUnitsChoice, &ch.OwnedUnitsArgs{
+					choose2, err := ch.NewChoose(state.Gen.New(en.ChooseUUID), ch.OwnedUnitsChoice, &ch.OwnedUnitsArgs{
 						ChoosePlayer: parse.Choose{
 							Type: ch.UUIDChoice,
 							Args: &ch.UUIDArgs{
@@ -73,11 +73,11 @@ func EnemiesTraitCheck(engine *en.Engine, state *st.State) error {
 					if before == nil {
 						before = make([]uuid.UUID, 0)
 					}
-					choose1, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), args.ChooseUnits.Type, args.ChooseUnits.Args)
+					choose1, err := ch.NewChoose(state.Gen.New(en.ChooseUUID), args.ChooseUnits.Type, args.ChooseUnits.Args)
 					if err != nil {
 						return errors.Wrap(err)
 					}
-					choose2, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), ch.OwnedUnitsChoice, &ch.OwnedUnitsArgs{
+					choose2, err := ch.NewChoose(state.Gen.New(en.ChooseUUID), ch.OwnedUnitsChoice, &ch.OwnedUnitsArgs{
 						ChoosePlayer: parse.Choose{
 							Type: ch.UUIDChoice,
 							Args: &ch.UUIDArgs{
@@ -121,8 +121,13 @@ func updateUnits(engine *en.Engine, state *st.State, before, after []uuid.UUID, 
 		unit := state.Board.XYs[x][y].Unit.(*cd.UnitCard)
 		for _, t := range unit.GetTraits(trait.GetType()) {
 			if reflect.DeepEqual(t.GetArgs(), trait.GetArgs()) {
-				event, err := NewEvent(state.Gen.New(st.EventUUID), RemoveTraitFromCard, &RemoveTraitFromCardArgs{
-					Trait: t.GetUUID(),
+				event, err := NewEvent(state.Gen.New(en.EventUUID), RemoveTraitFromCard, &RemoveTraitFromCardArgs{
+					ChooseTrait: parse.Choose{
+						Type: ch.UUIDChoice,
+						Args: &ch.UUIDArgs{
+							UUID: t.GetUUID(),
+						},
+					},
 					ChooseCard: parse.Choose{
 						Type: ch.UUIDChoice,
 						Args: &ch.UUIDArgs{
@@ -146,7 +151,7 @@ func updateUnits(engine *en.Engine, state *st.State, before, after []uuid.UUID, 
 	}
 	add := uuid.Diff(after, before)
 	for _, u := range add {
-		event, err := NewEvent(state.Gen.New(st.EventUUID), AddTraitToCard, &AddTraitToCardArgs{
+		event, err := NewEvent(state.Gen.New(en.EventUUID), AddTraitToCard, &AddTraitToCardArgs{
 			Trait: parse.Trait{
 				Type: trait.GetType(),
 				Args: trait.GetArgs(),

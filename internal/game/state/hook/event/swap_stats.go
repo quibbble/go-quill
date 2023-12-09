@@ -50,7 +50,7 @@ func SwapStatsAffect(ctx context.Context, args interface{}, engine *en.Engine, s
 		cardA.SetCost(costB)
 		cardB.SetCost(costA)
 		return nil
-	} else if cardA.GetUUID().Type() == st.UnitUUID && cardB.GetUUID().Type() == st.UnitUUID {
+	} else if cardA.GetUUID().Type() == en.UnitUUID && cardB.GetUUID().Type() == en.UnitUUID {
 		unitA := cardA.(*cd.UnitCard)
 		unitB := cardB.(*cd.UnitCard)
 		switch a.Stat {

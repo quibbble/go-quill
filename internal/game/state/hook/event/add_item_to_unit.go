@@ -65,7 +65,7 @@ func AddItemToUnitAffect(ctx context.Context, args interface{}, engine *en.Engin
 
 	for _, trait := range itemCard.HeldTraits {
 		event := &Event{
-			uuid: state.Gen.New(st.EventUUID),
+			uuid: state.Gen.New(en.EventUUID),
 			typ:  AddTraitToCard,
 			args: &AddTraitToCardArgs{
 				Trait: parse.Trait{

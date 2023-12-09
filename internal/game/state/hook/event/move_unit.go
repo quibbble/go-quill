@@ -32,7 +32,7 @@ func MoveUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	choose, err := ch.NewChoose(state.Gen.New(st.ChooseUUID), a.ChooseTile.Type, a.ChooseTile.Args)
+	choose, err := ch.NewChoose(state.Gen.New(en.ChooseUUID), a.ChooseTile.Type, a.ChooseTile.Args)
 	if err != nil {
 		return errors.Wrap(err)
 	}

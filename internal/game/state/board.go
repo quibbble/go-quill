@@ -1,6 +1,7 @@
 package state
 
 import (
+	en "github.com/quibbble/go-quill/internal/game/engine"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -41,7 +42,7 @@ func NewBoard(builder func(id string, player uuid.UUID) (ICard, error), gen *uui
 	}
 	for x := 0; x < Cols; x++ {
 		for y := 0; y < Rows; y++ {
-			tile := NewTile(gen.New(TileUUID), x, y)
+			tile := NewTile(gen.New(en.TileUUID), x, y)
 			board.XYs[x][y] = tile
 			board.UUIDs[tile.UUID] = tile
 		}
