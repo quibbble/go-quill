@@ -20,7 +20,7 @@ Hooks:
   - Type: Match
     Args:
       ChooseA:
-        Type: EventUnit
+        Type: HookEventUnit
       ChooseB:
         Type: Self
   - Type: StatBelow

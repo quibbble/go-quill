@@ -21,7 +21,7 @@ Hooks:
     Not: true
     Args:
       ChooseA:
-        Type: EventUnit
+        Type: HookEventUnit
       ChooseB:
         Type: Self
   - Type: Contains
@@ -32,7 +32,7 @@ Hooks:
           Types:
           - Creature
           ChooseUnitOrTile:
-            Type: EventUnit
+            Type: HookEventUnit
       Choice:
         Type: Self
   Events:
@@ -59,7 +59,7 @@ Hooks:
     Not: false
     Args:
       ChooseA:
-        Type: EventUnit
+        Type: HookEventUnit
       ChooseB:
         Type: Self
 Events:

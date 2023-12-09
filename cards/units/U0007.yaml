@@ -23,7 +23,7 @@ Hooks:
     Not: true
     Args:
       ChooseA:
-        Type: EventUnit
+        Type: HookEventUnit
       ChooseB:
         Type: Self
   Events:
@@ -38,7 +38,7 @@ Hooks:
     Not: true
     Args:
       ChooseA:
-        Type: EventUnit
+        Type: HookEventUnit
       ChooseB:
         Type: Self
 Events:

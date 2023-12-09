@@ -28,6 +28,6 @@ func init() {
 		OpposingPlayerChoice: RetrieveOpposingPlayer,
 		TargetOwnerChoice:    RetrieveTargetOwner,
 		RandomChoice:         RetrieveRandom,
-		EventUnitChoice:      RetrieveEventUnit,
+		HookEventUnitChoice:  RetrieveHookEventUnit,
 	}
 }

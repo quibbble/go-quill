@@ -16,7 +16,7 @@ Hooks:
     Not: false
     Args:
       ChooseA:
-        Type: EventUnit
+        Type: HookEventUnit
       ChooseB:
         Type: Target
         Args:
@@ -38,7 +38,7 @@ Hooks:
     Not: true
     Args:
       ChooseA:
-        Type: EventUnit
+        Type: HookEventUnit
       ChooseB:
         Type: Target
         Args:

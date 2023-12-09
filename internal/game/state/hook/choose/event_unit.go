@@ -11,11 +11,11 @@ import (
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
-const EventUnitChoice = "EventUnit"
+const HookEventUnitChoice = "HookEventUnit"
 
-type EventUnitArgs struct{}
+type HookEventUnitArgs struct{}
 
-func RetrieveEventUnit(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
+func RetrieveHookEventUnit(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
 
 	event := ctx.Value(en.HookEventCtx).(en.IEvent)
 
