@@ -9,6 +9,9 @@ import (
 type ItemCard struct {
 	*Card
 
+	// UnitCard that is holding this item
+	Holder *uuid.UUID
+
 	// Traits applied to a unit when an item is held
 	HeldTraits []st.ITrait
 }

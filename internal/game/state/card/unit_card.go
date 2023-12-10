@@ -41,6 +41,7 @@ func (c *UnitCard) RemoveTrait(engine en.IEngine, trait uuid.UUID) error {
 }
 
 func (c *UnitCard) AddItem(engine *en.Engine, item *ItemCard) error {
+	item.Holder = &c.UUID
 	c.Items = append(c.Items, item)
 	return nil
 }
@@ -58,6 +59,7 @@ func (c *UnitCard) GetAndRemoveItem(engine *en.Engine, item uuid.UUID) (*ItemCar
 		return nil, errors.Errorf("'%s' not found on unit", item)
 	}
 	c.Items = append(c.Items[:idx], c.Items[idx+1:]...)
+	itm.Holder = nil
 	return itm, nil
 }
 
