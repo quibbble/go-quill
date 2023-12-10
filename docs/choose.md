@@ -6,7 +6,7 @@
 |------------------|-----------------------------------------------------------------------------|-------------------------------------------|
 | `Adjacent`       | Retrieve all `Types` adjacent to `ChooseUnitOrTile`.                        | `Types`, `ChooseUnitOrTile`               |
 | `Codex`          | Retrieve all `Types` matching `Codex` to `ChooseUnitOrTile`.                | `Types`, `Codex`, `ChooseUnitOrTile`      |
-| `Composite`      | Apply `SetFunction` to all `Choices`.                                       | `SetFunction`, `Choices`                  |
+| `Composite`      | Apply `SetFunction` to all `ChooseChain`.                                   | `SetFunction`, `ChooseChain`              |
 | `Connected`      | Retrieve all `Types` connected to `ChooseUnit` using `ConnectionType`.      | `Types`, `ConnectionType`, `ChooseUnit`   |
 | `CurrentPlayer`  | Retrieve the player who has the active turn.                                |                                           |
 | `HookEventUnit`  | Retrieve the unit affected by event found in the `HookEvent` context.       |                                           |
@@ -26,7 +26,7 @@
 
 | **Name**           | **Requirements**                                                                                 |
 |--------------------|--------------------------------------------------------------------------------------------------|
-| `Choices`          | List of [Choose](./choose.md).                                                                   |
+| `ChooseChain`      | List of [Choose](./choose.md).                                                                   |
 | `Choose{X}`        | [Choose](./choose.md).                                                                           |
 | `Codex`            | An eight character string containing only 0 or 1 i.e. `11001111`.                                |
 | `ConnectionType`   | `Adjacent` or `Codex`                                                                            |

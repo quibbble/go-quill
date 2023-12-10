@@ -13,22 +13,22 @@ const (
 	SetIntersect = "Intersect"
 )
 
-// Choices finds the intersection of all listed Choose
-type Choices struct {
+// ChooseChain finds the intersection of all listed Choose
+type ChooseChain struct {
 	SetFunction string
-	Choices     []en.IChoose
+	ChooseChain []en.IChoose
 }
 
-func NewChoices(setFunction string, choices ...en.IChoose) en.IChoose {
-	return &Choices{
+func NewChooseChain(setFunction string, choices ...en.IChoose) en.IChoose {
+	return &ChooseChain{
 		SetFunction: setFunction,
-		Choices:     choices,
+		ChooseChain: choices,
 	}
 }
 
-func (c *Choices) Retrieve(ctx context.Context, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
+func (c *ChooseChain) Retrieve(ctx context.Context, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
 	lists := make([][]uuid.UUID, 0)
-	for _, choice := range c.Choices {
+	for _, choice := range c.ChooseChain {
 		uuids, err := choice.Retrieve(ctx, engine, state)
 		if err != nil {
 			return nil, errors.Wrap(err)

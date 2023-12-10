@@ -44,7 +44,7 @@ func FriendsTraitCheck(engine *en.Engine, state *st.State) error {
 					if err != nil {
 						return errors.Wrap(err)
 					}
-					after, err := ch.NewChoices(ch.SetIntersect, choose1, choose2).Retrieve(context.WithValue(context.Background(), en.CardCtx, tile.Unit.GetUUID()), engine, state)
+					after, err := ch.NewChooseChain(ch.SetIntersect, choose1, choose2).Retrieve(context.WithValue(context.Background(), en.CardCtx, tile.Unit.GetUUID()), engine, state)
 					if err != nil {
 						return errors.Wrap(err)
 					}
@@ -95,7 +95,7 @@ func EnemiesTraitCheck(engine *en.Engine, state *st.State) error {
 					if err != nil {
 						return errors.Wrap(err)
 					}
-					after, err := ch.NewChoices(ch.SetIntersect, choose1, choose2).Retrieve(context.WithValue(context.Background(), en.CardCtx, tile.Unit.GetUUID()), engine, state)
+					after, err := ch.NewChooseChain(ch.SetIntersect, choose1, choose2).Retrieve(context.WithValue(context.Background(), en.CardCtx, tile.Unit.GetUUID()), engine, state)
 					if err != nil {
 						return errors.Wrap(err)
 					}

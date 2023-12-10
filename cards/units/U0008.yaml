@@ -26,14 +26,14 @@ Hooks:
         Type: Self
   - Type: Contains
     Args:
-      Choices:
+      ChooseChain:
         Type: Adjacent
         Args:
           Types:
           - Creature
           ChooseUnitOrTile:
             Type: HookEventUnit
-      Choice:
+      Choose:
         Type: Self
   Events:
   - Type: AddTraitToCard

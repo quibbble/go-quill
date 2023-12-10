@@ -15,7 +15,7 @@ const CompositeChoice = "Composite"
 
 type CompositeArgs struct {
 	SetFunction string
-	Choices     []parse.Choose
+	ChooseChain []parse.Choose
 }
 
 func RetrieveComposite(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
@@ -24,16 +24,16 @@ func RetrieveComposite(ctx context.Context, args interface{}, engine *en.Engine,
 		return nil, errors.ErrInterfaceConversion
 	}
 	choices := make([]en.IChoose, 0)
-	for _, ch := range c.Choices {
+	for _, ch := range c.ChooseChain {
 		choose, err := NewChoose(state.Gen.New(en.ChooseUUID), ch.Type, ch.Args)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
 		choices = append(choices, choose)
 	}
-	ch := &Choices{
+	ch := &ChooseChain{
 		SetFunction: c.SetFunction,
-		Choices:     choices,
+		ChooseChain: choices,
 	}
 	return ch.Retrieve(ctx, engine, state)
 }

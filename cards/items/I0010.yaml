@@ -1,0 +1,14 @@
+ID: I0010
+Name: Map
+Description: "Holder's codex is valid in all directions."
+Cost: 1
+Targets:
+- Type: Units
+  Args:
+    Types:
+    - Creature
+Hooks:
+HeldTraits:
+- Type: Recode
+  Args:
+    Code: "11111111"

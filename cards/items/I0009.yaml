@@ -5,7 +5,8 @@ Cost: 2
 Targets:
 - Type: Composite
   Args:
-    Choices:
+    SetFunction: Intersect
+    ChooseChain:
     - Type: Units
       Args:
         Types:

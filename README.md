@@ -1,6 +1,7 @@
 # go-quill
 
 ## TODO
+- Move mapstructure to creating args at event, condition, choose, trait creation time. 
 - Need to add a way for items to keep track of which trait(s) they applied to a unit
   - Trait needs a field to allow trait to keep track of if it was applied via item
 - Add unstable

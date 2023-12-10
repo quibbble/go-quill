@@ -6,7 +6,7 @@ Targets:
 - Type: Composite
   Args:
     SetFunction: Intersect
-    Choices:
+    ChooseChain:
     - Type: Units
       Args:
         Types:

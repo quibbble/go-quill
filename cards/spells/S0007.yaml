@@ -23,7 +23,7 @@ Events:
           Type: Composite
           Args:
             SetFunction: Intersect
-            Choices:
+            ChooseChain:
             - Type: Adjacent
               Args:
                 Types:
