@@ -1,6 +1,10 @@
 # go-quill
 
 ## TODO
+- Determine best way to pass trait information in context
+  - pass event args?
+  - pass trait holder
+  - HookEvent should maybe just be HookArgs?
 - Add unstable
 - Add cursed X trait
 - Add dominion trait

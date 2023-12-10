@@ -39,6 +39,10 @@ func init() {
 			Type:     reflect.TypeOf(&CurrentPlayerArgs{}),
 			Retrieve: RetrieveCurrentPlayer,
 		},
+		HookEventTileChoice: {
+			Type:     reflect.TypeOf(&HookEventTileArgs{}),
+			Retrieve: RetrieveHookTileUnit,
+		},
 		HookEventUnitChoice: {
 			Type:     reflect.TypeOf(&HookEventUnitArgs{}),
 			Retrieve: RetrieveHookEventUnit,
@@ -55,21 +59,17 @@ func init() {
 			Type:     reflect.TypeOf(&OwnedUnitsArgs{}),
 			Retrieve: RetrieveOwnedUnits,
 		},
+		OwnerChoice: {
+			Type:     reflect.TypeOf(&OwnerArgs{}),
+			Retrieve: RetrieveOwner,
+		},
 		RandomChoice: {
 			Type:     reflect.TypeOf(&RandomArgs{}),
 			Retrieve: RetrieveRandom,
 		},
-		SelfOwnerChoice: {
-			Type:     reflect.TypeOf(&SelfOwnerArgs{}),
-			Retrieve: RetrieveSelfOwner,
-		},
 		SelfChoice: {
 			Type:     reflect.TypeOf(&SelfArgs{}),
 			Retrieve: RetrieveSelf,
-		},
-		TargetOwnerChoice: {
-			Type:     reflect.TypeOf(&TargetOwnerArgs{}),
-			Retrieve: RetrieveTargetOwner,
 		},
 		TargetChoice: {
 			Type:     reflect.TypeOf(&TargetArgs{}),

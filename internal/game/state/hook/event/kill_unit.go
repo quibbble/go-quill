@@ -18,6 +18,10 @@ const (
 
 type KillUnitArgs struct {
 	ChooseUnit parse.Choose
+
+	// DO NOT SET MANUALLY - SET BY ENGINE
+	// tile location of unit's death
+	ChooseTile parse.Choose
 }
 
 func KillUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
@@ -33,6 +37,12 @@ func KillUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 	}
 	unit := state.Board.XYs[x][y].Unit.(*cd.UnitCard)
 	state.Board.XYs[x][y].Unit = nil
+	a.ChooseTile = parse.Choose{
+		Type: ch.UUIDChoice,
+		Args: ch.UUIDArgs{
+			UUID: state.Board.XYs[x][y].UUID,
+		},
+	}
 
 	// death cry trait check
 	for _, trait := range unit.GetTraits(tr.DeathCryTrait) {

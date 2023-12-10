@@ -30,12 +30,18 @@ Hooks:
     Args:
       Amount: 1
       ChoosePlayer:
-        Type: SelfOwner
+        Type: Owner
+        Args:
+          ChooseCard:
+            Type: Self
   - Type: DrainBaseMana
     Args:
       Amount: 1
       ChoosePlayer:
-        Type: SelfOwner
+        Type: Owner
+        Args:
+          ChooseCard:
+            Type: Self
   ReuseConditions:
   - Type: Match
     Not: true
@@ -49,9 +55,15 @@ Events:
   Args:
     Amount: 1
     ChoosePlayer:
-      Type: SelfOwner
+      Type: Owner
+      Args:
+        ChooseCard:
+          Type: Self
 - Type: GainBaseMana
   Args:
     Amount: 1
     ChoosePlayer:
-      Type: SelfOwner
+      Type: Owner
+      Args:
+        ChooseCard:
+          Type: Self

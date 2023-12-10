@@ -20,9 +20,12 @@ Targets:
     - Type: OwnedUnits
       Args:
         ChoosePlayer:
-          Type: TargetOwner
+          Type: Owner
           Args:
-            Index: 0
+            ChooseCard:
+              Type: Target
+              Args:
+                Index: 0
 Hooks:
 Events:
 - Type: SwapUnits

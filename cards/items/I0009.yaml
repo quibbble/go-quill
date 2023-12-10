@@ -1,5 +1,5 @@
 ID: I0008
-Name: Eternal Sword
+Name: Necklace of Nature
 Description: "On death summon a 'Hound' in holding unit's place."
 Cost: 2
 Targets:
@@ -22,4 +22,10 @@ HeldTraits:
     - Type: SummonUnit
       Args:
         ChoosePlayer:
-          Type: # TODO
+          Type: Owner
+          Args:
+            ChooseCard:
+              Type: HookEventUnit
+        ChooseTile:
+          Type: HookEventTile
+        ID: U0010

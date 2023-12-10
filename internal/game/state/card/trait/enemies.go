@@ -12,5 +12,8 @@ const (
 type EnemiesArgs struct {
 	ChooseUnits parse.Choose
 	Trait       parse.Trait
-	Current     []uuid.UUID
+
+	// DO NOT SET MANUALLY - SET BY ENGINE
+	// current units that have the trait applied
+	Current []uuid.UUID
 }
