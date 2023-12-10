@@ -4,7 +4,6 @@ import (
 	"context"
 	"slices"
 
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
@@ -24,11 +23,7 @@ type CodexArgs struct {
 }
 
 func RetrieveCodex(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
-	var c CodexArgs
-	if err := mapstructure.Decode(args, &c); err != nil {
-		return nil, errors.ErrInterfaceConversion
-	}
-
+	c := args.(*CodexArgs)
 	choose, err := NewChoose(state.Gen.New(en.ChooseUUID), c.ChooseUnitOrTile.Type, c.ChooseUnitOrTile.Args)
 	if err != nil {
 		return nil, errors.Wrap(err)

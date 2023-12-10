@@ -13,7 +13,6 @@ const (
 	SetIntersect = "Intersect"
 )
 
-// ChooseChain finds the intersection of all listed Choose
 type ChooseChain struct {
 	SetFunction string
 	ChooseChain []en.IChoose

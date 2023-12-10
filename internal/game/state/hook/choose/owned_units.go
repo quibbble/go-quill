@@ -3,7 +3,6 @@ package choose
 import (
 	"context"
 
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	"github.com/quibbble/go-quill/parse"
@@ -18,10 +17,7 @@ type OwnedUnitsArgs struct {
 }
 
 func RetrieveOwnedUnits(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
-	var c OwnedUnitsArgs
-	if err := mapstructure.Decode(args, &c); err != nil {
-		return nil, errors.ErrInterfaceConversion
-	}
+	c := args.(*OwnedUnitsArgs)
 	choose, err := NewChoose(state.Gen.New(en.ChooseUUID), c.ChoosePlayer.Type, c.ChoosePlayer.Args)
 	if err != nil {
 		return nil, errors.Wrap(err)

@@ -3,7 +3,6 @@ package event
 import (
 	"context"
 
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
@@ -22,11 +21,7 @@ type KillUnitArgs struct {
 }
 
 func KillUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	var a KillUnitArgs
-	if err := mapstructure.Decode(args, &a); err != nil {
-		return errors.ErrInterfaceConversion
-	}
-
+	a := args.(*KillUnitArgs)
 	unitChoice, err := ch.GetUnitChoice(ctx, a.ChooseUnit, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
@@ -40,12 +35,8 @@ func KillUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 	state.Board.XYs[x][y].Unit = nil
 
 	// death cry trait check
-	deathCrys := unit.GetTraits(tr.DeathCryTrait)
-	for _, deathCry := range deathCrys {
-		var args tr.DeathCryArgs
-		if err := mapstructure.Decode(deathCry.GetArgs(), &args); err != nil {
-			return errors.Wrap(err)
-		}
+	for _, trait := range unit.GetTraits(tr.DeathCryTrait) {
+		args := trait.GetArgs().(*tr.DeathCryArgs)
 		for _, h := range args.Hooks {
 			hook, err := state.NewHook(state.Gen, unit.GetUUID(), h)
 			if err != nil {
@@ -101,19 +92,18 @@ func KillUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 			return errors.Wrap(err)
 		}
 		if len(bases) <= 1 {
-			if err := engine.Do(context.Background(), &Event{
-				uuid: state.Gen.New(en.EventUUID),
-				typ:  EndGameEvent,
-				args: EndGameArgs{
-					ChooseWinner: parse.Choose{
-						Type: ch.UUIDChoice,
-						Args: ch.UUIDArgs{
-							UUID: state.GetOpponent(unit.Player),
-						},
+			event, err := NewEvent(state.Gen.New(en.EventUUID), EndGameEvent, EndGameArgs{
+				ChooseWinner: parse.Choose{
+					Type: ch.UUIDChoice,
+					Args: ch.UUIDArgs{
+						UUID: state.GetOpponent(unit.Player),
 					},
 				},
-				affect: EndGameAffect,
-			}, state); err != nil {
+			})
+			if err != nil {
+				return errors.Wrap(err)
+			}
+			if err := engine.Do(context.Background(), event, state); err != nil {
 				return errors.Wrap(err)
 			}
 		}

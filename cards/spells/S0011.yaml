@@ -10,7 +10,7 @@ Targets:
     - Structure
 Hooks:
 Events:
-- Type: RescindUnit
+- Type: RecallUnit
   Args:
     ChooseUnit:
       Type: Target

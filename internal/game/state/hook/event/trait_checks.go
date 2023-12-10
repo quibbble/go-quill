@@ -4,7 +4,6 @@ import (
 	"context"
 	"reflect"
 
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
@@ -21,10 +20,7 @@ func FriendsTraitCheck(engine *en.Engine, state *st.State) error {
 		for _, tile := range col {
 			if tile.Unit != nil {
 				for _, trait := range tile.Unit.GetTraits(tr.FriendsTrait) {
-					var args tr.FriendsArgs
-					if err := mapstructure.Decode(trait.GetArgs(), &args); err != nil {
-						return errors.Wrap(err)
-					}
+					args := trait.GetArgs().(*tr.FriendsArgs)
 					before := args.Current
 					if before == nil {
 						before = make([]uuid.UUID, 0)
@@ -49,7 +45,6 @@ func FriendsTraitCheck(engine *en.Engine, state *st.State) error {
 						return errors.Wrap(err)
 					}
 					args.Current = after
-					trait.SetArgs(args)
 
 					t, err := tr.NewTrait(uuid.Nil, args.Trait.Type, args.Trait.Args)
 					if err != nil {
@@ -72,10 +67,7 @@ func EnemiesTraitCheck(engine *en.Engine, state *st.State) error {
 		for _, tile := range col {
 			if tile.Unit != nil {
 				for _, trait := range tile.Unit.GetTraits(tr.EnemiesTrait) {
-					var args tr.EnemiesArgs
-					if err := mapstructure.Decode(trait.GetArgs(), &args); err != nil {
-						return errors.Wrap(err)
-					}
+					args := trait.GetArgs().(*tr.EnemiesArgs)
 					before := args.Current
 					if before == nil {
 						before = make([]uuid.UUID, 0)
@@ -100,7 +92,6 @@ func EnemiesTraitCheck(engine *en.Engine, state *st.State) error {
 						return errors.Wrap(err)
 					}
 					args.Current = after
-					trait.SetArgs(args)
 
 					t, err := tr.NewTrait(uuid.Nil, args.Trait.Type, args.Trait.Args)
 					if err != nil {

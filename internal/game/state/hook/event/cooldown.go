@@ -3,7 +3,6 @@ package event
 import (
 	"context"
 
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
@@ -22,10 +21,7 @@ type CooldownArgs struct {
 }
 
 func CooldownAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	var a CooldownArgs
-	if err := mapstructure.Decode(args, &a); err != nil {
-		return errors.ErrInterfaceConversion
-	}
+	a := args.(*CooldownArgs)
 	choose, err := ch.NewChoose(state.Gen.New(en.ChooseUUID), a.ChooseUnits.Type, a.ChooseUnits.Args)
 	if err != nil {
 		return errors.Wrap(err)
@@ -46,20 +42,18 @@ func CooldownAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 			continue
 		}
 
-		event := &Event{
-			uuid: state.Gen.New(en.EventUUID),
-			typ:  ModifyUnitEvent,
-			args: ModifyUnitArgs{
-				ChooseUnit: parse.Choose{
-					Type: ch.UUIDChoice,
-					Args: ch.UUIDArgs{
-						UUID: unit.GetUUID(),
-					},
+		event, err := NewEvent(state.Gen.New(en.EventUUID), ModifyUnitEvent, ModifyUnitArgs{
+			ChooseUnit: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: ch.UUIDArgs{
+					UUID: unit.GetUUID(),
 				},
-				Stat:   cd.CooldownStat,
-				Amount: -1,
 			},
-			affect: ModifyUnitAffect,
+			Stat:   cd.CooldownStat,
+			Amount: -1,
+		})
+		if err != nil {
+			return errors.Wrap(err)
 		}
 		if err := engine.Do(ctx, event, state); err != nil {
 			return errors.Wrap(err)

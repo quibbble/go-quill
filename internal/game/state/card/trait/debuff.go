@@ -1,7 +1,6 @@
 package trait
 
 import (
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
@@ -19,11 +18,7 @@ type DebuffArgs struct {
 }
 
 func AddDebuff(engine *en.Engine, args interface{}, card st.ICard) error {
-	var a DebuffArgs
-	if err := mapstructure.Decode(args, &a); err != nil {
-		return errors.ErrInterfaceConversion
-	}
-
+	a := args.(*DebuffArgs)
 	if a.Stat == cd.CostStat {
 		card.SetCost(card.GetCost() + a.Amount)
 		return nil
@@ -51,11 +46,7 @@ func AddDebuff(engine *en.Engine, args interface{}, card st.ICard) error {
 }
 
 func RemoveDebuff(engine *en.Engine, args interface{}, card st.ICard) error {
-	var a DebuffArgs
-	if err := mapstructure.Decode(args, &a); err != nil {
-		return errors.ErrInterfaceConversion
-	}
-
+	a := args.(*DebuffArgs)
 	if a.Stat == cd.CostStat {
 		card.SetCost(card.GetCost() - a.Amount)
 		return nil

@@ -3,7 +3,6 @@ package event
 import (
 	"context"
 
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
@@ -25,82 +24,72 @@ type SackCardArgs struct {
 }
 
 func SackCardAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	var a SackCardArgs
-	if err := mapstructure.Decode(args, &a); err != nil {
-		return errors.ErrInterfaceConversion
-	}
-
+	a := args.(*SackCardArgs)
 	playerChoice, err := ch.GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
 
-	events := []*Event{
-		{
-			uuid: state.Gen.New(en.EventUUID),
-			typ:  DiscardCardEvent,
-			args: DiscardCardArgs{
-				ChoosePlayer: parse.Choose{
-					Type: ch.CurrentPlayerChoice,
-					Args: ch.CurrentPlayerArgs{},
-				},
-				ChooseCard: a.ChooseCard,
-			},
-			affect: DiscardCardAffect,
+	event, err := NewEvent(state.Gen.New(en.EventUUID), DiscardCardEvent, DiscardCardArgs{
+		ChoosePlayer: parse.Choose{
+			Type: ch.CurrentPlayerChoice,
+			Args: ch.CurrentPlayerArgs{},
 		},
+		ChooseCard: a.ChooseCard,
+	})
+	if err != nil {
+		return errors.Wrap(err)
 	}
+
+	events := []en.IEvent{event}
 
 	switch a.SackOption {
 	case ManaSackOption:
-		events = append(events, &Event{
-			uuid: state.Gen.New(en.EventUUID),
-			typ:  GainBaseManaEvent,
-			args: GainBaseManaArgs{
-				ChoosePlayer: parse.Choose{
-					Type: ch.CurrentPlayerChoice,
-					Args: ch.CurrentPlayerArgs{},
-				},
-				Amount: 1,
+		event1, err := NewEvent(state.Gen.New(en.EventUUID), GainBaseManaEvent, GainBaseManaArgs{
+			ChoosePlayer: parse.Choose{
+				Type: ch.CurrentPlayerChoice,
+				Args: ch.CurrentPlayerArgs{},
 			},
-			affect: GainBaseManaAffect,
-		}, &Event{
-			uuid: state.Gen.New(en.EventUUID),
-			typ:  GainManaEvent,
-			args: GainManaArgs{
-				ChoosePlayer: parse.Choose{
-					Type: ch.CurrentPlayerChoice,
-					Args: ch.CurrentPlayerArgs{},
-				},
-				Amount: 1,
-			},
-			affect: GainManaAffect,
+			Amount: 1,
 		})
+		if err != nil {
+			return errors.Wrap(err)
+		}
+		event2, err := NewEvent(state.Gen.New(en.EventUUID), GainManaEvent, GainManaArgs{
+			ChoosePlayer: parse.Choose{
+				Type: ch.CurrentPlayerChoice,
+				Args: ch.CurrentPlayerArgs{},
+			},
+			Amount: 1,
+		})
+		if err != nil {
+			return errors.Wrap(err)
+		}
+		events = append(events, event1, event2)
 	case CardsSackOption:
-		events = append(events, &Event{
-			uuid: state.Gen.New(en.EventUUID),
-			typ:  DrawCardEvent,
-			args: DrawCardArgs{
-				ChoosePlayer: parse.Choose{
-					Type: ch.UUIDChoice,
-					Args: ch.UUIDArgs{
-						UUID: playerChoice,
-					},
+		event1, err := NewEvent(state.Gen.New(en.EventUUID), DrawCardEvent, DrawCardArgs{
+			ChoosePlayer: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: ch.UUIDArgs{
+					UUID: playerChoice,
 				},
 			},
-			affect: DrawCardAffect,
-		}, &Event{
-			uuid: state.Gen.New(en.EventUUID),
-			typ:  DrawCardEvent,
-			args: DrawCardArgs{
-				ChoosePlayer: parse.Choose{
-					Type: ch.UUIDChoice,
-					Args: ch.UUIDArgs{
-						UUID: playerChoice,
-					},
-				},
-			},
-			affect: DrawCardAffect,
 		})
+		if err != nil {
+			return errors.Wrap(err)
+		}
+		event2, err := NewEvent(state.Gen.New(en.EventUUID), DrawCardEvent, DrawCardArgs{
+			ChoosePlayer: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: ch.UUIDArgs{
+					UUID: playerChoice,
+				},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err)
+		}
+		events = append(events, event1, event2)
 	default:
 		return errors.Errorf("invalid sack option '%s'", a.SackOption)
 	}

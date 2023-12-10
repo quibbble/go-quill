@@ -3,7 +3,6 @@ package event
 import (
 	"context"
 
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	tr "github.com/quibbble/go-quill/internal/game/state/card/trait"
@@ -24,11 +23,7 @@ type PlayCardArgs struct {
 }
 
 func PlayCardAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	var a PlayCardArgs
-	if err := mapstructure.Decode(args, &a); err != nil {
-		return errors.ErrInterfaceConversion
-	}
-
+	a := args.(*PlayCardArgs)
 	playerChoice, err := ch.GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
@@ -74,18 +69,17 @@ func PlayCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 		}
 	}
 
-	if err := engine.Do(context.Background(), &Event{
-		uuid: state.Gen.New(en.EventUUID),
-		typ:  DrainManaEvent,
-		args: DrainManaArgs{
-			ChoosePlayer: parse.Choose{
-				Type: ch.CurrentPlayerChoice,
-				Args: ch.CurrentPlayerArgs{},
-			},
-			Amount: maths.MaxInt(card.GetCost(), 0),
+	event, err := NewEvent(state.Gen.New(en.EventUUID), DrainManaEvent, DrainManaArgs{
+		ChoosePlayer: parse.Choose{
+			Type: ch.CurrentPlayerChoice,
+			Args: ch.CurrentPlayerArgs{},
 		},
-		affect: DrainManaAffect,
-	}, state); err != nil {
+		Amount: maths.MaxInt(card.GetCost(), 0),
+	})
+	if err != nil {
+		return errors.Wrap(err)
+	}
+	if err := engine.Do(context.Background(), event, state); err != nil {
 		return errors.Wrap(err)
 	}
 
@@ -95,82 +89,77 @@ func PlayCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 	}
 
 	// create event based on card type
-	var event *Event
 	switch card.GetUUID().Type() {
 	case en.ItemUUID:
 		if len(targets) <= 0 {
 			return errors.ErrIndexOutOfBounds
 		}
-		event = &Event{
-			uuid: state.Gen.New(en.EventUUID),
-			typ:  AddItemToUnitEvent,
-			args: AddItemToUnitArgs{
-				ChoosePlayer: parse.Choose{
-					Type: ch.UUIDChoice,
-					Args: ch.UUIDArgs{
-						UUID: playerChoice,
-					},
-				},
-				ChooseItem: parse.Choose{
-					Type: ch.UUIDChoice,
-					Args: ch.UUIDArgs{
-						UUID: card.GetUUID(),
-					},
-				},
-				ChooseUnit: parse.Choose{
-					Type: ch.UUIDChoice,
-					Args: ch.UUIDArgs{
-						UUID: targets[0],
-					},
+		event, err = NewEvent(state.Gen.New(en.EventUUID), AddItemToUnitEvent, AddItemToUnitArgs{
+			ChoosePlayer: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: ch.UUIDArgs{
+					UUID: playerChoice,
 				},
 			},
-			affect: AddItemToUnitAffect,
+			ChooseItem: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: ch.UUIDArgs{
+					UUID: card.GetUUID(),
+				},
+			},
+			ChooseUnit: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: ch.UUIDArgs{
+					UUID: targets[0],
+				},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err)
 		}
 	case en.SpellUUID:
-		event = &Event{
-			uuid: state.Gen.New(en.EventUUID),
-			typ:  DiscardCardEvent,
-			args: DiscardCardArgs{
-				ChoosePlayer: parse.Choose{
-					Type: ch.CurrentPlayerChoice,
-					Args: ch.CurrentPlayerArgs{},
-				},
-				ChooseCard: parse.Choose{
-					Type: ch.UUIDChoice,
-					Args: ch.UUIDArgs{
-						UUID: card.GetUUID(),
-					},
+		event, err = NewEvent(state.Gen.New(en.EventUUID), DiscardCardEvent, DiscardCardArgs{
+			ChoosePlayer: parse.Choose{
+				Type: ch.CurrentPlayerChoice,
+				Args: ch.CurrentPlayerArgs{},
+			},
+			ChooseCard: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: ch.UUIDArgs{
+					UUID: card.GetUUID(),
 				},
 			},
-			affect: DiscardCardAffect,
+		})
+		if err != nil {
+			return errors.Wrap(err)
 		}
 	case en.UnitUUID:
 		if len(targets) <= 0 {
 			return errors.ErrIndexOutOfBounds
 		}
-		event = &Event{
-			uuid: state.Gen.New(en.EventUUID),
-			typ:  PlaceUnitEvent,
-			args: PlaceUnitArgs{
-				ChoosePlayer: parse.Choose{
-					Type: ch.CurrentPlayerChoice,
-					Args: ch.CurrentPlayerArgs{},
-				},
-				ChooseUnit: parse.Choose{
-					Type: ch.UUIDChoice,
-					Args: ch.UUIDArgs{
-						UUID: card.GetUUID(),
-					},
-				},
-				ChooseTile: parse.Choose{
-					Type: ch.UUIDChoice,
-					Args: ch.UUIDArgs{
-						UUID: targets[0],
-					},
+		event, err = NewEvent(state.Gen.New(en.EventUUID), PlaceUnitEvent, PlaceUnitArgs{
+			ChoosePlayer: parse.Choose{
+				Type: ch.CurrentPlayerChoice,
+				Args: ch.CurrentPlayerArgs{},
+			},
+			ChooseUnit: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: ch.UUIDArgs{
+					UUID: card.GetUUID(),
 				},
 			},
-			affect: PlaceUnitAffect,
+			ChooseTile: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: ch.UUIDArgs{
+					UUID: targets[0],
+				},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err)
 		}
+	default:
+		return errors.ErrMissingMapKey
 	}
 
 	// apply card event and then any additional events attached to the card

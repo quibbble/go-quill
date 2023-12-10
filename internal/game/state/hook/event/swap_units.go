@@ -3,7 +3,6 @@ package event
 import (
 	"context"
 
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
@@ -21,11 +20,7 @@ type SwapUnitsArgs struct {
 }
 
 func SwapUnitsAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	var a SwapUnitsArgs
-	if err := mapstructure.Decode(args, &a); err != nil {
-		return errors.ErrInterfaceConversion
-	}
-
+	a := args.(*SwapUnitsArgs)
 	unitAChoice, err := ch.GetUnitChoice(ctx, a.ChooseUnitA, engine, state)
 	if err != nil {
 		return errors.Wrap(err)

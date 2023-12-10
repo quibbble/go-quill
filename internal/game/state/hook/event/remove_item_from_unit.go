@@ -3,7 +3,6 @@ package event
 import (
 	"context"
 
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
@@ -22,11 +21,7 @@ type RemoveItemFromUnitArgs struct {
 }
 
 func RemoveItemFromUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	var a RemoveItemFromUnitArgs
-	if err := mapstructure.Decode(args, &a); err != nil {
-		return errors.ErrInterfaceConversion
-	}
-
+	a := args.(*RemoveItemFromUnitArgs)
 	itemChoice, err := ch.GetItemChoice(ctx, a.ChooseItem, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
@@ -45,31 +40,29 @@ func RemoveItemFromUnitAffect(ctx context.Context, args interface{}, engine *en.
 		return errors.Wrap(err)
 	}
 	for _, trait := range item.HeldTraits {
-		event := &Event{
-			uuid: state.Gen.New(en.EventUUID),
-			typ:  RemoveTraitFromCard,
-			args: RemoveTraitFromCardArgs{
-				ChooseTrait: parse.Choose{
-					Type: ch.UUIDChoice,
-					Args: ch.UUIDArgs{
-						UUID: trait.GetUUID(),
-					},
-				},
-				ChooseCard: parse.Choose{
-					Type: ch.UUIDChoice,
-					Args: ch.UUIDArgs{
-						UUID: unitChoice,
-					},
+		event, err := NewEvent(state.Gen.New(en.EventUUID), RemoveTraitFromCard, RemoveTraitFromCardArgs{
+			ChooseTrait: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: ch.UUIDArgs{
+					UUID: trait.GetUUID(),
 				},
 			},
-			affect: AddTraitToCardAffect,
+			ChooseCard: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: ch.UUIDArgs{
+					UUID: unitChoice,
+				},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err)
 		}
 		if err := engine.Do(context.Background(), event, state); err != nil {
 			return errors.Wrap(err)
 		}
 
 		// if unit died from adding trait then break
-		_, _, err := state.Board.GetUnitXY(unitChoice)
+		_, _, err = state.Board.GetUnitXY(unitChoice)
 		if err != nil {
 			break
 		}

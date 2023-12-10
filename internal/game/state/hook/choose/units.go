@@ -4,11 +4,9 @@ import (
 	"context"
 	"slices"
 
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
-	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
@@ -19,10 +17,7 @@ type UnitsArgs struct {
 }
 
 func RetrieveUnits(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
-	var c UnitsArgs
-	if err := mapstructure.Decode(args, &c); err != nil {
-		return nil, errors.ErrInterfaceConversion
-	}
+	c := args.(*UnitsArgs)
 	units := make([]uuid.UUID, 0)
 	for _, tile := range state.Board.UUIDs {
 		if tile.Unit != nil {

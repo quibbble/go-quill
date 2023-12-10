@@ -2,7 +2,9 @@ package event
 
 import (
 	"context"
+	"reflect"
 
+	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	"github.com/quibbble/go-quill/pkg/errors"
@@ -18,15 +20,19 @@ type Event struct {
 }
 
 func NewEvent(uuid uuid.UUID, typ string, args interface{}) (en.IEvent, error) {
-	affect, ok := EventMap[typ]
+	a, ok := EventMap[typ]
 	if !ok {
 		return nil, errors.ErrMissingMapKey
+	}
+	decoded := reflect.New(a.Type).Elem().Interface()
+	if err := mapstructure.Decode(args, &decoded); err != nil {
+		return nil, errors.Wrap(err)
 	}
 	return &Event{
 		uuid:   uuid,
 		typ:    typ,
-		args:   args,
-		affect: affect,
+		args:   decoded,
+		affect: a.Affect,
 	}, nil
 }
 

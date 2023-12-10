@@ -1,7 +1,6 @@
 package trait
 
 import (
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
@@ -20,11 +19,7 @@ type BuffArgs struct {
 }
 
 func AddBuff(engine *en.Engine, args interface{}, card st.ICard) error {
-	var a BuffArgs
-	if err := mapstructure.Decode(args, &a); err != nil {
-		return errors.ErrInterfaceConversion
-	}
-
+	a := args.(*BuffArgs)
 	if a.Stat == cd.CostStat {
 		card.SetCost(card.GetCost() - a.Amount)
 		return nil
@@ -52,11 +47,7 @@ func AddBuff(engine *en.Engine, args interface{}, card st.ICard) error {
 }
 
 func RemoveBuff(engine *en.Engine, args interface{}, card st.ICard) error {
-	var a BuffArgs
-	if err := mapstructure.Decode(args, &a); err != nil {
-		return errors.ErrInterfaceConversion
-	}
-
+	a := args.(*BuffArgs)
 	if a.Stat == cd.CostStat {
 		card.SetCost(card.GetCost() + a.Amount)
 		return nil

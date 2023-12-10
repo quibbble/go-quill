@@ -3,7 +3,6 @@ package condition
 import (
 	"context"
 
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
@@ -22,10 +21,7 @@ type StatBelowArgs struct {
 }
 
 func PassStatBelow(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) (bool, error) {
-	var p StatBelowArgs
-	if err := mapstructure.Decode(args, &p); err != nil {
-		return false, errors.ErrInterfaceConversion
-	}
+	p := args.(*StatBelowArgs)
 
 	choice, err := ch.GetChoice(ctx, p.ChooseCard, engine, state)
 	if err != nil {

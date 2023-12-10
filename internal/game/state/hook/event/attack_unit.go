@@ -3,7 +3,6 @@ package event
 import (
 	"context"
 
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
@@ -25,10 +24,7 @@ type AttackUnitArgs struct {
 }
 
 func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	var a AttackUnitArgs
-	if err := mapstructure.Decode(args, &a); err != nil {
-		return errors.ErrInterfaceConversion
-	}
+	a := args.(*AttackUnitArgs)
 	attackerChoice, err := ch.GetUnitChoice(ctx, a.ChooseAttacker, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
@@ -65,47 +61,41 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 		// set thief player as owner and add to that players hand to allow adding to thief
 		item.Player = attacker.Player
 		state.Hand[attacker.Player].Add(item)
-		events := []*Event{
-			{
-				uuid: state.Gen.New(en.EventUUID),
-				typ:  RemoveItemFromUnitEvent,
-				args: RemoveItemFromUnitArgs{
-					ChooseItem: parse.Choose{
-						Type: ch.UUIDChoice,
-						Args: ch.UUIDArgs{
-							UUID: item.UUID,
-						},
-					},
-					ChooseUnit: parse.Choose{
-						Type: ch.UUIDChoice,
-						Args: ch.UUIDArgs{
-							UUID: defender.UUID,
-						},
-					},
+		event1, err := NewEvent(state.Gen.New(en.EventUUID), RemoveItemFromUnitEvent, RemoveItemFromUnitArgs{
+			ChooseItem: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: ch.UUIDArgs{
+					UUID: item.UUID,
 				},
-				affect: RemoveItemFromUnitAffect,
 			},
-			{
-				uuid: state.Gen.New(en.EventUUID),
-				typ:  AddItemToUnitEvent,
-				args: AddItemToUnitArgs{
-					ChooseItem: parse.Choose{
-						Type: ch.UUIDChoice,
-						Args: ch.UUIDArgs{
-							UUID: item.UUID,
-						},
-					},
-					ChooseUnit: parse.Choose{
-						Type: ch.UUIDChoice,
-						Args: ch.UUIDArgs{
-							UUID: attacker.UUID,
-						},
-					},
+			ChooseUnit: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: ch.UUIDArgs{
+					UUID: defender.UUID,
 				},
-				affect: AddItemToUnitAffect,
 			},
+		})
+		if err != nil {
+			return errors.Wrap(err)
 		}
-		for _, event := range events {
+		event2, err := NewEvent(state.Gen.New(en.EventUUID), AddItemToUnitEvent, AddItemToUnitArgs{
+			ChooseItem: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: ch.UUIDArgs{
+					UUID: item.UUID,
+				},
+			},
+			ChooseUnit: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: ch.UUIDArgs{
+					UUID: attacker.UUID,
+				},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err)
+		}
+		for _, event := range []en.IEvent{event1, event2} {
 			if err := engine.Do(context.Background(), event, state); err != nil {
 				return errors.Wrap(err)
 			}
@@ -149,38 +139,34 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 			return errors.Wrap(err)
 		}
 		if attackerDamage > 0 {
-			var event *Event
-			event = &Event{
-				uuid: state.Gen.New(en.EventUUID),
-				typ:  DamageUnitEvent,
-				args: DamageUnitArgs{
-					DamageType: attacker.DamageType,
-					Amount:     attackerDamage,
+			var event en.IEvent
+			event, err = NewEvent(state.Gen.New(en.EventUUID), DamageUnitEvent, DamageUnitArgs{
+				DamageType: attacker.DamageType,
+				Amount:     attackerDamage,
+				ChooseUnit: parse.Choose{
+					Type: ch.UUIDChoice,
+					Args: ch.UUIDArgs{
+						UUID: defender.UUID,
+					},
+				},
+			})
+			if err != nil {
+				return errors.Wrap(err)
+			}
+
+			// execute trait check
+			if len(attacker.GetTraits(tr.ExecuteTrait)) > 0 &&
+				defender.Health < defender.GetInit().(*parse.UnitCard).Health {
+				event, err = NewEvent(state.Gen.New(en.EventUUID), KillUnitEvent, KillUnitArgs{
 					ChooseUnit: parse.Choose{
 						Type: ch.UUIDChoice,
 						Args: ch.UUIDArgs{
 							UUID: defender.UUID,
 						},
 					},
-				},
-				affect: DamageUnitAffect,
-			}
-
-			// execute trait check
-			if len(attacker.GetTraits(tr.ExecuteTrait)) > 0 &&
-				defender.Health < defender.GetInit().(*parse.UnitCard).Health {
-				event = &Event{
-					uuid: state.Gen.New(en.EventUUID),
-					typ:  KillUnitEvent,
-					args: KillUnitArgs{
-						ChooseUnit: parse.Choose{
-							Type: ch.UUIDChoice,
-							Args: ch.UUIDArgs{
-								UUID: defender.UUID,
-							},
-						},
-					},
-					affect: KillUnitAffect,
+				})
+				if err != nil {
+					return errors.Wrap(err)
 				}
 			}
 
@@ -190,12 +176,8 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 
 			// pillage trait check
 			if defender.GetID() == "U0001" {
-				pillages := attacker.GetTraits(tr.PillageTrait)
-				for _, pillage := range pillages {
-					var args tr.PillageArgs
-					if err := mapstructure.Decode(pillage.GetArgs(), &args); err != nil {
-						return errors.Wrap(err)
-					}
+				for _, trait := range attacker.GetTraits(tr.PillageTrait) {
+					args := trait.GetArgs().(*tr.PillageArgs)
 					for _, h := range args.Hooks {
 						hook, err := state.NewHook(state.Gen, attacker.GetUUID(), h)
 						if err != nil {
@@ -217,11 +199,8 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 
 			// gift trait check
 			if defender.Type == cd.CreatureUnit {
-				for _, gift := range attacker.GetTraits(tr.GiftTrait) {
-					var args tr.GiftArgs
-					if err := mapstructure.Decode(gift.GetArgs(), &args); err != nil {
-						return errors.Wrap(err)
-					}
+				for _, trait := range attacker.GetTraits(tr.GiftTrait) {
+					args := trait.GetArgs().(*tr.GiftArgs)
 					event, err := NewEvent(state.Gen.New(en.EventUUID), AddTraitToCard, &AddTraitToCardArgs{
 						Trait: args.Trait,
 						ChooseCard: parse.Choose{
@@ -242,20 +221,18 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 		}
 
 		if defenderDamage > 0 && attacker.Range <= 0 {
-			event := &Event{
-				uuid: state.Gen.New(en.EventUUID),
-				typ:  DamageUnitEvent,
-				args: DamageUnitArgs{
-					DamageType: defender.DamageType,
-					Amount:     defenderDamage,
-					ChooseUnit: parse.Choose{
-						Type: ch.UUIDChoice,
-						Args: ch.UUIDArgs{
-							UUID: attacker.UUID,
-						},
+			event, err := NewEvent(state.Gen.New(en.EventUUID), DamageUnitEvent, DamageUnitArgs{
+				DamageType: defender.DamageType,
+				Amount:     defenderDamage,
+				ChooseUnit: parse.Choose{
+					Type: ch.UUIDChoice,
+					Args: ch.UUIDArgs{
+						UUID: attacker.UUID,
 					},
 				},
-				affect: DamageUnitAffect,
+			})
+			if err != nil {
+				return errors.Wrap(err)
 			}
 			if err := engine.Do(context.Background(), event, state); err != nil {
 				return errors.Wrap(err)

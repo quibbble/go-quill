@@ -4,7 +4,6 @@ import (
 	"context"
 	"slices"
 
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
@@ -20,10 +19,7 @@ type ContainsArgs struct {
 }
 
 func PassContains(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) (bool, error) {
-	var p ContainsArgs
-	if err := mapstructure.Decode(args, &p); err != nil {
-		return false, errors.ErrInterfaceConversion
-	}
+	p := args.(*ContainsArgs)
 	choices, err := ch.GetChoices(ctx, p.ChooseChain, engine, state)
 	if err != nil {
 		return false, errors.Wrap(err)

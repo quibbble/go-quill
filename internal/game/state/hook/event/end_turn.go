@@ -3,7 +3,6 @@ package event
 import (
 	"context"
 
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
@@ -26,25 +25,20 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 		for _, tile := range col {
 			unit := tile.Unit
 			if unit != nil && unit.GetPlayer() == state.GetTurn() {
-				for _, poison := range unit.GetTraits(tr.PoisonTrait) {
-					var args tr.PoisonArgs
-					if err := mapstructure.Decode(poison.GetArgs(), &args); err != nil {
-						return errors.Wrap(err)
-					}
-					event := &Event{
-						uuid: state.Gen.New(en.EventUUID),
-						typ:  DamageUnitEvent,
-						args: DamageUnitArgs{
-							DamageType: dg.MagicDamage,
-							Amount:     args.Amount,
-							ChooseUnit: parse.Choose{
-								Type: ch.UUIDChoice,
-								Args: ch.UUIDArgs{
-									UUID: unit.GetUUID(),
-								},
+				for _, trait := range unit.GetTraits(tr.PoisonTrait) {
+					args := trait.GetArgs().(*tr.PoisonArgs)
+					event, err := NewEvent(state.Gen.New(en.EventUUID), DamageUnitEvent, DamageUnitArgs{
+						DamageType: dg.MagicDamage,
+						Amount:     args.Amount,
+						ChooseUnit: parse.Choose{
+							Type: ch.UUIDChoice,
+							Args: ch.UUIDArgs{
+								UUID: unit.GetUUID(),
 							},
 						},
-						affect: DamageUnitAffect,
+					})
+					if err != nil {
+						return errors.Wrap(err)
 					}
 					if err := engine.Do(context.Background(), event, state); err != nil {
 						return errors.Wrap(err)
@@ -55,74 +49,68 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 	}
 
 	// update units movement and cooldown
-	events := []*Event{
-		{
-			uuid: state.Gen.New(en.EventUUID),
-			typ:  RefreshMovementEvent,
-			args: RefreshMovementArgs{
-				ChooseUnits: parse.Choose{
-					Type: ch.CompositeChoice,
-					Args: ch.CompositeArgs{
-						SetFunction: ch.SetIntersect,
-						ChooseChain: []parse.Choose{
-							{
-								Type: ch.OwnedUnitsChoice,
-								Args: ch.OwnedUnitsArgs{
-									ChoosePlayer: parse.Choose{
-										Type: ch.CurrentPlayerChoice,
-										Args: ch.CurrentPlayerArgs{},
-									},
-								},
+	event1, err := NewEvent(state.Gen.New(en.EventUUID), RefreshMovementEvent, RefreshMovementArgs{
+		ChooseUnits: parse.Choose{
+			Type: ch.CompositeChoice,
+			Args: ch.CompositeArgs{
+				SetFunction: ch.SetIntersect,
+				ChooseChain: []parse.Choose{
+					{
+						Type: ch.OwnedUnitsChoice,
+						Args: ch.OwnedUnitsArgs{
+							ChoosePlayer: parse.Choose{
+								Type: ch.CurrentPlayerChoice,
+								Args: ch.CurrentPlayerArgs{},
 							},
-							{
-								Type: ch.UnitsChoice,
-								Args: ch.UnitsArgs{
-									Types: []string{
-										cd.CreatureUnit,
-									},
-								},
+						},
+					},
+					{
+						Type: ch.UnitsChoice,
+						Args: ch.UnitsArgs{
+							Types: []string{
+								cd.CreatureUnit,
 							},
 						},
 					},
 				},
 			},
-			affect: RefreshMovementAffect,
 		},
-		{
-			uuid: state.Gen.New(en.EventUUID),
-			typ:  CooldownEvent,
-			args: CooldownArgs{
-				ChooseUnits: parse.Choose{
-					Type: ch.CompositeChoice,
-					Args: ch.CompositeArgs{
-						SetFunction: ch.SetIntersect,
-						ChooseChain: []parse.Choose{
-							{
-								Type: ch.OwnedUnitsChoice,
-								Args: ch.OwnedUnitsArgs{
-									ChoosePlayer: parse.Choose{
-										Type: ch.CurrentPlayerChoice,
-										Args: ch.CurrentPlayerArgs{},
-									},
-								},
-							},
-							{
-								Type: ch.UnitsChoice,
-								Args: ch.UnitsArgs{
-									Types: []string{
-										cd.CreatureUnit,
-										cd.StructureUnit,
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-			affect: CooldownAffect,
-		},
+	})
+	if err != nil {
+		return errors.Wrap(err)
 	}
-	for _, event := range events {
+	event2, err := NewEvent(state.Gen.New(en.EventUUID), CooldownEvent, CooldownArgs{
+		ChooseUnits: parse.Choose{
+			Type: ch.CompositeChoice,
+			Args: ch.CompositeArgs{
+				SetFunction: ch.SetIntersect,
+				ChooseChain: []parse.Choose{
+					{
+						Type: ch.OwnedUnitsChoice,
+						Args: ch.OwnedUnitsArgs{
+							ChoosePlayer: parse.Choose{
+								Type: ch.CurrentPlayerChoice,
+								Args: ch.CurrentPlayerArgs{},
+							},
+						},
+					},
+					{
+						Type: ch.UnitsChoice,
+						Args: ch.UnitsArgs{
+							Types: []string{
+								cd.CreatureUnit,
+								cd.StructureUnit,
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err)
+	}
+	for _, event := range []en.IEvent{event1, event2} {
 		if err := engine.Do(context.Background(), event, state); err != nil {
 			return errors.Wrap(err)
 		}
@@ -137,56 +125,50 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 	size := state.Deck[player].GetSize()
 	for size <= 0 {
 		state.Recycle[player]++
-		events := []*Event{
-			{
-				uuid: state.Gen.New(en.EventUUID),
-				typ:  DamageUnitsEvent,
-				args: DamageUnitsArgs{
-					DamageType: dg.PureDamage,
-					Amount:     state.Recycle[player],
-					ChooseUnits: parse.Choose{
-						Type: ch.CompositeChoice,
-						Args: ch.CompositeArgs{
-							SetFunction: ch.SetIntersect,
-							ChooseChain: []parse.Choose{
-								{
-									Type: ch.OwnedUnitsChoice,
-									Args: ch.OwnedUnitsArgs{
-										ChoosePlayer: parse.Choose{
-											Type: ch.CurrentPlayerChoice,
-											Args: ch.CurrentPlayerArgs{},
-										},
-									},
+		event1, err := NewEvent(state.Gen.New(en.EventUUID), DamageUnitsEvent, DamageUnitsArgs{
+			DamageType: dg.PureDamage,
+			Amount:     state.Recycle[player],
+			ChooseUnits: parse.Choose{
+				Type: ch.CompositeChoice,
+				Args: ch.CompositeArgs{
+					SetFunction: ch.SetIntersect,
+					ChooseChain: []parse.Choose{
+						{
+							Type: ch.OwnedUnitsChoice,
+							Args: ch.OwnedUnitsArgs{
+								ChoosePlayer: parse.Choose{
+									Type: ch.CurrentPlayerChoice,
+									Args: ch.CurrentPlayerArgs{},
 								},
-								{
-									Type: ch.UnitsChoice,
-									Args: ch.UnitsArgs{
-										Types: []string{
-											cd.BaseUnit,
-										},
-									},
+							},
+						},
+						{
+							Type: ch.UnitsChoice,
+							Args: ch.UnitsArgs{
+								Types: []string{
+									cd.BaseUnit,
 								},
 							},
 						},
 					},
 				},
-				affect: DamageUnitsAffect,
 			},
-			{
-				uuid: state.Gen.New(en.EventUUID),
-				typ:  RecycleDeckEvent,
-				args: RecycleDeckArgs{
-					ChoosePlayer: parse.Choose{
-						Type: ch.UUIDChoice,
-						Args: ch.UUIDArgs{
-							UUID: player,
-						},
-					},
-				},
-				affect: RecycleDeckAffect,
-			},
+		})
+		if err != nil {
+			return errors.Wrap(err)
 		}
-		for _, event := range events {
+		event2, err := NewEvent(state.Gen.New(en.EventUUID), RecycleDeckEvent, RecycleDeckArgs{
+			ChoosePlayer: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: ch.UUIDArgs{
+					UUID: player,
+				},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err)
+		}
+		for _, event := range []en.IEvent{event1, event2} {
 			if err := engine.Do(context.Background(), event, state); err != nil {
 				return errors.Wrap(err)
 			}
@@ -195,35 +177,28 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 	}
 
 	// refresh mana and draw a card
-	events = []*Event{
-		{
-			uuid: state.Gen.New(en.EventUUID),
-			typ:  GainManaEvent,
-			args: GainManaArgs{
-				ChoosePlayer: parse.Choose{
-					Type: ch.CurrentPlayerChoice,
-					Args: ch.CurrentPlayerArgs{},
-				},
-				Amount: state.Mana[player].BaseAmount - state.Mana[player].Amount,
-			},
-			affect: GainManaAffect,
+	event1, err = NewEvent(state.Gen.New(en.EventUUID), GainManaEvent, GainManaArgs{
+		ChoosePlayer: parse.Choose{
+			Type: ch.CurrentPlayerChoice,
+			Args: ch.CurrentPlayerArgs{},
 		},
-		{
-			uuid: state.Gen.New(en.EventUUID),
-			typ:  DrawCardEvent,
-			args: DrawCardArgs{
-				ChoosePlayer: parse.Choose{
-					Type: ch.UUIDChoice,
-					Args: ch.UUIDArgs{
-						UUID: player,
-					},
-				},
-			},
-			affect: DrawCardAffect,
-		},
+		Amount: state.Mana[player].BaseAmount - state.Mana[player].Amount,
+	})
+	if err != nil {
+		return errors.Wrap(err)
 	}
-
-	for _, event := range events {
+	event2, err = NewEvent(state.Gen.New(en.EventUUID), DrawCardEvent, DrawCardArgs{
+		ChoosePlayer: parse.Choose{
+			Type: ch.UUIDChoice,
+			Args: ch.UUIDArgs{
+				UUID: player,
+			},
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err)
+	}
+	for _, event := range []en.IEvent{event1, event2} {
 		if err := engine.Do(context.Background(), event, state); err != nil {
 			return errors.Wrap(err)
 		}

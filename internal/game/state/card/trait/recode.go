@@ -1,7 +1,6 @@
 package trait
 
 import (
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
@@ -18,10 +17,7 @@ type RecodeArgs struct {
 }
 
 func AddRecode(engine *en.Engine, args interface{}, card st.ICard) error {
-	var a RecodeArgs
-	if err := mapstructure.Decode(args, &a); err != nil {
-		return errors.ErrInterfaceConversion
-	}
+	a := args.(*RecodeArgs)
 	unit, ok := card.(*cd.UnitCard)
 	if !ok {
 		return errors.ErrInterfaceConversion
@@ -30,10 +26,7 @@ func AddRecode(engine *en.Engine, args interface{}, card st.ICard) error {
 }
 
 func RemoveRecode(engine *en.Engine, args interface{}, card st.ICard) error {
-	var a RecodeArgs
-	if err := mapstructure.Decode(args, &a); err != nil {
-		return errors.ErrInterfaceConversion
-	}
+	a := args.(*RecodeArgs)
 	unit, ok := card.(*cd.UnitCard)
 	if !ok {
 		return errors.ErrInterfaceConversion

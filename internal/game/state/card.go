@@ -28,7 +28,6 @@ type ITrait interface {
 	GetUUID() uuid.UUID
 	GetType() string
 	GetArgs() interface{}
-	SetArgs(args interface{})
 	Add(engine en.IEngine, card ICard) error
 	Remove(engine en.IEngine, card ICard) error
 }

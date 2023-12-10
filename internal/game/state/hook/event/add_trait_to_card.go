@@ -3,7 +3,6 @@ package event
 import (
 	"context"
 
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
@@ -23,10 +22,7 @@ type AddTraitToCardArgs struct {
 }
 
 func AddTraitToCardAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	var a AddTraitToCardArgs
-	if err := mapstructure.Decode(args, &a); err != nil {
-		return errors.ErrInterfaceConversion
-	}
+	a := args.(*AddTraitToCardArgs)
 	trait, err := tr.NewTrait(state.Gen.New(en.ChooseUUID), a.Trait.Type, a.Trait.Args)
 	if err != nil {
 		return errors.Wrap(err)
@@ -51,18 +47,16 @@ func AddTraitToCardAffect(ctx context.Context, args interface{}, engine *en.Engi
 			return errors.Wrap(err)
 		}
 		if state.Board.XYs[x][y].Unit.(*cd.UnitCard).Health <= 0 {
-			event := &Event{
-				uuid: state.Gen.New(en.EventUUID),
-				typ:  KillUnitEvent,
-				args: KillUnitArgs{
-					ChooseUnit: parse.Choose{
-						Type: ch.UUIDChoice,
-						Args: ch.UUIDArgs{
-							UUID: choice,
-						},
+			event, err := NewEvent(state.Gen.New(en.EventUUID), KillUnitEvent, KillUnitArgs{
+				ChooseUnit: parse.Choose{
+					Type: ch.UUIDChoice,
+					Args: ch.UUIDArgs{
+						UUID: choice,
 					},
 				},
-				affect: KillUnitAffect,
+			})
+			if err != nil {
+				return errors.Wrap(err)
 			}
 			if err := engine.Do(context.Background(), event, state); err != nil {
 				return errors.Wrap(err)

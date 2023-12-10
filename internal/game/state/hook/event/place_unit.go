@@ -3,7 +3,6 @@ package event
 import (
 	"context"
 
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
@@ -24,11 +23,7 @@ type PlaceUnitArgs struct {
 }
 
 func PlaceUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	var a PlaceUnitArgs
-	if err := mapstructure.Decode(args, &a); err != nil {
-		return errors.ErrInterfaceConversion
-	}
-
+	a := args.(*PlaceUnitArgs)
 	playerChoice, err := ch.GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
@@ -71,12 +66,8 @@ func PlaceUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, s
 	state.Board.XYs[tX][tY].Unit = unit
 
 	// battle cry trait check
-	battleCrys := unit.GetTraits(tr.BattleCryTrait)
-	for _, battleCry := range battleCrys {
-		var args tr.BattleCryArgs
-		if err := mapstructure.Decode(battleCry.GetArgs(), &args); err != nil {
-			return errors.Wrap(err)
-		}
+	for _, trait := range unit.GetTraits(tr.BattleCryTrait) {
+		args := trait.GetArgs().(*tr.BattleCryArgs)
 		for _, h := range args.Hooks {
 			hook, err := state.NewHook(state.Gen, unit.GetUUID(), h)
 			if err != nil {

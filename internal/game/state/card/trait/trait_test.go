@@ -4,7 +4,6 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
@@ -12,9 +11,20 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func Test_NewTrait(t *testing.T) {
+	args := map[string]interface{}{
+		"Amount": 1,
+	}
+	trait, err := NewTrait(uuid.Nil, AssassinTrait, args)
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.Equal(t, 1, trait.GetArgs().(*AssassinArgs).Amount)
+}
+
 func Test_ModifyingTraitArgs(t *testing.T) {
 	gen := uuid.NewGen(rand.New(rand.NewSource(0)))
-	trait, err := NewTrait(gen.New(en.TraitUUID), FriendsTrait, &FriendsArgs{
+	trait, err := NewTrait(uuid.Nil, FriendsTrait, &FriendsArgs{
 		ChooseUnits: struct {
 			Type string
 			Args interface{}
@@ -40,15 +50,8 @@ func Test_ModifyingTraitArgs(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	var args FriendsArgs
-	if err := mapstructure.Decode(trait.GetArgs(), &args); err != nil {
-		t.Fatal(err)
-	}
+	args := trait.GetArgs().(*FriendsArgs)
+	assert.True(t, len(trait.GetArgs().(*FriendsArgs).Current) == 0)
 	args.Current = []uuid.UUID{gen.New(en.UnitUUID), gen.New(en.UnitUUID), gen.New(en.UnitUUID)}
-	trait.SetArgs(args)
-
-	if err := mapstructure.Decode(trait.GetArgs(), &args); err != nil {
-		t.Fatal(err)
-	}
-	assert.True(t, len(args.Current) > 0)
+	assert.True(t, len(trait.GetArgs().(*FriendsArgs).Current) > 0)
 }

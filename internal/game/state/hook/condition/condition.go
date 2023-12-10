@@ -2,7 +2,9 @@ package condition
 
 import (
 	"context"
+	"reflect"
 
+	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	"github.com/quibbble/go-quill/pkg/errors"
@@ -19,16 +21,20 @@ type Condition struct {
 }
 
 func NewCondition(uuid uuid.UUID, typ string, not bool, args interface{}) (en.ICondition, error) {
-	pass, ok := ConditionMap[typ]
+	p, ok := ConditionMap[typ]
 	if !ok {
 		return nil, errors.ErrMissingMapKey
+	}
+	decoded := reflect.New(p.Type).Elem().Interface()
+	if err := mapstructure.Decode(args, &decoded); err != nil {
+		return nil, errors.Wrap(err)
 	}
 	return &Condition{
 		uuid: uuid,
 		typ:  typ,
 		not:  not,
-		args: args,
-		pass: pass,
+		args: decoded,
+		pass: p.Pass,
 	}, nil
 }
 

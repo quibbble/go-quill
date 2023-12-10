@@ -2,7 +2,9 @@ package choose
 
 import (
 	"context"
+	"reflect"
 
+	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	"github.com/quibbble/go-quill/pkg/errors"
@@ -18,15 +20,19 @@ type Choose struct {
 }
 
 func NewChoose(uuid uuid.UUID, typ string, args interface{}) (en.IChoose, error) {
-	retrieve, ok := ChooseMap[typ]
+	c, ok := ChooseMap[typ]
 	if !ok {
 		return nil, errors.ErrMissingMapKey
+	}
+	decoded := reflect.New(c.Type).Elem().Interface()
+	if err := mapstructure.Decode(args, &decoded); err != nil {
+		return nil, errors.Wrap(err)
 	}
 	return &Choose{
 		uuid:     uuid,
 		typ:      typ,
-		args:     args,
-		retrieve: retrieve,
+		args:     decoded,
+		retrieve: c.Retrieve,
 	}, nil
 }
 

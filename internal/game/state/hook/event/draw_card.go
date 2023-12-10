@@ -3,7 +3,6 @@ package event
 import (
 	"context"
 
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
@@ -18,11 +17,7 @@ type DrawCardArgs struct {
 }
 
 func DrawCardAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	var a DrawCardArgs
-	if err := mapstructure.Decode(args, &a); err != nil {
-		return errors.ErrInterfaceConversion
-	}
-
+	a := args.(*DrawCardArgs)
 	playerChoice, err := ch.GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
@@ -35,13 +30,11 @@ func DrawCardAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 		}
 		state.Hand[playerChoice].Add(*card)
 	} else {
-		event := &Event{
-			uuid: state.Gen.New(en.EventUUID),
-			typ:  BurnCardEvent,
-			args: BurnCardArgs{
-				ChoosePlayer: a.ChoosePlayer,
-			},
-			affect: BurnCardAffect,
+		event, err := NewEvent(state.Gen.New(en.EventUUID), BurnCardEvent, BurnCardArgs{
+			ChoosePlayer: a.ChoosePlayer,
+		})
+		if err != nil {
+			return errors.Wrap(err)
 		}
 		if err := engine.Do(context.Background(), event, state); err != nil {
 			return errors.Wrap(err)

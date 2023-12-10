@@ -3,7 +3,6 @@ package event
 import (
 	"context"
 
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
@@ -22,10 +21,7 @@ type RefreshMovementArgs struct {
 }
 
 func RefreshMovementAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	var a RefreshMovementArgs
-	if err := mapstructure.Decode(args, &a); err != nil {
-		return errors.ErrInterfaceConversion
-	}
+	a := args.(*RefreshMovementArgs)
 	choose, err := ch.NewChoose(state.Gen.New(en.ChooseUUID), a.ChooseUnits.Type, a.ChooseUnits.Args)
 	if err != nil {
 		return errors.Wrap(err)
@@ -41,20 +37,18 @@ func RefreshMovementAffect(ctx context.Context, args interface{}, engine *en.Eng
 		}
 		unit := state.Board.XYs[x][y].Unit.(*cd.UnitCard)
 
-		event := &Event{
-			uuid: state.Gen.New(en.EventUUID),
-			typ:  ModifyUnitEvent,
-			args: ModifyUnitArgs{
-				ChooseUnit: parse.Choose{
-					Type: ch.UUIDChoice,
-					Args: ch.UUIDArgs{
-						UUID: unit.GetUUID(),
-					},
+		event, err := NewEvent(state.Gen.New(en.EventUUID), ModifyUnitEvent, ModifyUnitArgs{
+			ChooseUnit: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: ch.UUIDArgs{
+					UUID: unit.GetUUID(),
 				},
-				Stat:   cd.MovementStat,
-				Amount: maths.MaxInt(0, unit.BaseMovement) - unit.Movement,
 			},
-			affect: ModifyUnitAffect,
+			Stat:   cd.MovementStat,
+			Amount: maths.MaxInt(0, unit.BaseMovement) - unit.Movement,
+		})
+		if err != nil {
+			return errors.Wrap(err)
 		}
 		if err := engine.Do(ctx, event, state); err != nil {
 			return errors.Wrap(err)

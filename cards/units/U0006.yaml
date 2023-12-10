@@ -16,7 +16,7 @@ Hooks:
 - When: After
   Types: 
   - KillUnit
-  - RescindUnit
+  - RecallUnit
   Conditions:
   - Type: Match
     Not: false

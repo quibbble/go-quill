@@ -15,4 +15,5 @@ Events:
     Amount: 2
     ChooseUnit:
       Type: Target
-      Index: 0
+      Args:
+        Index: 0

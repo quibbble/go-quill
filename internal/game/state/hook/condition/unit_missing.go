@@ -3,7 +3,6 @@ package condition
 import (
 	"context"
 
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
@@ -18,10 +17,7 @@ type UnitMissingArgs struct {
 }
 
 func PassUnitMissing(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) (bool, error) {
-	var p UnitMissingArgs
-	if err := mapstructure.Decode(args, &p); err != nil {
-		return false, errors.ErrInterfaceConversion
-	}
+	p := args.(*UnitMissingArgs)
 
 	unitChoice, err := ch.GetUnitChoice(ctx, p.ChooseUnit, engine, state)
 	if err != nil {

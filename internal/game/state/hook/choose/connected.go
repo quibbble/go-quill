@@ -4,7 +4,6 @@ import (
 	"context"
 	"slices"
 
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	"github.com/quibbble/go-quill/parse"
@@ -21,11 +20,7 @@ type ConnectedArgs struct {
 }
 
 func RetrieveConnected(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
-	var c ConnectedArgs
-	if err := mapstructure.Decode(args, &c); err != nil {
-		return nil, errors.ErrInterfaceConversion
-	}
-
+	c := args.(*ConnectedArgs)
 	choose, err := NewChoose(state.Gen.New(en.ChooseUUID), c.ChooseUnit.Type, c.ChooseUnit.Args)
 	if err != nil {
 		return nil, errors.Wrap(err)

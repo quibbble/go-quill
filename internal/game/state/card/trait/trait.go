@@ -1,6 +1,9 @@
 package trait
 
 import (
+	"reflect"
+
+	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	"github.com/quibbble/go-quill/pkg/errors"
@@ -21,20 +24,16 @@ func NewTrait(uuid uuid.UUID, typ string, args interface{}) (st.ITrait, error) {
 	if !ok {
 		return nil, errors.ErrMissingMapKey
 	}
-	a, ok := ar[add]
-	if !ok {
-		a = dummy
-	}
-	r, ok := ar[remove]
-	if !ok {
-		r = dummy
+	decoded := reflect.New(ar.Type).Elem().Interface()
+	if err := mapstructure.Decode(args, &decoded); err != nil {
+		return nil, errors.Wrap(err)
 	}
 	return &Trait{
 		uuid:   uuid,
 		typ:    typ,
-		args:   args,
-		add:    a,
-		remove: r,
+		args:   decoded,
+		add:    ar.Add,
+		remove: ar.Remove,
 	}, nil
 }
 
@@ -50,14 +49,13 @@ func (t *Trait) GetArgs() interface{} {
 	return t.args
 }
 
-func (t *Trait) SetArgs(args interface{}) {
-	t.args = args
-}
-
 func (t *Trait) Add(engine en.IEngine, card st.ICard) error {
 	eng, ok := engine.(*en.Engine)
 	if !ok {
 		return errors.ErrInterfaceConversion
+	}
+	if t.add == nil {
+		return nil
 	}
 	return t.add(eng, t.args, card)
 }
@@ -66,6 +64,9 @@ func (t *Trait) Remove(engine en.IEngine, card st.ICard) error {
 	eng, ok := engine.(*en.Engine)
 	if !ok {
 		return errors.ErrInterfaceConversion
+	}
+	if t.remove == nil {
+		return nil
 	}
 	return t.remove(eng, t.args, card)
 }

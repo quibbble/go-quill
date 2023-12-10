@@ -3,7 +3,6 @@ package event
 import (
 	"context"
 
-	"github.com/mitchellh/mapstructure"
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
@@ -23,11 +22,7 @@ type AddItemToUnitArgs struct {
 }
 
 func AddItemToUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	var a AddItemToUnitArgs
-	if err := mapstructure.Decode(args, &a); err != nil {
-		return errors.ErrInterfaceConversion
-	}
-
+	a := args.(*AddItemToUnitArgs)
 	playerChoice, err := ch.GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
@@ -64,29 +59,27 @@ func AddItemToUnitAffect(ctx context.Context, args interface{}, engine *en.Engin
 	}
 
 	for _, trait := range itemCard.HeldTraits {
-		event := &Event{
-			uuid: state.Gen.New(en.EventUUID),
-			typ:  AddTraitToCard,
-			args: AddTraitToCardArgs{
-				Trait: parse.Trait{
-					Type: trait.GetType(),
-					Args: trait.GetArgs(),
-				},
-				ChooseCard: parse.Choose{
-					Type: ch.UUIDChoice,
-					Args: ch.UUIDArgs{
-						UUID: unitChoice,
-					},
+		event, err := NewEvent(state.Gen.New(en.EventUUID), AddTraitToCard, AddTraitToCardArgs{
+			Trait: parse.Trait{
+				Type: trait.GetType(),
+				Args: trait.GetArgs(),
+			},
+			ChooseCard: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: ch.UUIDArgs{
+					UUID: unitChoice,
 				},
 			},
-			affect: AddTraitToCardAffect,
+		})
+		if err != nil {
+			return errors.Wrap(err)
 		}
 		if err := engine.Do(context.Background(), event, state); err != nil {
 			return errors.Wrap(err)
 		}
 
 		// if unit died from adding trait then break
-		_, _, err := state.Board.GetUnitXY(unitChoice)
+		_, _, err = state.Board.GetUnitXY(unitChoice)
 		if err != nil {
 			break
 		}
