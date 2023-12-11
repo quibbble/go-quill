@@ -16,9 +16,9 @@ type OwnedUnitsArgs struct {
 	ChoosePlayer parse.Choose
 }
 
-func RetrieveOwnedUnits(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
-	c := args.(*OwnedUnitsArgs)
-	choose, err := NewChoose(state.Gen.New(en.ChooseUUID), c.ChoosePlayer.Type, c.ChoosePlayer.Args)
+func RetrieveOwnedUnits(c *Choose, ctx context.Context, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
+	r := c.GetArgs().(*OwnedUnitsArgs)
+	choose, err := NewChoose(state.Gen.New(en.ChooseUUID), r.ChoosePlayer.Type, r.ChoosePlayer.Args)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}

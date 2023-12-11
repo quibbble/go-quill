@@ -14,7 +14,7 @@ import (
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
-func FriendsTraitCheck(engine *en.Engine, state *st.State) error {
+func FriendsTraitCheck(e *Event, engine *en.Engine, state *st.State) error {
 	// checks if any units need to add/remove their trait through friend trait
 	for _, col := range state.Board.XYs {
 		for _, tile := range col {
@@ -51,7 +51,7 @@ func FriendsTraitCheck(engine *en.Engine, state *st.State) error {
 						return errors.Wrap(err)
 					}
 
-					if err := updateUnits(engine, state, before, after, t); err != nil {
+					if err := updateUnits(e, engine, state, before, after, t); err != nil {
 						return errors.Wrap(err)
 					}
 				}
@@ -61,7 +61,7 @@ func FriendsTraitCheck(engine *en.Engine, state *st.State) error {
 	return nil
 }
 
-func EnemiesTraitCheck(engine *en.Engine, state *st.State) error {
+func EnemiesTraitCheck(e *Event, engine *en.Engine, state *st.State) error {
 	// checks if any units need to add/remove their trait through friend trait
 	for _, col := range state.Board.XYs {
 		for _, tile := range col {
@@ -98,7 +98,7 @@ func EnemiesTraitCheck(engine *en.Engine, state *st.State) error {
 						return errors.Wrap(err)
 					}
 
-					if err := updateUnits(engine, state, before, after, t); err != nil {
+					if err := updateUnits(e, engine, state, before, after, t); err != nil {
 						return errors.Wrap(err)
 					}
 				}
@@ -108,7 +108,7 @@ func EnemiesTraitCheck(engine *en.Engine, state *st.State) error {
 	return nil
 }
 
-func updateUnits(engine *en.Engine, state *st.State, before, after []uuid.UUID, trait st.ITrait) error {
+func updateUnits(e *Event, engine *en.Engine, state *st.State, before, after []uuid.UUID, trait st.ITrait) error {
 	remove := uuid.Diff(before, after)
 	for _, u := range remove {
 		x, y, err := state.Board.GetUnitXY(u)
@@ -136,7 +136,8 @@ func updateUnits(engine *en.Engine, state *st.State, before, after []uuid.UUID, 
 				if err != nil {
 					return errors.Wrap(err)
 				}
-				if err := engine.Do(context.Background(), event, state); err != nil {
+				ctx := context.WithValue(context.WithValue(context.Background(), en.TraitCardCtx, unit.GetUUID()), en.TraitEventCtx, e)
+				if err := engine.Do(ctx, event, state); err != nil {
 					return errors.Wrap(err)
 				}
 				found = true

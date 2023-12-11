@@ -17,8 +17,8 @@ type ManaBelowArgs struct {
 	Amount       int
 }
 
-func PassManaBelow(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) (bool, error) {
-	p := args.(*ManaBelowArgs)
+func PassManaBelow(c *Condition, ctx context.Context, engine *en.Engine, state *st.State) (bool, error) {
+	p := c.GetArgs().(*ManaBelowArgs)
 	playerChoice, err := ch.GetPlayerChoice(ctx, p.ChoosePlayer, engine, state)
 	if err != nil {
 		return false, errors.Wrap(err)

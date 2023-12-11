@@ -16,8 +16,8 @@ type DrawCardArgs struct {
 	ChoosePlayer parse.Choose
 }
 
-func DrawCardAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*DrawCardArgs)
+func DrawCardAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*DrawCardArgs)
 	playerChoice, err := ch.GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
 	if err != nil {
 		return errors.Wrap(err)

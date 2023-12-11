@@ -17,8 +17,8 @@ type DebuffArgs struct {
 	Amount int
 }
 
-func AddDebuff(engine *en.Engine, args interface{}, card st.ICard) error {
-	a := args.(*DebuffArgs)
+func AddDebuff(t *Trait, engine *en.Engine, card st.ICard) error {
+	a := t.GetArgs().(*DebuffArgs)
 	if a.Stat == cd.CostStat {
 		card.SetCost(card.GetCost() + a.Amount)
 		return nil
@@ -45,8 +45,8 @@ func AddDebuff(engine *en.Engine, args interface{}, card st.ICard) error {
 	return nil
 }
 
-func RemoveDebuff(engine *en.Engine, args interface{}, card st.ICard) error {
-	a := args.(*DebuffArgs)
+func RemoveDebuff(t *Trait, engine *en.Engine, card st.ICard) error {
+	a := t.GetArgs().(*DebuffArgs)
 	if a.Stat == cd.CostStat {
 		card.SetCost(card.GetCost() - a.Amount)
 		return nil

@@ -18,8 +18,8 @@ type EndGameArgs struct {
 	ChooseWinner parse.Choose
 }
 
-func EndGameAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*EndGameArgs)
+func EndGameAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*EndGameArgs)
 	player, err := ch.GetPlayerChoice(ctx, a.ChooseWinner, engine, state)
 	if err != nil {
 		return errors.Wrap(err)

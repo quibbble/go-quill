@@ -10,13 +10,13 @@ import (
 
 var EventMap map[string]struct {
 	Type   reflect.Type
-	Affect func(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error
+	Affect func(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error
 }
 
 func init() {
 	EventMap = map[string]struct {
 		Type   reflect.Type
-		Affect func(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error
+		Affect func(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error
 	}{
 		AddItemToUnitEvent: {
 			Type:   reflect.TypeOf(&AddItemToUnitArgs{}),

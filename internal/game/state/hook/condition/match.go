@@ -17,8 +17,8 @@ type MatchArgs struct {
 	ChooseB parse.Choose
 }
 
-func PassMatch(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) (bool, error) {
-	p := args.(*MatchArgs)
+func PassMatch(c *Condition, ctx context.Context, engine *en.Engine, state *st.State) (bool, error) {
+	p := c.GetArgs().(*MatchArgs)
 	a, err := choose.GetChoice(ctx, p.ChooseA, engine, state)
 	if err != nil {
 		return false, errors.Wrap(err)

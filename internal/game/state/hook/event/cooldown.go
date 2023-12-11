@@ -20,8 +20,8 @@ type CooldownArgs struct {
 	ChooseUnits parse.Choose
 }
 
-func CooldownAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*CooldownArgs)
+func CooldownAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*CooldownArgs)
 	choose, err := ch.NewChoose(state.Gen.New(en.ChooseUUID), a.ChooseUnits.Type, a.ChooseUnits.Args)
 	if err != nil {
 		return errors.Wrap(err)

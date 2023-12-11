@@ -19,7 +19,7 @@ const (
 
 type EndTurnArgs struct{}
 
-func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
+func EndTurnAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
 	// poison trait check on player's units
 	for _, col := range state.Board.XYs {
 		for _, tile := range col {
@@ -40,7 +40,8 @@ func EndTurnAffect(ctx context.Context, args interface{}, engine *en.Engine, sta
 					if err != nil {
 						return errors.Wrap(err)
 					}
-					if err := engine.Do(context.Background(), event, state); err != nil {
+					ctx := context.WithValue(context.WithValue(context.Background(), en.TraitCardCtx, unit.GetUUID()), en.TraitEventCtx, e)
+					if err := engine.Do(ctx, event, state); err != nil {
 						return errors.Wrap(err)
 					}
 				}

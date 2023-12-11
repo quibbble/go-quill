@@ -21,8 +21,8 @@ type AddTraitToCardArgs struct {
 	ChooseCard parse.Choose
 }
 
-func AddTraitToCardAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*AddTraitToCardArgs)
+func AddTraitToCardAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*AddTraitToCardArgs)
 	trait, err := tr.NewTrait(state.Gen.New(en.ChooseUUID), a.Trait.Type, a.Trait.Args)
 	if err != nil {
 		return errors.Wrap(err)
@@ -65,8 +65,8 @@ func AddTraitToCardAffect(ctx context.Context, args interface{}, engine *en.Engi
 	}
 
 	// friends/enemies trait check
-	FriendsTraitCheck(engine, state)
-	EnemiesTraitCheck(engine, state)
+	FriendsTraitCheck(e, engine, state)
+	EnemiesTraitCheck(e, engine, state)
 
 	return nil
 }

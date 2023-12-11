@@ -13,12 +13,15 @@ const SelfChoice = "Self"
 
 type SelfArgs struct{}
 
-func RetrieveSelf(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
+func RetrieveSelf(c *Choose, ctx context.Context, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
 	cardCtx := ctx.Value(en.HookCardCtx)
 	if cardCtx == nil {
-		cardCtx = ctx.Value(en.CardCtx)
+		cardCtx = ctx.Value(en.TraitCardCtx)
 		if cardCtx == nil {
-			return nil, errors.ErrMissingContext
+			cardCtx = ctx.Value(en.CardCtx)
+			if cardCtx == nil {
+				return nil, errors.ErrMissingContext
+			}
 		}
 	}
 	cardUUID := cardCtx.(uuid.UUID)

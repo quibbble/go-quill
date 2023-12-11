@@ -18,8 +18,8 @@ type BurnCardArgs struct {
 	ChoosePlayer parse.Choose
 }
 
-func BurnCardAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*BurnCardArgs)
+func BurnCardAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*BurnCardArgs)
 	playerChoice, err := ch.GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
 	if err != nil {
 		return errors.Wrap(err)

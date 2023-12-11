@@ -10,13 +10,13 @@ import (
 
 var ConditionMap map[string]struct {
 	Type reflect.Type
-	Pass func(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) (bool, error)
+	Pass func(c *Condition, ctx context.Context, engine *en.Engine, state *st.State) (bool, error)
 }
 
 func init() {
 	ConditionMap = map[string]struct {
 		Type reflect.Type
-		Pass func(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) (bool, error)
+		Pass func(c *Condition, ctx context.Context, engine *en.Engine, state *st.State) (bool, error)
 	}{
 		ContainsCondition: {
 			Type: reflect.TypeOf(&ContainsArgs{}),

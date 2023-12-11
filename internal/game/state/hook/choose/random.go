@@ -16,9 +16,9 @@ type RandomArgs struct {
 	Choose parse.Choose
 }
 
-func RetrieveRandom(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
-	c := args.(*RandomArgs)
-	choose, err := NewChoose(state.Gen.New(en.ChooseUUID), c.Choose.Type, c.Choose.Args)
+func RetrieveRandom(c *Choose, ctx context.Context, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
+	r := c.GetArgs().(*RandomArgs)
+	choose, err := NewChoose(state.Gen.New(en.ChooseUUID), r.Choose.Type, r.Choose.Args)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}

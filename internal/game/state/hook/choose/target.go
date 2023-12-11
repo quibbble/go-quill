@@ -15,11 +15,11 @@ type TargetArgs struct {
 	Index int
 }
 
-func RetrieveTarget(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
-	c := args.(*TargetArgs)
+func RetrieveTarget(c *Choose, ctx context.Context, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
+	r := c.GetArgs().(*TargetArgs)
 	targets := ctx.Value(en.TargetsCtx).([]uuid.UUID)
-	if c.Index < 0 || c.Index >= len(targets) {
+	if r.Index < 0 || r.Index >= len(targets) {
 		return nil, errors.ErrIndexOutOfBounds
 	}
-	return []uuid.UUID{targets[c.Index]}, nil
+	return []uuid.UUID{targets[r.Index]}, nil
 }

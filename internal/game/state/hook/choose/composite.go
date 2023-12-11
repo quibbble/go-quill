@@ -17,10 +17,10 @@ type CompositeArgs struct {
 	ChooseChain []parse.Choose
 }
 
-func RetrieveComposite(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
-	c := args.(*CompositeArgs)
+func RetrieveComposite(c *Choose, ctx context.Context, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
+	r := c.GetArgs().(*CompositeArgs)
 	choices := make([]en.IChoose, 0)
-	for _, ch := range c.ChooseChain {
+	for _, ch := range r.ChooseChain {
 		choose, err := NewChoose(state.Gen.New(en.ChooseUUID), ch.Type, ch.Args)
 		if err != nil {
 			return nil, errors.Wrap(err)
@@ -28,7 +28,7 @@ func RetrieveComposite(ctx context.Context, args interface{}, engine *en.Engine,
 		choices = append(choices, choose)
 	}
 	ch := &ChooseChain{
-		SetFunction: c.SetFunction,
+		SetFunction: r.SetFunction,
 		ChooseChain: choices,
 	}
 	return ch.Retrieve(ctx, engine, state)

@@ -20,8 +20,8 @@ type RefreshMovementArgs struct {
 	ChooseUnits parse.Choose
 }
 
-func RefreshMovementAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*RefreshMovementArgs)
+func RefreshMovementAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*RefreshMovementArgs)
 	choose, err := ch.NewChoose(state.Gen.New(en.ChooseUUID), a.ChooseUnits.Type, a.ChooseUnits.Args)
 	if err != nil {
 		return errors.Wrap(err)

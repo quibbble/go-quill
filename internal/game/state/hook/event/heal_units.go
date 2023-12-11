@@ -19,8 +19,8 @@ type HealUnitsArgs struct {
 	ChooseUnits parse.Choose
 }
 
-func HealUnitsAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*HealUnitsArgs)
+func HealUnitsAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*HealUnitsArgs)
 	choose, err := ch.NewChoose(state.Gen.New(en.ChooseUUID), a.ChooseUnits.Type, a.ChooseUnits.Args)
 	if err != nil {
 		return errors.Wrap(err)

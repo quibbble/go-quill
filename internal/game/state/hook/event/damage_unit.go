@@ -23,8 +23,8 @@ type DamageUnitArgs struct {
 	ChooseUnit parse.Choose
 }
 
-func DamageUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*DamageUnitArgs)
+func DamageUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*DamageUnitArgs)
 	unitChoice, err := ch.GetUnitChoice(ctx, a.ChooseUnit, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
@@ -72,7 +72,8 @@ func DamageUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 				if err != nil {
 					return errors.Wrap(err)
 				}
-				if err := engine.Do(context.Background(), event, state); err != nil {
+				ctx := context.WithValue(context.WithValue(context.Background(), en.TraitCardCtx, unit.GetUUID()), en.TraitEventCtx, e)
+				if err := engine.Do(ctx, event, state); err != nil {
 					return errors.Wrap(err)
 				}
 			}

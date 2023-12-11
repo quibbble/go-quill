@@ -18,8 +18,8 @@ type RecycleDeckArgs struct {
 	ChoosePlayer parse.Choose
 }
 
-func RecycleDeckAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*RecycleDeckArgs)
+func RecycleDeckAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*RecycleDeckArgs)
 	playerChoice, err := ch.GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
 	if err != nil {
 		return errors.Wrap(err)

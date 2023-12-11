@@ -16,8 +16,8 @@ type RecodeArgs struct {
 	Code string
 }
 
-func AddRecode(engine *en.Engine, args interface{}, card st.ICard) error {
-	a := args.(*RecodeArgs)
+func AddRecode(t *Trait, engine *en.Engine, card st.ICard) error {
+	a := t.GetArgs().(*RecodeArgs)
 	unit, ok := card.(*cd.UnitCard)
 	if !ok {
 		return errors.ErrInterfaceConversion
@@ -25,8 +25,8 @@ func AddRecode(engine *en.Engine, args interface{}, card st.ICard) error {
 	return unit.Recode(a.Code)
 }
 
-func RemoveRecode(engine *en.Engine, args interface{}, card st.ICard) error {
-	a := args.(*RecodeArgs)
+func RemoveRecode(t *Trait, engine *en.Engine, card st.ICard) error {
+	a := t.GetArgs().(*RecodeArgs)
 	unit, ok := card.(*cd.UnitCard)
 	if !ok {
 		return errors.ErrInterfaceConversion

@@ -14,7 +14,7 @@ type UUIDArgs struct {
 	UUID uuid.UUID
 }
 
-func RetrieveUUID(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
-	c := args.(*UUIDArgs)
-	return []uuid.UUID{c.UUID}, nil
+func RetrieveUUID(c *Choose, ctx context.Context, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
+	r := c.GetArgs().(*UUIDArgs)
+	return []uuid.UUID{r.UUID}, nil
 }

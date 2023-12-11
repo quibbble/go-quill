@@ -22,8 +22,8 @@ type SummonUnitArgs struct {
 	ChooseTile   parse.Choose
 }
 
-func SummonUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*SummonUnitArgs)
+func SummonUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*SummonUnitArgs)
 	playerChoice, err := ch.GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
@@ -57,8 +57,8 @@ func SummonUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 	state.Board.XYs[tX][tY].Unit = unit
 
 	// friends/enemies trait check
-	FriendsTraitCheck(engine, state)
-	EnemiesTraitCheck(engine, state)
+	FriendsTraitCheck(e, engine, state)
+	EnemiesTraitCheck(e, engine, state)
 
 	return nil
 }

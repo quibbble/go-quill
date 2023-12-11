@@ -16,7 +16,7 @@ type Event struct {
 
 	typ    string
 	args   interface{}
-	affect func(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error
+	affect func(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error
 }
 
 func NewEvent(uuid uuid.UUID, typ string, args interface{}) (en.IEvent, error) {
@@ -57,5 +57,5 @@ func (e *Event) Affect(ctx context.Context, engine en.IEngine, state en.IState) 
 	if !ok {
 		return errors.ErrInterfaceConversion
 	}
-	return e.affect(ctx, e.args, eng, sta)
+	return e.affect(e, ctx, eng, sta)
 }

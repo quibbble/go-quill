@@ -22,8 +22,8 @@ type ModifyUnitArgs struct {
 	Amount     int
 }
 
-func ModifyUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*ModifyUnitArgs)
+func ModifyUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*ModifyUnitArgs)
 	unitChoice, err := ch.GetUnitChoice(ctx, a.ChooseUnit, engine, state)
 	if err != nil {
 		return errors.Wrap(err)

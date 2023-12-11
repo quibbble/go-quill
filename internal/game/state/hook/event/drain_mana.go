@@ -19,8 +19,8 @@ type DrainManaArgs struct {
 	Amount       int
 }
 
-func DrainManaAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*DrainManaArgs)
+func DrainManaAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*DrainManaArgs)
 	playerChoice, err := ch.GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
 	if err != nil {
 		return errors.Wrap(err)

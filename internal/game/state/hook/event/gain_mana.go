@@ -19,8 +19,8 @@ type GainManaArgs struct {
 	Amount       int
 }
 
-func GainManaAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*GainManaArgs)
+func GainManaAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*GainManaArgs)
 	playerChoice, err := ch.GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
 	if err != nil {
 		return errors.Wrap(err)

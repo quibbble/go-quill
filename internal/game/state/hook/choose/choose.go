@@ -16,7 +16,7 @@ type Choose struct {
 
 	typ      string
 	args     interface{}
-	retrieve func(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error)
+	retrieve func(c *Choose, ctx context.Context, engine *en.Engine, state *st.State) ([]uuid.UUID, error)
 }
 
 func NewChoose(uuid uuid.UUID, typ string, args interface{}) (en.IChoose, error) {
@@ -36,6 +36,10 @@ func NewChoose(uuid uuid.UUID, typ string, args interface{}) (en.IChoose, error)
 	}, nil
 }
 
+func (c *Choose) GetArgs() interface{} {
+	return c.args
+}
+
 func (c *Choose) Retrieve(ctx context.Context, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
 	eng, ok := engine.(*en.Engine)
 	if !ok {
@@ -45,5 +49,5 @@ func (c *Choose) Retrieve(ctx context.Context, engine en.IEngine, state en.IStat
 	if !ok {
 		return nil, errors.ErrInterfaceConversion
 	}
-	return c.retrieve(ctx, c.args, eng, sta)
+	return c.retrieve(c, ctx, eng, sta)
 }

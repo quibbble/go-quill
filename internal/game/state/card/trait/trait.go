@@ -15,8 +15,8 @@ type Trait struct {
 	typ  string
 	args interface{}
 
-	add    func(engine *en.Engine, args interface{}, card st.ICard) error
-	remove func(engine *en.Engine, args interface{}, card st.ICard) error
+	add    func(t *Trait, engine *en.Engine, card st.ICard) error
+	remove func(t *Trait, engine *en.Engine, card st.ICard) error
 }
 
 func NewTrait(uuid uuid.UUID, typ string, args interface{}) (st.ITrait, error) {
@@ -57,7 +57,7 @@ func (t *Trait) Add(engine en.IEngine, card st.ICard) error {
 	if t.add == nil {
 		return nil
 	}
-	return t.add(eng, t.args, card)
+	return t.add(t, eng, card)
 }
 
 func (t *Trait) Remove(engine en.IEngine, card st.ICard) error {
@@ -68,5 +68,5 @@ func (t *Trait) Remove(engine en.IEngine, card st.ICard) error {
 	if t.remove == nil {
 		return nil
 	}
-	return t.remove(eng, t.args, card)
+	return t.remove(t, eng, card)
 }

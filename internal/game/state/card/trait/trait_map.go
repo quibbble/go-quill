@@ -9,15 +9,15 @@ import (
 
 var TraitMap map[string]struct {
 	Type   reflect.Type
-	Add    func(engine *en.Engine, args interface{}, card st.ICard) error
-	Remove func(engine *en.Engine, args interface{}, card st.ICard) error
+	Add    func(t *Trait, engine *en.Engine, card st.ICard) error
+	Remove func(t *Trait, engine *en.Engine, card st.ICard) error
 }
 
 func init() {
 	TraitMap = map[string]struct {
 		Type   reflect.Type
-		Add    func(engine *en.Engine, args interface{}, card st.ICard) error
-		Remove func(engine *en.Engine, args interface{}, card st.ICard) error
+		Add    func(t *Trait, engine *en.Engine, card st.ICard) error
+		Remove func(t *Trait, engine *en.Engine, card st.ICard) error
 	}{
 		AssassinTrait: {
 			Type: reflect.TypeOf(&AssassinArgs{}),

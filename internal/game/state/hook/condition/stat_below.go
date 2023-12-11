@@ -20,8 +20,8 @@ type StatBelowArgs struct {
 	ChooseCard parse.Choose
 }
 
-func PassStatBelow(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) (bool, error) {
-	p := args.(*StatBelowArgs)
+func PassStatBelow(c *Condition, ctx context.Context, engine *en.Engine, state *st.State) (bool, error) {
+	p := c.GetArgs().(*StatBelowArgs)
 
 	choice, err := ch.GetChoice(ctx, p.ChooseCard, engine, state)
 	if err != nil {

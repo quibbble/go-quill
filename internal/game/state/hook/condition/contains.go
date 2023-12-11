@@ -18,8 +18,8 @@ type ContainsArgs struct {
 	Choose      parse.Choose
 }
 
-func PassContains(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) (bool, error) {
-	p := args.(*ContainsArgs)
+func PassContains(c *Condition, ctx context.Context, engine *en.Engine, state *st.State) (bool, error) {
+	p := c.GetArgs().(*ContainsArgs)
 	choices, err := ch.GetChoices(ctx, p.ChooseChain, engine, state)
 	if err != nil {
 		return false, errors.Wrap(err)

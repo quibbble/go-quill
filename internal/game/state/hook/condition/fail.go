@@ -11,6 +11,6 @@ const FailCondition = "Fail"
 
 type FailArgs struct{}
 
-func PassFail(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) (bool, error) {
+func PassFail(c *Condition, ctx context.Context, engine *en.Engine, state *st.State) (bool, error) {
 	return false, nil
 }

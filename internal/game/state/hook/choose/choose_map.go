@@ -11,13 +11,13 @@ import (
 
 var ChooseMap map[string]struct {
 	Type     reflect.Type
-	Retrieve func(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error)
+	Retrieve func(c *Choose, ctx context.Context, engine *en.Engine, state *st.State) ([]uuid.UUID, error)
 }
 
 func init() {
 	ChooseMap = map[string]struct {
 		Type     reflect.Type
-		Retrieve func(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error)
+		Retrieve func(c *Choose, ctx context.Context, engine *en.Engine, state *st.State) ([]uuid.UUID, error)
 	}{
 		AdjacentChoice: {
 			Type:     reflect.TypeOf(&AdjacentArgs{}),
@@ -78,6 +78,14 @@ func init() {
 		TilesChoice: {
 			Type:     reflect.TypeOf(&TilesArgs{}),
 			Retrieve: RetrieveTiles,
+		},
+		TraitEventTileChoice: {
+			Type:     reflect.TypeOf(&TraitEventTileArgs{}),
+			Retrieve: RetrieveTraitEventTile,
+		},
+		TraitEventUnitChoice: {
+			Type:     reflect.TypeOf(&TraitEventUnitArgs{}),
+			Retrieve: RetrieveTraitEventUnit,
 		},
 		UnitsChoice: {
 			Type:     reflect.TypeOf(&UnitsArgs{}),

@@ -21,8 +21,8 @@ type AddItemToUnitArgs struct {
 	ChooseUnit   parse.Choose
 }
 
-func AddItemToUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*AddItemToUnitArgs)
+func AddItemToUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*AddItemToUnitArgs)
 	playerChoice, err := ch.GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
 	if err != nil {
 		return errors.Wrap(err)

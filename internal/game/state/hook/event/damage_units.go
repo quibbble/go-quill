@@ -20,8 +20,8 @@ type DamageUnitsArgs struct {
 	ChooseUnits parse.Choose
 }
 
-func DamageUnitsAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*DamageUnitsArgs)
+func DamageUnitsAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*DamageUnitsArgs)
 	choose, err := ch.NewChoose(state.Gen.New(en.ChooseUUID), a.ChooseUnits.Type, a.ChooseUnits.Args)
 	if err != nil {
 		return errors.Wrap(err)

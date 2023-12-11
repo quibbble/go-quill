@@ -16,9 +16,9 @@ type OwnedTilesArgs struct {
 	ChoosePlayer parse.Choose
 }
 
-func RetrieveOwnedTiles(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
-	c := args.(*OwnedTilesArgs)
-	choose, err := NewChoose(state.Gen.New(en.ChooseUUID), c.ChoosePlayer.Type, c.ChoosePlayer.Args)
+func RetrieveOwnedTiles(c *Choose, ctx context.Context, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
+	r := c.GetArgs().(*OwnedTilesArgs)
+	choose, err := NewChoose(state.Gen.New(en.ChooseUUID), r.ChoosePlayer.Type, r.ChoosePlayer.Args)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}

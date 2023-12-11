@@ -16,9 +16,9 @@ type OwnerArgs struct {
 	ChooseCard parse.Choose
 }
 
-func RetrieveOwner(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
-	a := args.(*OwnerArgs)
-	choice, err := GetChoice(ctx, a.ChooseCard, engine, state)
+func RetrieveOwner(c *Choose, ctx context.Context, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
+	r := c.GetArgs().(*OwnerArgs)
+	choice, err := GetChoice(ctx, r.ChooseCard, engine, state)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}

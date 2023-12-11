@@ -19,8 +19,8 @@ type SwapStatsArgs struct {
 	ChooseCardB parse.Choose
 }
 
-func SwapStatsAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*SwapStatsArgs)
+func SwapStatsAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*SwapStatsArgs)
 	choiceA, err := ch.GetChoice(ctx, a.ChooseCardA, engine, state)
 	if err != nil {
 		return errors.Wrap(err)

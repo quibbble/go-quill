@@ -17,7 +17,7 @@ type Condition struct {
 	typ  string
 	not  bool
 	args interface{}
-	pass func(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) (bool, error)
+	pass func(c *Condition, ctx context.Context, engine *en.Engine, state *st.State) (bool, error)
 }
 
 func NewCondition(uuid uuid.UUID, typ string, not bool, args interface{}) (en.ICondition, error) {
@@ -59,7 +59,7 @@ func (c *Condition) Pass(ctx context.Context, engine en.IEngine, state en.IState
 	if !ok {
 		return false, errors.ErrInterfaceConversion
 	}
-	pass, err := c.pass(ctx, c.args, eng, sta)
+	pass, err := c.pass(c, ctx, eng, sta)
 	if err != nil {
 		return false, errors.Wrap(err)
 	}

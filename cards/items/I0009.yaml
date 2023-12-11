@@ -25,7 +25,7 @@ HeldTraits:
           Type: Owner
           Args:
             ChooseCard:
-              Type: HookEventUnit
+              Type: TraitEventUnit
         ChooseTile:
-          Type: HookEventTile
+          Type: TraitEventTile
         ID: U0010

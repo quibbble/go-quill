@@ -20,12 +20,12 @@ type KillUnitArgs struct {
 	ChooseUnit parse.Choose
 
 	// DO NOT SET MANUALLY - SET BY ENGINE
-	// tile location of unit's death
+	// tile location unit before death
 	ChooseTile parse.Choose
 }
 
-func KillUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*KillUnitArgs)
+func KillUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*KillUnitArgs)
 	unitChoice, err := ch.GetUnitChoice(ctx, a.ChooseUnit, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
@@ -59,15 +59,16 @@ func KillUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, st
 			if err != nil {
 				return errors.Wrap(err)
 			}
-			if err := engine.Do(context.Background(), event, state); err != nil {
+			ctx := context.WithValue(context.WithValue(context.Background(), en.TraitCardCtx, unit.GetUUID()), en.TraitEventCtx, e)
+			if err := engine.Do(ctx, event, state); err != nil {
 				return errors.Wrap(err)
 			}
 		}
 	}
 
 	// friends/enemies trait check
-	FriendsTraitCheck(engine, state)
-	EnemiesTraitCheck(engine, state)
+	FriendsTraitCheck(e, engine, state)
+	EnemiesTraitCheck(e, engine, state)
 
 	if unit.GetID() != "U0001" {
 		// reset and move items and unit to discard

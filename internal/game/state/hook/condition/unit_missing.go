@@ -16,8 +16,8 @@ type UnitMissingArgs struct {
 	ChooseUnit parse.Choose
 }
 
-func PassUnitMissing(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) (bool, error) {
-	p := args.(*UnitMissingArgs)
+func PassUnitMissing(c *Condition, ctx context.Context, engine *en.Engine, state *st.State) (bool, error) {
+	p := c.GetArgs().(*UnitMissingArgs)
 
 	unitChoice, err := ch.GetUnitChoice(ctx, p.ChooseUnit, engine, state)
 	if err != nil {

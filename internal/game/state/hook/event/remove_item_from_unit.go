@@ -20,8 +20,8 @@ type RemoveItemFromUnitArgs struct {
 	ChooseUnit parse.Choose
 }
 
-func RemoveItemFromUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*RemoveItemFromUnitArgs)
+func RemoveItemFromUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*RemoveItemFromUnitArgs)
 	itemChoice, err := ch.GetItemChoice(ctx, a.ChooseItem, engine, state)
 	if err != nil {
 		return errors.Wrap(err)

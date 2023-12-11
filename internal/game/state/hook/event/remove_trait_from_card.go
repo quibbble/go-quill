@@ -20,8 +20,8 @@ type RemoveTraitFromCardArgs struct {
 	ChooseCard  parse.Choose
 }
 
-func RemoveTraitFromCardAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*RemoveTraitFromCardArgs)
+func RemoveTraitFromCardAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*RemoveTraitFromCardArgs)
 	traitChoice, err := ch.GetChoice(ctx, a.ChooseTrait, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
@@ -63,8 +63,8 @@ func RemoveTraitFromCardAffect(ctx context.Context, args interface{}, engine *en
 	}
 
 	// friends/enemies trait check
-	FriendsTraitCheck(engine, state)
-	EnemiesTraitCheck(engine, state)
+	FriendsTraitCheck(e, engine, state)
+	EnemiesTraitCheck(e, engine, state)
 
 	return nil
 }

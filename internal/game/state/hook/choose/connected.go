@@ -19,9 +19,9 @@ type ConnectedArgs struct {
 	ChooseUnit     parse.Choose
 }
 
-func RetrieveConnected(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
-	c := args.(*ConnectedArgs)
-	choose, err := NewChoose(state.Gen.New(en.ChooseUUID), c.ChooseUnit.Type, c.ChooseUnit.Args)
+func RetrieveConnected(c *Choose, ctx context.Context, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
+	r := c.GetArgs().(*ConnectedArgs)
+	choose, err := NewChoose(state.Gen.New(en.ChooseUUID), r.ChooseUnit.Type, r.ChooseUnit.Args)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
@@ -39,19 +39,19 @@ func RetrieveConnected(ctx context.Context, args interface{}, engine *en.Engine,
 		return nil, errors.Wrap(err)
 	}
 
-	switch c.ConnectionType {
+	switch r.ConnectionType {
 	case AdjacentChoice:
 		choose, err = NewChoose(state.Gen.New(en.ChooseUUID), AdjacentChoice, &AdjacentArgs{
-			Types:            c.Types,
-			ChooseUnitOrTile: c.ChooseUnit,
+			Types:            r.Types,
+			ChooseUnitOrTile: r.ChooseUnit,
 		})
 	case CodexChoice:
 		choose, err = NewChoose(state.Gen.New(en.ChooseUUID), CodexChoice, &CodexArgs{
-			Types:            c.Types,
-			ChooseUnitOrTile: c.ChooseUnit,
+			Types:            r.Types,
+			ChooseUnitOrTile: r.ChooseUnit,
 		})
 	default:
-		return nil, errors.Errorf("'%s' not a valid connection type", c.ConnectionType)
+		return nil, errors.Errorf("'%s' not a valid connection type", r.ConnectionType)
 	}
 	if err != nil {
 		return nil, errors.Wrap(err)

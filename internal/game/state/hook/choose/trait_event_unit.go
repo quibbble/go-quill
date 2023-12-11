@@ -11,25 +11,25 @@ import (
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
-const HookEventTileChoice = "HookEventTile"
+const TraitEventUnitChoice = "TraitEventUnit"
 
-type HookEventTileArgs struct{}
+type TraitEventUnitArgs struct{}
 
-func RetrieveHookTileUnit(c *Choose, ctx context.Context, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
+func RetrieveTraitEventUnit(c *Choose, ctx context.Context, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
 
-	event := ctx.Value(en.HookEventCtx).(en.IEvent)
+	event := ctx.Value(en.TraitEventCtx).(en.IEvent)
 
 	var a struct {
-		ChooseTile parse.Choose
+		ChooseUnit parse.Choose
 	}
 	if err := mapstructure.Decode(event.GetArgs(), &a); err != nil {
 		return nil, errors.ErrInterfaceConversion
 	}
 
-	tileChoice, err := GetUnitChoice(ctx, a.ChooseTile, engine, state)
+	unitChoice, err := GetUnitChoice(ctx, a.ChooseUnit, engine, state)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
 
-	return []uuid.UUID{tileChoice}, nil
+	return []uuid.UUID{unitChoice}, nil
 }

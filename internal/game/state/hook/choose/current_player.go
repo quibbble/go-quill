@@ -12,6 +12,6 @@ const CurrentPlayerChoice = "CurrentPlayer"
 
 type CurrentPlayerArgs struct{}
 
-func RetrieveCurrentPlayer(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
+func RetrieveCurrentPlayer(c *Choose, ctx context.Context, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
 	return []uuid.UUID{state.GetTurn()}, nil
 }

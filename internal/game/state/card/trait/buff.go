@@ -18,8 +18,8 @@ type BuffArgs struct {
 	Amount int
 }
 
-func AddBuff(engine *en.Engine, args interface{}, card st.ICard) error {
-	a := args.(*BuffArgs)
+func AddBuff(t *Trait, engine *en.Engine, card st.ICard) error {
+	a := t.GetArgs().(*BuffArgs)
 	if a.Stat == cd.CostStat {
 		card.SetCost(card.GetCost() - a.Amount)
 		return nil
@@ -46,8 +46,8 @@ func AddBuff(engine *en.Engine, args interface{}, card st.ICard) error {
 	return nil
 }
 
-func RemoveBuff(engine *en.Engine, args interface{}, card st.ICard) error {
-	a := args.(*BuffArgs)
+func RemoveBuff(t *Trait, engine *en.Engine, card st.ICard) error {
+	a := t.GetArgs().(*BuffArgs)
 	if a.Stat == cd.CostStat {
 		card.SetCost(card.GetCost() + a.Amount)
 		return nil

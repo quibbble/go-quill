@@ -22,8 +22,8 @@ type PlaceUnitArgs struct {
 	ChooseTile   parse.Choose
 }
 
-func PlaceUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*PlaceUnitArgs)
+func PlaceUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*PlaceUnitArgs)
 	playerChoice, err := ch.GetPlayerChoice(ctx, a.ChoosePlayer, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
@@ -80,15 +80,16 @@ func PlaceUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, s
 			if err != nil {
 				return errors.Wrap(err)
 			}
-			if err := engine.Do(context.Background(), event, state); err != nil {
+			ctx := context.WithValue(context.WithValue(context.Background(), en.TraitCardCtx, unit.GetUUID()), en.TraitEventCtx, e)
+			if err := engine.Do(ctx, event, state); err != nil {
 				return errors.Wrap(err)
 			}
 		}
 	}
 
 	// friends/enemies trait check
-	FriendsTraitCheck(engine, state)
-	EnemiesTraitCheck(engine, state)
+	FriendsTraitCheck(e, engine, state)
+	EnemiesTraitCheck(e, engine, state)
 
 	return nil
 }

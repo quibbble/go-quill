@@ -23,8 +23,8 @@ type AttackUnitArgs struct {
 	ChooseDefender parse.Choose
 }
 
-func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*AttackUnitArgs)
+func AttackUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*AttackUnitArgs)
 	attackerChoice, err := ch.GetUnitChoice(ctx, a.ChooseAttacker, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
@@ -95,8 +95,9 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 		if err != nil {
 			return errors.Wrap(err)
 		}
+		ctx := context.WithValue(context.WithValue(context.Background(), en.TraitCardCtx, attacker.GetUUID()), en.TraitEventCtx, e)
 		for _, event := range []en.IEvent{event1, event2} {
-			if err := engine.Do(context.Background(), event, state); err != nil {
+			if err := engine.Do(ctx, event, state); err != nil {
 				return errors.Wrap(err)
 			}
 		}
@@ -139,25 +140,10 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 			return errors.Wrap(err)
 		}
 		if attackerDamage > 0 {
-			var event en.IEvent
-			event, err = NewEvent(state.Gen.New(en.EventUUID), DamageUnitEvent, DamageUnitArgs{
-				DamageType: attacker.DamageType,
-				Amount:     attackerDamage,
-				ChooseUnit: parse.Choose{
-					Type: ch.UUIDChoice,
-					Args: ch.UUIDArgs{
-						UUID: defender.UUID,
-					},
-				},
-			})
-			if err != nil {
-				return errors.Wrap(err)
-			}
-
 			// execute trait check
 			if len(attacker.GetTraits(tr.ExecuteTrait)) > 0 &&
 				defender.Health < defender.GetInit().(*parse.UnitCard).Health {
-				event, err = NewEvent(state.Gen.New(en.EventUUID), KillUnitEvent, KillUnitArgs{
+				event, err := NewEvent(state.Gen.New(en.EventUUID), KillUnitEvent, KillUnitArgs{
 					ChooseUnit: parse.Choose{
 						Type: ch.UUIDChoice,
 						Args: ch.UUIDArgs{
@@ -168,10 +154,27 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 				if err != nil {
 					return errors.Wrap(err)
 				}
-			}
-
-			if err := engine.Do(context.Background(), event, state); err != nil {
-				return errors.Wrap(err)
+				ctx := context.WithValue(context.WithValue(context.Background(), en.TraitCardCtx, attacker.GetUUID()), en.TraitEventCtx, e)
+				if err := engine.Do(ctx, event, state); err != nil {
+					return errors.Wrap(err)
+				}
+			} else {
+				event, err := NewEvent(state.Gen.New(en.EventUUID), DamageUnitEvent, DamageUnitArgs{
+					DamageType: attacker.DamageType,
+					Amount:     attackerDamage,
+					ChooseUnit: parse.Choose{
+						Type: ch.UUIDChoice,
+						Args: ch.UUIDArgs{
+							UUID: defender.UUID,
+						},
+					},
+				})
+				if err != nil {
+					return errors.Wrap(err)
+				}
+				if err := engine.Do(ctx, event, state); err != nil {
+					return errors.Wrap(err)
+				}
 			}
 
 			// pillage trait check
@@ -190,7 +193,8 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 						if err != nil {
 							return errors.Wrap(err)
 						}
-						if err := engine.Do(context.Background(), event, state); err != nil {
+						ctx := context.WithValue(context.WithValue(context.Background(), en.TraitCardCtx, attacker.GetUUID()), en.TraitEventCtx, e)
+						if err := engine.Do(ctx, event, state); err != nil {
 							return errors.Wrap(err)
 						}
 					}
@@ -213,7 +217,8 @@ func AttackUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 					if err != nil {
 						return errors.Wrap(err)
 					}
-					if err := engine.Do(context.Background(), event, state); err != nil {
+					ctx := context.WithValue(context.WithValue(context.Background(), en.TraitCardCtx, attacker.GetUUID()), en.TraitEventCtx, e)
+					if err := engine.Do(ctx, event, state); err != nil {
 						return errors.Wrap(err)
 					}
 				}

@@ -19,8 +19,8 @@ type SwapUnitsArgs struct {
 	ChooseUnitB parse.Choose
 }
 
-func SwapUnitsAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*SwapUnitsArgs)
+func SwapUnitsAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*SwapUnitsArgs)
 	unitAChoice, err := ch.GetUnitChoice(ctx, a.ChooseUnitA, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
@@ -44,8 +44,8 @@ func SwapUnitsAffect(ctx context.Context, args interface{}, engine *en.Engine, s
 	state.Board.XYs[bX][bY].Unit = unitA
 
 	// friends/enemies trait check
-	FriendsTraitCheck(engine, state)
-	EnemiesTraitCheck(engine, state)
+	FriendsTraitCheck(e, engine, state)
+	EnemiesTraitCheck(e, engine, state)
 
 	return nil
 }

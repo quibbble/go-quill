@@ -15,7 +15,7 @@ const HookEventUnitChoice = "HookEventUnit"
 
 type HookEventUnitArgs struct{}
 
-func RetrieveHookEventUnit(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
+func RetrieveHookEventUnit(c *Choose, ctx context.Context, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
 
 	event := ctx.Value(en.HookEventCtx).(en.IEvent)
 

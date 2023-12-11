@@ -21,9 +21,9 @@ type AdjacentArgs struct {
 	ChooseUnitOrTile parse.Choose
 }
 
-func RetrieveAdjacent(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
-	c := args.(*AdjacentArgs)
-	choose, err := NewChoose(state.Gen.New(en.ChooseUUID), c.ChooseUnitOrTile.Type, c.ChooseUnitOrTile.Args)
+func RetrieveAdjacent(c *Choose, ctx context.Context, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
+	r := c.GetArgs().(*AdjacentArgs)
+	choose, err := NewChoose(state.Gen.New(en.ChooseUUID), r.ChooseUnitOrTile.Type, r.ChooseUnitOrTile.Args)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
@@ -48,11 +48,11 @@ func RetrieveAdjacent(ctx context.Context, args interface{}, engine *en.Engine, 
 		}
 
 		tile := state.Board.XYs[x][y]
-		if slices.Contains(c.Types, "Tile") {
+		if slices.Contains(r.Types, "Tile") {
 			adjacent = append(adjacent, tile.UUID)
 		} else if tile.Unit != nil {
 			unit := tile.Unit.(*cd.UnitCard)
-			if len(c.Types) == 0 || slices.Contains(c.Types, unit.Type) {
+			if len(r.Types) == 0 || slices.Contains(r.Types, unit.Type) {
 				adjacent = append(adjacent, unit.UUID)
 			}
 		}

@@ -17,10 +17,14 @@ const (
 
 type RecallUnitArgs struct {
 	ChooseUnit parse.Choose
+
+	// DO NOT SET MANUALLY - SET BY ENGINE
+	// tile location unit before recall
+	ChooseTile parse.Choose
 }
 
-func RecallUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) error {
-	a := args.(*RecallUnitArgs)
+func RecallUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
+	a := e.GetArgs().(*RecallUnitArgs)
 	unitChoice, err := ch.GetUnitChoice(ctx, a.ChooseUnit, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
@@ -37,10 +41,16 @@ func RecallUnitAffect(ctx context.Context, args interface{}, engine *en.Engine, 
 	}
 
 	state.Board.XYs[x][y].Unit = nil
+	a.ChooseTile = parse.Choose{
+		Type: ch.UUIDChoice,
+		Args: ch.UUIDArgs{
+			UUID: state.Board.XYs[x][y].UUID,
+		},
+	}
 
 	// friends/enemies trait check
-	FriendsTraitCheck(engine, state)
-	EnemiesTraitCheck(engine, state)
+	FriendsTraitCheck(e, engine, state)
+	EnemiesTraitCheck(e, engine, state)
 
 	// reset and move items and unit back to hand
 	for _, item := range unit.Items {

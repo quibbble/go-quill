@@ -19,6 +19,8 @@
 | `Self`           | Retrieve self.                                                              |                                           |
 | `Target`         | Retrieve the target found in targets list at index `Index`.                 | `Index`                                   |
 | `Tiles`          | Retrieve a set of tiles that are optionally `Empty`.                        | `Empty`                                   |
+| `TraitEventTile` | Retrieve the tile affected by event found in the `TraitEvent` context.      |                                           |
+| `TraitEventUnit` | Retrieve the unit affected by event found in the `TraitEvent` context.      |                                           |
 | `Units`          | Retrieve a set of units on the board that have a type in `Types`.           | `Types`                                   |
 | `UUID`           | Retrieve the given `UUID`.                                                  | `UUID`                                    |
 

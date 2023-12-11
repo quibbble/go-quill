@@ -14,11 +14,11 @@ type TilesArgs struct {
 	Empty bool
 }
 
-func RetrieveTiles(ctx context.Context, args interface{}, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
-	c := args.(*TilesArgs)
+func RetrieveTiles(c *Choose, ctx context.Context, engine *en.Engine, state *st.State) ([]uuid.UUID, error) {
+	r := c.GetArgs().(*TilesArgs)
 	tiles := make([]uuid.UUID, 0)
 	for _, tile := range state.Board.UUIDs {
-		if (tile.Unit == nil) == c.Empty {
+		if (tile.Unit == nil) == r.Empty {
 			tiles = append(tiles, tile.UUID)
 		}
 	}
