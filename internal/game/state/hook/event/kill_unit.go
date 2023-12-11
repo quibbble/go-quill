@@ -19,7 +19,7 @@ const (
 type KillUnitArgs struct {
 	ChooseUnit parse.Choose
 
-	// DO NOT SET MANUALLY - SET BY ENGINE
+	// DO NOT SET IN YAML - SET BY ENGINE
 	// tile location unit before death
 	ChooseTile parse.Choose
 }

@@ -24,7 +24,6 @@ func BurnCardAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.
 	if err != nil {
 		return errors.Wrap(err)
 	}
-
 	card, err := state.Deck[playerChoice].Draw()
 	if err != nil {
 		return errors.Wrap(err)

@@ -18,7 +18,7 @@ const (
 type RecallUnitArgs struct {
 	ChooseUnit parse.Choose
 
-	// DO NOT SET MANUALLY - SET BY ENGINE
+	// DO NOT SET IN YAML - SET BY ENGINE
 	// tile location unit before recall
 	ChooseTile parse.Choose
 }
@@ -58,6 +58,26 @@ func RecallUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *s
 		state.Discard[item.Player].Add(item)
 	}
 	unit.Reset(state.BuildCard)
-	state.Hand[unit.Player].Add(unit)
+
+	if state.Hand[unit.Player].GetSize() > st.MaxHandSize {
+		// burn the card if hand size to large
+		state.Deck[unit.Player].Add(unit)
+		event, err := NewEvent(state.Gen.New(en.EventUUID), BurnCardEvent, BurnCardArgs{
+			ChoosePlayer: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: ch.UUIDArgs{
+					UUID: unit.Player,
+				},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err)
+		}
+		if err := engine.Do(ctx, event, state); err != nil {
+			return errors.Wrap(err)
+		}
+	} else {
+		state.Hand[unit.Player].Add(unit)
+	}
 	return nil
 }
