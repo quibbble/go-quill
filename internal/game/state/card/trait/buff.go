@@ -1,7 +1,6 @@
 package trait
 
 import (
-	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
 	"github.com/quibbble/go-quill/parse"
@@ -18,7 +17,7 @@ type BuffArgs struct {
 	Amount int
 }
 
-func AddBuff(t *Trait, engine *en.Engine, card st.ICard) error {
+func AddBuff(t *Trait, card st.ICard) error {
 	a := t.GetArgs().(*BuffArgs)
 	if a.Stat == cd.CostStat {
 		card.SetCost(card.GetCost() - a.Amount)
@@ -46,7 +45,7 @@ func AddBuff(t *Trait, engine *en.Engine, card st.ICard) error {
 	return nil
 }
 
-func RemoveBuff(t *Trait, engine *en.Engine, card st.ICard) error {
+func RemoveBuff(t *Trait, card st.ICard) error {
 	a := t.GetArgs().(*BuffArgs)
 	if a.Stat == cd.CostStat {
 		card.SetCost(card.GetCost() + a.Amount)

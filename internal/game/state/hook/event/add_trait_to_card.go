@@ -37,7 +37,7 @@ func AddTraitToCardAffect(e *Event, ctx context.Context, engine *en.Engine, stat
 	if card == nil {
 		return st.ErrNotFound(choice)
 	}
-	if card.AddTrait(engine, trait); err != nil {
+	if card.AddTrait(trait); err != nil {
 		return errors.Wrap(err)
 	}
 	if choice.Type() == en.UnitUUID && card.(*cd.UnitCard).Health <= 0 {

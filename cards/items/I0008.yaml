@@ -1,13 +1,38 @@
 ID: I0008
 Name: Eternal Sword
-Description: "Holding unit gains +3 attack. When it dies this item passed to another unit on the same side."
+Description: "Holding unit gains +3 attack. When it dies this item passed to a random unit on the same team."
 Cost: 2
 Targets:
 - Type: Units
   Args:
     Types:
     - Creature
-Hooks: # TODO
+Hooks:
+Traits:
+- Type: Eternal
+  Args:
+    ChooseUnit:
+      Type: Random
+      Argss:
+        Choose:
+          Type: Composite
+          Args:
+            SetFunction: Intersect
+            Choices:
+            - Type: OwnedUnits
+              Args:
+                ChoosePlayer: 
+                  Type: Owner
+                  Args:
+                    ChooseCard:
+                      Tyoe: ItemHolder
+                      Args:
+                        ChooseItem:
+                          Type: Self
+            - Type: Units
+              Args:
+                Types:
+                - Creature
 HeldTraits:
 - Type: Buff
   Args:

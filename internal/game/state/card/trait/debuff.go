@@ -1,7 +1,6 @@
 package trait
 
 import (
-	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
 
@@ -17,7 +16,7 @@ type DebuffArgs struct {
 	Amount int
 }
 
-func AddDebuff(t *Trait, engine *en.Engine, card st.ICard) error {
+func AddDebuff(t *Trait, card st.ICard) error {
 	a := t.GetArgs().(*DebuffArgs)
 	if a.Stat == cd.CostStat {
 		card.SetCost(card.GetCost() + a.Amount)
@@ -45,7 +44,7 @@ func AddDebuff(t *Trait, engine *en.Engine, card st.ICard) error {
 	return nil
 }
 
-func RemoveDebuff(t *Trait, engine *en.Engine, card st.ICard) error {
+func RemoveDebuff(t *Trait, card st.ICard) error {
 	a := t.GetArgs().(*DebuffArgs)
 	if a.Stat == cd.CostStat {
 		card.SetCost(card.GetCost() - a.Amount)

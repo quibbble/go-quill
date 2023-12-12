@@ -1,6 +1,7 @@
 # go-quill
 
 ## TODO
+- Add eternal trait for item units
 - Add unstable
 - Add cursed X trait
 - Add dominion trait

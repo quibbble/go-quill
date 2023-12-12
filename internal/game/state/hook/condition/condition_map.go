@@ -22,6 +22,10 @@ func init() {
 			Type: reflect.TypeOf(&ContainsArgs{}),
 			Pass: PassContains,
 		},
+		MatchDamageTypeCondition: {
+			Type: reflect.TypeOf(&MatchDamageTypeArgs{}),
+			Pass: PassMatchDamageType,
+		},
 		FailCondition: {
 			Type: reflect.TypeOf(&FailArgs{}),
 			Pass: PassFail,

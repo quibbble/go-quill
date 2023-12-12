@@ -35,7 +35,7 @@ func RemoveItemFromUnitAffect(e *Event, ctx context.Context, engine *en.Engine, 
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	item, err := state.Board.XYs[x][y].Unit.(*cd.UnitCard).GetAndRemoveItem(engine, itemChoice)
+	item, err := state.Board.XYs[x][y].Unit.(*cd.UnitCard).GetAndRemoveItem(itemChoice)
 	if err != nil {
 		return errors.Wrap(err)
 	}

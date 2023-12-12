@@ -1,6 +1,6 @@
 ID: I0006
-Name: Cursed Chain
-Description: ""
+Name: Shackle
+Description: "Holder gains -2 base movement."
 Cost: 1
 Targets:
 - Type: Units
@@ -11,8 +11,4 @@ HeldTraits:
 - Type: Debuff
   Args:
     Stat: BaseMovement
-    Amount: 1
-- Type: Debuff
-  Args:
-    Stat: BaseCooldown
-    Amount: 1
+    Amount: 2

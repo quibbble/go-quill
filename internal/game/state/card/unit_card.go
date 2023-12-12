@@ -3,7 +3,6 @@ package card
 import (
 	"math"
 
-	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
@@ -32,21 +31,36 @@ type UnitCard struct {
 	Items []*ItemCard
 }
 
-func (c *UnitCard) AddTrait(engine en.IEngine, trait st.ITrait) error {
-	return c.Card.addTrait(engine, trait, c)
+func (c *UnitCard) AddTrait(trait st.ITrait) error {
+	return c.Card.addTrait(trait, c)
 }
 
-func (c *UnitCard) RemoveTrait(engine en.IEngine, trait uuid.UUID) error {
-	return c.Card.removeTrait(engine, trait, c)
+func (c *UnitCard) RemoveTrait(trait uuid.UUID) error {
+	return c.Card.removeTrait(trait, c)
 }
 
-func (c *UnitCard) AddItem(engine *en.Engine, item *ItemCard) error {
+func (c *UnitCard) AddItem(item *ItemCard) error {
 	item.Holder = &c.UUID
 	c.Items = append(c.Items, item)
 	return nil
 }
 
-func (c *UnitCard) GetAndRemoveItem(engine *en.Engine, item uuid.UUID) (*ItemCard, error) {
+func (c *UnitCard) GetItem(item uuid.UUID) (*ItemCard, error) {
+	idx := -1
+	var itm *ItemCard
+	for i, it := range c.Items {
+		if it.UUID == item {
+			idx = i
+			itm = it
+		}
+	}
+	if idx < 0 {
+		return nil, errors.Errorf("'%s' not found on unit", item)
+	}
+	return itm, nil
+}
+
+func (c *UnitCard) GetAndRemoveItem(item uuid.UUID) (*ItemCard, error) {
 	idx := -1
 	var itm *ItemCard
 	for i, it := range c.Items {

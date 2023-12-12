@@ -1,7 +1,6 @@
 package card
 
 import (
-	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
@@ -16,12 +15,12 @@ type ItemCard struct {
 	HeldTraits []st.ITrait
 }
 
-func (c *ItemCard) AddTrait(engine en.IEngine, trait st.ITrait) error {
-	return c.Card.addTrait(engine, trait, c)
+func (c *ItemCard) AddTrait(trait st.ITrait) error {
+	return c.Card.addTrait(trait, c)
 }
 
-func (c *ItemCard) RemoveTrait(engine en.IEngine, trait uuid.UUID) error {
-	return c.Card.removeTrait(engine, trait, c)
+func (c *ItemCard) RemoveTrait(trait uuid.UUID) error {
+	return c.Card.removeTrait(trait, c)
 }
 
 func (c *ItemCard) Reset(build st.BuildCard) {

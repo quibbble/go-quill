@@ -54,7 +54,7 @@ func AddItemToUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state
 	if err := state.Hand[playerChoice].RemoveCard(itemChoice); err != nil {
 		return errors.Wrap(err)
 	}
-	if err := unitCard.AddItem(engine, itemCard); err != nil {
+	if err := unitCard.AddItem(itemCard); err != nil {
 		return errors.Wrap(err)
 	}
 

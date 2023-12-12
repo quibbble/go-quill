@@ -5,7 +5,7 @@ Cost: 2
 Conditions:
 Targets: # SET BY PARSER
 Type: Creature
-DamageType: Physical
+DamageType: Ranged
 Attack: 1
 Health: 2
 Cooldown: 2

@@ -1,6 +1,6 @@
 ID: I0005
 Name: Veil
-Description: ""
+Description: "Holder gains 'Purity'."
 Cost: 3
 Targets:
 - Type: Units

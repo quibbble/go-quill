@@ -28,7 +28,7 @@ func EndTurnAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.S
 				for _, trait := range unit.GetTraits(tr.PoisonTrait) {
 					args := trait.GetArgs().(*tr.PoisonArgs)
 					event, err := NewEvent(state.Gen.New(en.EventUUID), DamageUnitEvent, DamageUnitArgs{
-						DamageType: dg.MagicDamage,
+						DamageType: dg.PoisonDamage,
 						Amount:     args.Amount,
 						ChooseUnit: parse.Choose{
 							Type: ch.UUIDChoice,

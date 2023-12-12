@@ -4,7 +4,6 @@ import (
 	"reflect"
 
 	"github.com/mitchellh/mapstructure"
-	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
@@ -15,8 +14,8 @@ type Trait struct {
 	typ  string
 	args interface{}
 
-	add    func(t *Trait, engine *en.Engine, card st.ICard) error
-	remove func(t *Trait, engine *en.Engine, card st.ICard) error
+	add    func(t *Trait, card st.ICard) error
+	remove func(t *Trait, card st.ICard) error
 }
 
 func NewTrait(uuid uuid.UUID, typ string, args interface{}) (st.ITrait, error) {
@@ -49,24 +48,16 @@ func (t *Trait) GetArgs() interface{} {
 	return t.args
 }
 
-func (t *Trait) Add(engine en.IEngine, card st.ICard) error {
-	eng, ok := engine.(*en.Engine)
-	if !ok {
-		return errors.ErrInterfaceConversion
-	}
+func (t *Trait) Add(card st.ICard) error {
 	if t.add == nil {
 		return nil
 	}
-	return t.add(t, eng, card)
+	return t.add(t, card)
 }
 
-func (t *Trait) Remove(engine en.IEngine, card st.ICard) error {
-	eng, ok := engine.(*en.Engine)
-	if !ok {
-		return errors.ErrInterfaceConversion
-	}
+func (t *Trait) Remove(card st.ICard) error {
 	if t.remove == nil {
 		return nil
 	}
-	return t.remove(t, eng, card)
+	return t.remove(t, card)
 }

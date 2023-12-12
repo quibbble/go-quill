@@ -35,7 +35,7 @@ func RemoveTraitFromCardAffect(e *Event, ctx context.Context, engine *en.Engine,
 	if card == nil {
 		return st.ErrNotFound(cardChoice)
 	}
-	if card.RemoveTrait(engine, traitChoice); err != nil {
+	if card.RemoveTrait(traitChoice); err != nil {
 		return errors.Wrap(err)
 	}
 	if cardChoice.Type() == en.UnitUUID && card.(*cd.UnitCard).Health <= 0 {

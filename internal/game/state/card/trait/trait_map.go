@@ -3,21 +3,20 @@ package trait
 import (
 	"reflect"
 
-	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 )
 
 var TraitMap map[string]struct {
 	Type   reflect.Type
-	Add    func(t *Trait, engine *en.Engine, card st.ICard) error
-	Remove func(t *Trait, engine *en.Engine, card st.ICard) error
+	Add    func(t *Trait, card st.ICard) error
+	Remove func(t *Trait, card st.ICard) error
 }
 
 func init() {
 	TraitMap = map[string]struct {
 		Type   reflect.Type
-		Add    func(t *Trait, engine *en.Engine, card st.ICard) error
-		Remove func(t *Trait, engine *en.Engine, card st.ICard) error
+		Add    func(t *Trait, card st.ICard) error
+		Remove func(t *Trait, card st.ICard) error
 	}{
 		AssassinTrait: {
 			Type: reflect.TypeOf(&AssassinArgs{}),

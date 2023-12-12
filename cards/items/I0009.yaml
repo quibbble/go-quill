@@ -1,6 +1,6 @@
 ID: I0008
 Name: Necklace of Nature
-Description: "On death summon a 'Hound' in holding unit's place."
+Description: "On death summon a 'Hound' in holder's place."
 Cost: 2
 Targets:
 - Type: Composite

@@ -1,7 +1,6 @@
 package trait
 
 import (
-	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
 
@@ -16,7 +15,7 @@ type RecodeArgs struct {
 	Code string
 }
 
-func AddRecode(t *Trait, engine *en.Engine, card st.ICard) error {
+func AddRecode(t *Trait, card st.ICard) error {
 	a := t.GetArgs().(*RecodeArgs)
 	unit, ok := card.(*cd.UnitCard)
 	if !ok {
@@ -25,7 +24,7 @@ func AddRecode(t *Trait, engine *en.Engine, card st.ICard) error {
 	return unit.Recode(a.Code)
 }
 
-func RemoveRecode(t *Trait, engine *en.Engine, card st.ICard) error {
+func RemoveRecode(t *Trait, card st.ICard) error {
 	a := t.GetArgs().(*RecodeArgs)
 	unit, ok := card.(*cd.UnitCard)
 	if !ok {

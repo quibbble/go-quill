@@ -11,6 +11,7 @@
 | `CurrentPlayer`  | Retrieve the player who has the active turn.                                |                                           |
 | `HookEventTile`  | Retrieve the tile affected by event found in the `HookEvent` context.       |                                           |
 | `HookEventUnit`  | Retrieve the unit affected by event found in the `HookEvent` context.       |                                           |
+| `ItemHolder   `  | Retrieve the unit that holds the `ChooseItem`.                              | `ChooseItem`                              |
 | `OpposingPlayer` | Retrieve the player who does not have the active turn.                      |                                           |
 | `OwnedTiles`     | Retrieve the set of tiles owned by `ChoosePlayer`.                          | `ChoosePlayer`                            |
 | `OwnedUnits`     | Retrieve the set of units owned by `ChoosePlayer`.                          | `ChoosePlayer`                            |

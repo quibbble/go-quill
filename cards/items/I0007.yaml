@@ -1,13 +1,43 @@
 ID: I0007
 Name: Infected Blade
-Description: "Holding unit becomes poisoned. If it dies from poison then this item passed to another unit on the same side."
+Description: "Holder gains 'Poison 1'. If it dies from poison then this item passed to another random 'Creature' on the same team."
 Cost: 2
 Targets:
 - Type: Units
   Args:
     Types:
     - Creature
-Hooks: # TODO
+Hooks: 
+Traits:
+- Type: Eternal
+  Args:
+    Conditions:
+    - Type: MatchDamageType
+      Args:
+        EventContext: TraitEvent
+        DamageType: Poison
+    ChooseUnit:
+      Type: Random
+      Argss:
+        Choose:
+          Type: Composite
+          Args:
+            SetFunction: Intersect
+            Choices:
+            - Type: OwnedUnits
+              Args:
+                ChoosePlayer: 
+                  Type: Owner
+                  Args:
+                    ChooseCard:
+                      Tyoe: ItemHolder
+                      Args:
+                        ChooseItem:
+                          Type: Self
+            - Type: Units
+              Args:
+                Types:
+                - Creature
 HeldTraits:
 - Type: Poison
   Args:

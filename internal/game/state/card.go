@@ -20,16 +20,16 @@ type ICard interface {
 	Playable(engine en.IEngine, state en.IState) (bool, error)
 	NextTargets(ctx context.Context, engine en.IEngine, state en.IState) ([]uuid.UUID, error)
 	GetTraits(typ string) []ITrait
-	AddTrait(engine en.IEngine, trait ITrait) error
-	RemoveTrait(engine en.IEngine, trait uuid.UUID) error
+	AddTrait(trait ITrait) error
+	RemoveTrait(trait uuid.UUID) error
 }
 
 type ITrait interface {
 	GetUUID() uuid.UUID
 	GetType() string
 	GetArgs() interface{}
-	Add(engine en.IEngine, card ICard) error
-	Remove(engine en.IEngine, card ICard) error
+	Add(card ICard) error
+	Remove(card ICard) error
 }
 
 type BuildTrait func(uuid uuid.UUID, typ string, args interface{}) (ITrait, error)

@@ -257,12 +257,12 @@ func (c *Card) GetTraits(typ string) []st.ITrait {
 	return traits
 }
 
-func (c *Card) addTrait(engine en.IEngine, trait st.ITrait, card st.ICard) error {
+func (c *Card) addTrait(trait st.ITrait, card st.ICard) error {
 	c.Traits = append(c.Traits, trait)
-	return trait.Add(engine, card)
+	return trait.Add(card)
 }
 
-func (c *Card) removeTrait(engine en.IEngine, trait uuid.UUID, card st.ICard) error {
+func (c *Card) removeTrait(trait uuid.UUID, card st.ICard) error {
 	idx := -1
 	var tr st.ITrait
 	for i, t := range c.Traits {
@@ -275,5 +275,5 @@ func (c *Card) removeTrait(engine en.IEngine, trait uuid.UUID, card st.ICard) er
 		return errors.Errorf("failed to find card trait")
 	}
 	c.Traits = append(c.Traits[:idx], c.Traits[idx+1:]...)
-	return tr.Remove(engine, card)
+	return tr.Remove(card)
 }

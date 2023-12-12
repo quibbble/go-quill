@@ -47,6 +47,10 @@ func init() {
 			Type:     reflect.TypeOf(&HookEventUnitArgs{}),
 			Retrieve: RetrieveHookEventUnit,
 		},
+		ItemHolderChoice: {
+			Type:     reflect.TypeOf(&ItemHolderArgs{}),
+			Retrieve: RetrieveItemHolder,
+		},
 		OpposingPlayerChoice: {
 			Type:     reflect.TypeOf(&OpposingPlayerArgs{}),
 			Retrieve: RetrieveOpposingPlayer,
