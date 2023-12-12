@@ -1,7 +1,7 @@
 # go-quill
 
 ## TODO
-- Add eternal trait for item units
+- Write tests for I0007 and I0008 for the eternal trait check
 - Add unstable
 - Add cursed X trait
 - Add dominion trait

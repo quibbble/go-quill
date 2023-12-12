@@ -73,8 +73,74 @@ func KillUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.
 	if unit.GetID() != "U0001" {
 		// reset and move items and unit to discard
 		for _, item := range unit.Items {
-			item.Reset(state.BuildCard)
-			state.Discard[item.Player].Add(item)
+
+			// eternal trait check
+			eternalApplied := false
+			eternals := item.GetTraits(tr.EternalTrait)
+			if len(eternals) == 0 {
+				args := eternals[0].GetArgs().(*tr.EternalArgs)
+				var conditions en.Conditions
+				for _, c := range args.Conditions {
+					condition, err := state.BuildCondition(state.Gen.New(en.ConditionUUID), c.Type, c.Not, c.Args)
+					if err != nil {
+						return errors.Wrap(err)
+					}
+					conditions = append(conditions, condition)
+				}
+				ctx := context.WithValue(context.WithValue(context.Background(), en.TraitEventCtx, e), en.TraitCardCtx, item.GetUUID())
+				pass, err := conditions.Pass(ctx, engine, state)
+				if err != nil {
+					return errors.Wrap(err)
+				}
+				if pass {
+					choices, err := ch.GetChoices(ctx, args.ChooseUnit, engine, state)
+					if err != nil {
+						return errors.Wrap(err)
+					}
+					if len(choices) == 1 {
+						x, y, err := state.Board.GetUnitXY(choices[0])
+						if err != nil {
+							return errors.Wrap(err)
+						}
+						unit := state.Board.XYs[x][y].Unit.(*cd.UnitCard)
+						state.Hand[unit.Player].Add(item)
+						event, err := NewEvent(state.Gen.New(en.EventUUID), AddItemToUnitEvent, AddItemToUnitArgs{
+							ChoosePlayer: parse.Choose{
+								Type: ch.UUIDChoice,
+								Args: ch.UUIDArgs{
+									UUID: unit.Player,
+								},
+							},
+							ChooseItem: parse.Choose{
+								Type: ch.UUIDChoice,
+								Args: ch.UUIDArgs{
+									UUID: item.GetUUID(),
+								},
+							},
+							ChooseUnit: parse.Choose{
+								Type: ch.UUIDChoice,
+								Args: ch.UUIDArgs{
+									UUID: unit.GetUUID(),
+								},
+							},
+						})
+						if err != nil {
+							return errors.Wrap(err)
+						}
+						if err := engine.Do(ctx, event, state); err != nil {
+							return errors.Wrap(err)
+						}
+						eternalApplied = true
+					}
+				}
+			} else if len(eternals) > 1 {
+				return errors.Errorf("'%s' may only have one eternal trait", item.GetUUID())
+			}
+
+			if !eternalApplied {
+				item.Reset(state.BuildCard)
+				state.Discard[item.Player].Add(item)
+			}
 		}
 		unit.Reset(state.BuildCard)
 		state.Discard[unit.Player].Add(unit)

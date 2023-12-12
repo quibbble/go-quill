@@ -46,6 +46,9 @@ func init() {
 		EnrageTrait: {
 			Type: reflect.TypeOf(&EnrageArgs{}),
 		},
+		EternalTrait: {
+			Type: reflect.TypeOf(&EternalArgs{}),
+		},
 		ExecuteTrait: {
 			Type: reflect.TypeOf(&ExecuteArgs{}),
 		},
