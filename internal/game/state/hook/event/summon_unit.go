@@ -33,7 +33,7 @@ func SummonUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *s
 		return errors.Wrap(err)
 	}
 
-	unit, err := state.BuildCard(a.ID, playerChoice)
+	unit, err := state.BuildCard(a.ID, playerChoice, true)
 	if err != nil {
 		return errors.Wrap(err)
 	}

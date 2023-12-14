@@ -60,6 +60,11 @@ func (c *UnitCard) GetItem(item uuid.UUID) (*ItemCard, error) {
 	return itm, nil
 }
 
+func (c *UnitCard) RemoveItem(item uuid.UUID) error {
+	_, err := c.GetAndRemoveItem(item)
+	return err
+}
+
 func (c *UnitCard) GetAndRemoveItem(item uuid.UUID) (*ItemCard, error) {
 	idx := -1
 	var itm *ItemCard
@@ -123,7 +128,7 @@ func (c *UnitCard) CheckRange(x1, y1, x2, y2 int) bool {
 }
 
 func (c *UnitCard) Reset(build st.BuildCard) {
-	card, _ := build(c.GetID(), c.Player)
+	card, _ := build(c.GetID(), c.Player, c.Token)
 	unit := card.(*UnitCard)
 	unit.UUID = c.UUID
 	c = unit

@@ -1,0 +1,13 @@
+ID: S0014
+Name: Cleanse
+Description: "Remove poison from target 'Unit'."
+Cost: 3
+Targets:
+- Type: Units
+  Args:
+    Types:
+    - Creature
+    - Structure
+Hooks:
+Events:
+# TODO

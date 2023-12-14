@@ -57,12 +57,9 @@ func Intersect(a []UUID, b ...[]UUID) []UUID {
 }
 
 func Union(a []UUID, b ...[]UUID) []UUID {
-	lists := [][]UUID{a}
+	lists := append([][]UUID{a}, b...)
 	items := make([]UUID, 0)
 	union := make([]UUID, 0)
-	for _, l := range b {
-		lists = append(lists, l)
-	}
 	for _, l := range lists {
 		items = append(items, l...)
 	}
@@ -74,13 +71,17 @@ func Union(a []UUID, b ...[]UUID) []UUID {
 	return union
 }
 
-// Diff performs set difference on a \ b
-func Diff(a, b []UUID) []UUID {
-	diff := make([]UUID, 0)
-	for _, it := range a {
-		if !slices.Contains(b, it) {
-			diff = append(diff, it)
+// Diff performs set difference on a \ b1 \ b2 ...
+func Diff(a []UUID, b ...[]UUID) []UUID {
+	diff := a
+	nextDiff := make([]UUID, 0)
+	for _, l := range b {
+		for _, it := range diff {
+			if !slices.Contains(l, it) {
+				nextDiff = append(nextDiff, it)
+			}
 		}
+		diff = nextDiff
 	}
 	return diff
 }

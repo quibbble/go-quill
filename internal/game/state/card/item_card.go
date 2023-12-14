@@ -24,7 +24,7 @@ func (c *ItemCard) RemoveTrait(trait uuid.UUID) error {
 }
 
 func (c *ItemCard) Reset(build st.BuildCard) {
-	card, _ := build(c.GetID(), c.Player)
+	card, _ := build(c.GetID(), c.Player, c.Token)
 	item := card.(*ItemCard)
 	item.UUID = c.UUID
 	c = item

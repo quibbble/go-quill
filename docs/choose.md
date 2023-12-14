@@ -35,6 +35,6 @@
 | `ConnectionType`   | `Adjacent` or `Codex`                                                                            |
 | `Empty`            | `true` or `false`.                                                                               |
 | `Index`            | An integer.                                                                                      |
-| `SetFunction`      | `Union` or `Intersect`.                                                                          |
+| `SetFunction`      | `Union`, `Intersect`, `Diff`.                                                                    |
 | `Types`            | A list containing one or more of the following: `Tile`, `Unit`, `Creature`, `Structure`, `Base`. |
 | `UUID`             | A UUID.                                                                                          |

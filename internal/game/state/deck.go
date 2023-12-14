@@ -23,7 +23,7 @@ func NewEmptyDeck(seed int64) *Deck {
 func NewDeck(seed int64, build BuildCard, player uuid.UUID, ids ...string) (*Deck, error) {
 	deck := NewEmptyDeck(seed)
 	for _, id := range ids {
-		card, err := build(id, player)
+		card, err := build(id, player, false)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}

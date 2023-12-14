@@ -18,7 +18,7 @@ func (c *SpellCard) RemoveTrait(trait uuid.UUID) error {
 }
 
 func (c *SpellCard) Reset(build st.BuildCard) {
-	card, _ := build(c.GetID(), c.Player)
+	card, _ := build(c.GetID(), c.Player, c.Token)
 	spell := card.(*SpellCard)
 	spell.UUID = c.UUID
 	c = spell

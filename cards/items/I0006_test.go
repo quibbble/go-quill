@@ -16,7 +16,7 @@ func Test_I0006(t *testing.T) {
 
 	x, y := 1, 1
 
-	u1, _ := game.BuildCard("U0002", tests.Player2)
+	u1, _ := game.BuildCard("U0002", tests.Player2, false)
 	game.Board.XYs[x][y].Unit = u1
 
 	baseMovement := u1.(*cd.UnitCard).BaseMovement

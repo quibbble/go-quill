@@ -15,7 +15,7 @@ func Test_S0001(t *testing.T) {
 
 	x, y := 1, 1
 
-	u0002, _ := game.BuildCard("U0002", tests.Player2)
+	u0002, _ := game.BuildCard("U0002", tests.Player2, false)
 	game.Board.XYs[x][y].Unit = u0002
 
 	if err := game.PlayCard(tests.Player1, uuids[0], u0002.GetUUID()); err != nil {

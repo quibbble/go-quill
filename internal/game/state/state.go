@@ -31,7 +31,7 @@ type State struct {
 	BuildCard
 }
 
-type BuildCard func(id string, player uuid.UUID) (ICard, error)
+type BuildCard func(id string, player uuid.UUID, token bool) (ICard, error)
 
 func NewState(seed int64, buildCard BuildCard, engineBuilders *en.Builders, player1, player2 uuid.UUID, deck1, deck2 []string) (*State, error) {
 	r := rand.New(rand.NewSource(seed))

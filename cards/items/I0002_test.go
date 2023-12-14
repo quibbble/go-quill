@@ -17,7 +17,7 @@ func Test_I0002(t *testing.T) {
 
 	x, y := 1, 1
 
-	u1, _ := game.BuildCard("U0002", tests.Player2)
+	u1, _ := game.BuildCard("U0002", tests.Player2, false)
 	game.Board.XYs[x][y].Unit = u1
 
 	health := u1.(*cd.UnitCard).Health

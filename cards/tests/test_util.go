@@ -29,7 +29,7 @@ func NewTestEnv(player uuid.UUID, ids ...string) (*gm.Game, []uuid.UUID, error) 
 	uuids := make([]uuid.UUID, 0)
 
 	for _, id := range ids {
-		card, err := game.BuildCard(id, player)
+		card, err := game.BuildCard(id, player, false)
 		if err != nil {
 			return nil, nil, errors.Wrap(err)
 		}

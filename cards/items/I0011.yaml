@@ -1,0 +1,12 @@
+ID: I0011
+Name: Hot Potato
+Description: "At the end of the turn item has 2/3 chance of exploding and killing the holder. If it does not, passed it to a random 'Creature' on the opposing team."
+Cost: 3
+Targets:
+- Type: Units
+  Args:
+    Types:
+    - Creature
+Hooks:
+HeldTraits:
+# TODO

@@ -1,7 +1,10 @@
 # go-quill
 
 ## TODO
-- Write tests for I0007 and I0008 for the eternal trait check
+- Networking Layer
+- More cards
+
+# Ideas
 - Add unstable
 - Add cursed X trait
 - Add dominion trait
@@ -12,5 +15,3 @@
 - Add bombard
 - Add rumble
 - Add big cards like imperial resouces, god hand, necro, VD, etc
-- Networking Layer
-- More cards

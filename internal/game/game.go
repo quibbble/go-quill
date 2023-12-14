@@ -21,13 +21,6 @@ var (
 	ErrWrongTurn = func(player uuid.UUID) error { return errors.Errorf("'%s' cannot play on other player's turn", player) }
 )
 
-var build = func(builders *cd.Builders, id string, player uuid.UUID) (st.ICard, error) {
-	if len(id) == 0 {
-		return nil, parse.ErrInvalidCardID
-	}
-	return cd.NewCard(builders, id, player)
-}
-
 type Game struct {
 	*en.Engine
 	*st.State
@@ -47,8 +40,8 @@ func NewGame(seed int64, player1, player2 uuid.UUID, deck1, deck2 map[string]int
 		BuildTrait: tr.NewTrait,
 		Gen:        gen,
 	}
-	buildCard := func(id string, player uuid.UUID) (st.ICard, error) {
-		return build(&cardBuilders, id, player)
+	buildCard := func(id string, player uuid.UUID, token bool) (st.ICard, error) {
+		return cd.NewCard(&cardBuilders, id, player, token)
 	}
 
 	d1 := make([]string, 0)

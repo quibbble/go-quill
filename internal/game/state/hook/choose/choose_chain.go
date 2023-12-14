@@ -11,6 +11,7 @@ import (
 const (
 	SetUnion     = "Union"
 	SetIntersect = "Intersect"
+	SetDiff      = "Diff"
 )
 
 type ChooseChain struct {
@@ -45,6 +46,8 @@ func (c *ChooseChain) Retrieve(ctx context.Context, engine en.IEngine, state en.
 			return uuid.Union(lists[0], lists[1:]...), nil
 		case SetIntersect:
 			return uuid.Intersect(lists[0], lists[1:]...), nil
+		case SetDiff:
+			return uuid.Diff(lists[0], lists[1:]...), nil
 		default:
 			return nil, errors.Errorf("'%s' is not a supported set function", c.SetFunction)
 		}

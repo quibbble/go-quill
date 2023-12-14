@@ -1,5 +1,5 @@
 ID: I0007
-Name: Infected Blade
+Name: Infected Helm
 Description: "Holder gains 'Poison 1'. If it dies from poison then this item passed to another random 'Creature' on the same team."
 Cost: 2
 Targets:
@@ -18,26 +18,34 @@ Traits:
         DamageType: Poison
     ChooseUnit:
       Type: Random
-      Argss:
+      Args:
         Choose:
           Type: Composite
           Args:
-            SetFunction: Intersect
-            Choices:
-            - Type: OwnedUnits
+            SetFunction: Diff
+            ChooseChain:
+            - Type: Composite
               Args:
-                ChoosePlayer: 
-                  Type: Owner
+                SetFunction: Intersect
+                ChooseChain:
+                - Type: OwnedUnits
                   Args:
-                    ChooseCard:
-                      Tyoe: ItemHolder
+                    ChoosePlayer: 
+                      Type: Owner
                       Args:
-                        ChooseItem:
-                          Type: Self
-            - Type: Units
+                        ChooseCard:
+                          Type: ItemHolder
+                          Args:
+                            ChooseItem:
+                              Type: Self
+                - Type: Units
+                  Args:
+                    Types:
+                    - Creature
+            - Type: ItemHolder
               Args:
-                Types:
-                - Creature
+                ChooseItem:
+                  Type: Self
 HeldTraits:
 - Type: Poison
   Args:

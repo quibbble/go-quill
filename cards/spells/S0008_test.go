@@ -17,7 +17,7 @@ func Test_S0008(t *testing.T) {
 
 	x, y := 1, 1
 
-	u1, _ := game.BuildCard("U0002", tests.Player2)
+	u1, _ := game.BuildCard("U0002", tests.Player2, false)
 	game.Board.XYs[x][y].Unit = u1
 
 	cooldown := game.Board.XYs[x][y].Unit.(*cd.UnitCard).Cooldown

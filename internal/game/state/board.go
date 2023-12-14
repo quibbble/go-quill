@@ -34,7 +34,7 @@ type Board struct {
 	Sides map[uuid.UUID]int
 }
 
-func NewBoard(builder func(id string, player uuid.UUID) (ICard, error), gen *uuid.Gen, player1, player2 uuid.UUID) (*Board, error) {
+func NewBoard(build BuildCard, gen *uuid.Gen, player1, player2 uuid.UUID) (*Board, error) {
 	board := &Board{
 		XYs:   [Cols][Rows]*Tile{},
 		UUIDs: make(map[uuid.UUID]*Tile),
@@ -49,11 +49,11 @@ func NewBoard(builder func(id string, player uuid.UUID) (ICard, error), gen *uui
 	}
 
 	for x := 0; x < Cols; x++ {
-		base1, err := builder(BaseID, player1)
+		base1, err := build(BaseID, player1, false)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
-		base2, err := builder(BaseID, player2)
+		base2, err := build(BaseID, player2, false)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}

@@ -22,7 +22,7 @@ func Test_U0003(t *testing.T) {
 	}
 	assert.Equal(t, game.Board.XYs[x][y].Unit.GetUUID(), uuids[0])
 
-	u0002, _ := game.BuildCard("U0002", tests.Player2)
+	u0002, _ := game.BuildCard("U0002", tests.Player2, false)
 	game.Board.XYs[x][y+2].Unit = u0002
 
 	// should fail cooldown check

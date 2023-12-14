@@ -21,7 +21,7 @@
 | `GainMana`            | Adds `Amount` to `ChoosePlayer`'s mana.                                                | `ChoosePlayer`, `Amount`                   | T            |
 | `HealUnit`            | Heals `ChooseUnit` by `Amount`                                                         | `ChooseUnit`, `Amount`                     | T            |
 | `HealUnits`           | Heals `ChooseUnits` by `Amount`                                                        | `ChooseUnits`, `Amount`                    | F            |
-| `KillUnit`            | Removes `ChooseUnit` from the board and resets it to base values.                      | `ChooseUnit`                               | T            |
+| `KillUnit`            | Removes `ChooseUnit` from the board and resets the card.                               | `ChooseUnit`                               | T            |
 | `ModifyUnit`          | Modifies `ChooseUnit`'s `Stat` by `Amount`.                                            | `ChooseUnit`, `Stat`, `Amount`             | T            |
 | `MoveUnit`            | Moves `ChooseUnit` to `ChooseTile`. Decrements `ChooseUnit` if `UnitMovement` is true. | `ChooseUnit`, `ChooseTile`, `UnitMovement` | T            |
 | `PlaceUnit`           | Move `ChooseUnit` from `ChoosePlayer`'s hand and places it on `ChooseTile`.            | `ChoosePlayer`, `ChooseUnit`, `ChooseTile` | T            |
