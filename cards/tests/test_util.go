@@ -14,11 +14,25 @@ const (
 
 func NewTestEnv(player uuid.UUID, ids ...string) (*gm.Game, []uuid.UUID, error) {
 
-	d1 := map[string]int{
+	deck1 := map[string]int{
 		"U0002": 30,
 	}
-	d2 := map[string]int{
+	deck2 := map[string]int{
 		"U0002": 30,
+	}
+
+	d1 := make([]string, 0)
+	d2 := make([]string, 0)
+
+	for id, count := range deck1 {
+		for i := 0; i < count; i++ {
+			d1 = append(d1, id)
+		}
+	}
+	for id, count := range deck2 {
+		for i := 0; i < count; i++ {
+			d2 = append(d2, id)
+		}
 	}
 
 	game, err := gm.NewGame(Seed, Player1, Player2, d1, d2)

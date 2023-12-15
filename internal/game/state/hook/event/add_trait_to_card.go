@@ -9,6 +9,7 @@ import (
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
+	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
 const (
@@ -18,11 +19,15 @@ const (
 type AddTraitToCardArgs struct {
 	Trait      parse.Trait
 	ChooseCard parse.Choose
+
+	// DO NOT SET IN YAML - SET BY ENGINE
+	// which item/spell/unit created the trait
+	CreatedBy *uuid.UUID
 }
 
 func AddTraitToCardAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
 	a := e.GetArgs().(*AddTraitToCardArgs)
-	trait, err := tr.NewTrait(state.Gen.New(en.ChooseUUID), a.Trait.Type, a.Trait.Args)
+	trait, err := tr.NewTrait(state.Gen.New(en.ChooseUUID), a.CreatedBy, a.Trait.Type, a.Trait.Args)
 	if err != nil {
 		return errors.Wrap(err)
 	}

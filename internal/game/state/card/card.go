@@ -54,6 +54,14 @@ type Card struct {
 	Traits []st.ITrait
 }
 
+func NewEmptyCard(player uuid.UUID) st.ICard {
+	return &SpellCard{
+		Card: &Card{
+			Player: player,
+		},
+	}
+}
+
 func NewCard(builders *Builders, id string, player uuid.UUID, token bool) (st.ICard, error) {
 
 	card, err := parse.ParseCard(id)
@@ -135,7 +143,7 @@ func NewCard(builders *Builders, id string, player uuid.UUID, token bool) (st.IC
 
 	traits := make([]st.ITrait, 0)
 	for _, t := range crd.Traits {
-		trait, err := builders.BuildTrait(builders.Gen.New(en.TraitUUID), t.Type, t.Args)
+		trait, err := builders.BuildTrait(builders.Gen.New(en.TraitUUID), &uuid, t.Type, t.Args)
 		if err != nil {
 			return nil, errors.Wrap(err)
 		}
@@ -157,7 +165,7 @@ func NewCard(builders *Builders, id string, player uuid.UUID, token bool) (st.IC
 	if itemOk {
 		heldTraits := make([]st.ITrait, 0)
 		for _, trait := range item.HeldTraits {
-			trait, err := builders.BuildTrait(builders.Gen.New(en.TraitUUID), trait.Type, trait.Args)
+			trait, err := builders.BuildTrait(builders.Gen.New(en.TraitUUID), &uuid, trait.Type, trait.Args)
 			if err != nil {
 				return nil, errors.Wrap(err)
 			}

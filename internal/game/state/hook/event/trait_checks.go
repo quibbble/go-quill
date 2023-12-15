@@ -2,7 +2,6 @@ package event
 
 import (
 	"context"
-	"reflect"
 
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
@@ -45,13 +44,7 @@ func FriendsTraitCheck(e *Event, engine *en.Engine, state *st.State) error {
 						return errors.Wrap(err)
 					}
 					args.Current = after
-
-					t, err := tr.NewTrait(uuid.Nil, args.Trait.Type, args.Trait.Args)
-					if err != nil {
-						return errors.Wrap(err)
-					}
-
-					if err := updateUnits(e, engine, state, before, after, t); err != nil {
+					if err := updateUnits(e, engine, state, tile.Unit.GetUUID(), before, after, args.Trait); err != nil {
 						return errors.Wrap(err)
 					}
 				}
@@ -92,13 +85,7 @@ func EnemiesTraitCheck(e *Event, engine *en.Engine, state *st.State) error {
 						return errors.Wrap(err)
 					}
 					args.Current = after
-
-					t, err := tr.NewTrait(uuid.Nil, args.Trait.Type, args.Trait.Args)
-					if err != nil {
-						return errors.Wrap(err)
-					}
-
-					if err := updateUnits(e, engine, state, before, after, t); err != nil {
+					if err := updateUnits(e, engine, state, tile.Unit.GetUUID(), before, after, args.Trait); err != nil {
 						return errors.Wrap(err)
 					}
 				}
@@ -108,7 +95,7 @@ func EnemiesTraitCheck(e *Event, engine *en.Engine, state *st.State) error {
 	return nil
 }
 
-func updateUnits(e *Event, engine *en.Engine, state *st.State, before, after []uuid.UUID, trait st.ITrait) error {
+func updateUnits(e *Event, engine *en.Engine, state *st.State, createdBy uuid.UUID, before, after []uuid.UUID, trait parse.Trait) error {
 	remove := uuid.Diff(before, after)
 	for _, u := range remove {
 		x, y, err := state.Board.GetUnitXY(u)
@@ -117,8 +104,9 @@ func updateUnits(e *Event, engine *en.Engine, state *st.State, before, after []u
 		}
 		found := false
 		unit := state.Board.XYs[x][y].Unit.(*cd.UnitCard)
-		for _, t := range unit.GetTraits(trait.GetType()) {
-			if reflect.DeepEqual(t.GetArgs(), trait.GetArgs()) {
+		for _, t := range unit.GetTraits(trait.Type) {
+			if t.GetCreatedBy() != nil && *t.GetCreatedBy() == createdBy {
+				// if reflect.DeepEqual(t.GetArgs(), trait.GetArgs()) {
 				event, err := NewEvent(state.Gen.New(en.EventUUID), RemoveTraitFromCard, &RemoveTraitFromCardArgs{
 					ChooseTrait: parse.Choose{
 						Type: ch.UUIDChoice,
@@ -145,15 +133,15 @@ func updateUnits(e *Event, engine *en.Engine, state *st.State, before, after []u
 			}
 		}
 		if !found {
-			return errors.Errorf("failed to find '%s' trait for '%s'", trait.GetType(), u)
+			return errors.Errorf("failed to find '%s' trait for '%s'", trait.Type, u)
 		}
 	}
 	add := uuid.Diff(after, before)
 	for _, u := range add {
 		event, err := NewEvent(state.Gen.New(en.EventUUID), AddTraitToCard, &AddTraitToCardArgs{
 			Trait: parse.Trait{
-				Type: trait.GetType(),
-				Args: trait.GetArgs(),
+				Type: trait.Type,
+				Args: trait.Args,
 			},
 			ChooseCard: parse.Choose{
 				Type: ch.UUIDChoice,
@@ -161,6 +149,7 @@ func updateUnits(e *Event, engine *en.Engine, state *st.State, before, after []u
 					UUID: u,
 				},
 			},
+			CreatedBy: &createdBy,
 		})
 		if err != nil {
 			return errors.Wrap(err)

@@ -15,7 +15,7 @@ func Test_NewTrait(t *testing.T) {
 	args := map[string]interface{}{
 		"Amount": 1,
 	}
-	trait, err := NewTrait(uuid.Nil, AssassinTrait, args)
+	trait, err := NewTrait(uuid.Nil, nil, AssassinTrait, args)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -24,7 +24,7 @@ func Test_NewTrait(t *testing.T) {
 
 func Test_ModifyingTraitArgs(t *testing.T) {
 	gen := uuid.NewGen(rand.New(rand.NewSource(0)))
-	trait, err := NewTrait(uuid.Nil, FriendsTrait, &FriendsArgs{
+	trait, err := NewTrait(uuid.Nil, nil, FriendsTrait, &FriendsArgs{
 		ChooseUnits: struct {
 			Type string
 			Args interface{}

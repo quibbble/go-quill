@@ -70,6 +70,7 @@ func AddItemToUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state
 					UUID: unitChoice,
 				},
 			},
+			CreatedBy: &itemChoice,
 		})
 		if err != nil {
 			return errors.Wrap(err)

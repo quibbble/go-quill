@@ -8,6 +8,8 @@ import (
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
+type BuildCard func(id string, player uuid.UUID, token bool) (ICard, error)
+
 type ICard interface {
 	GetID() string
 	GetUUID() uuid.UUID
@@ -24,12 +26,13 @@ type ICard interface {
 	RemoveTrait(trait uuid.UUID) error
 }
 
+type BuildTrait func(uuid uuid.UUID, createdBy *uuid.UUID, typ string, args interface{}) (ITrait, error)
+
 type ITrait interface {
 	GetUUID() uuid.UUID
 	GetType() string
 	GetArgs() interface{}
+	GetCreatedBy() *uuid.UUID
 	Add(card ICard) error
 	Remove(card ICard) error
 }
-
-type BuildTrait func(uuid uuid.UUID, typ string, args interface{}) (ITrait, error)

@@ -27,7 +27,7 @@ type Game struct {
 	*uuid.Gen
 }
 
-func NewGame(seed int64, player1, player2 uuid.UUID, deck1, deck2 map[string]int) (*Game, error) {
+func NewGame(seed int64, player1, player2 uuid.UUID, deck1, deck2 []string) (*Game, error) {
 	gen := uuid.NewGen(rand.New(rand.NewSource(seed)))
 	engineBuilders := en.Builders{
 		BuildCondition: cn.NewCondition,
@@ -44,22 +44,8 @@ func NewGame(seed int64, player1, player2 uuid.UUID, deck1, deck2 map[string]int
 		return cd.NewCard(&cardBuilders, id, player, token)
 	}
 
-	d1 := make([]string, 0)
-	d2 := make([]string, 0)
-
-	for id, count := range deck1 {
-		for i := 0; i < count; i++ {
-			d1 = append(d1, id)
-		}
-	}
-	for id, count := range deck2 {
-		for i := 0; i < count; i++ {
-			d2 = append(d2, id)
-		}
-	}
-
 	engine := en.NewEngine()
-	state, err := st.NewState(seed, buildCard, &engineBuilders, player1, player2, d1, d2)
+	state, err := st.NewState(seed, buildCard, &engineBuilders, player1, player2, deck1, deck2)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}

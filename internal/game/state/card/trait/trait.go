@@ -14,11 +14,14 @@ type Trait struct {
 	typ  string
 	args interface{}
 
+	// which item/spell/unit created the trait when not initially part of a card
+	createdBy *uuid.UUID
+
 	add    func(t *Trait, card st.ICard) error
 	remove func(t *Trait, card st.ICard) error
 }
 
-func NewTrait(uuid uuid.UUID, typ string, args interface{}) (st.ITrait, error) {
+func NewTrait(uuid uuid.UUID, createdBy *uuid.UUID, typ string, args interface{}) (st.ITrait, error) {
 	ar, ok := TraitMap[typ]
 	if !ok {
 		return nil, errors.ErrMissingMapKey
@@ -28,11 +31,12 @@ func NewTrait(uuid uuid.UUID, typ string, args interface{}) (st.ITrait, error) {
 		return nil, errors.Wrap(err)
 	}
 	return &Trait{
-		uuid:   uuid,
-		typ:    typ,
-		args:   decoded,
-		add:    ar.Add,
-		remove: ar.Remove,
+		uuid:      uuid,
+		typ:       typ,
+		args:      decoded,
+		createdBy: createdBy,
+		add:       ar.Add,
+		remove:    ar.Remove,
 	}, nil
 }
 
@@ -46,6 +50,10 @@ func (t *Trait) GetType() string {
 
 func (t *Trait) GetArgs() interface{} {
 	return t.args
+}
+
+func (t *Trait) GetCreatedBy() *uuid.UUID {
+	return t.createdBy
 }
 
 func (t *Trait) Add(card st.ICard) error {
