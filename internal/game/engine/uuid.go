@@ -19,6 +19,7 @@ const (
 	HookUUID      = 'H'
 	ChooseUUID    = 'O'
 	ConditionUUID = 'C'
+	SackUUID      = 'K'
 )
 
 var (

@@ -28,6 +28,9 @@ type Game struct {
 }
 
 func NewGame(seed int64, player1, player2 uuid.UUID, deck1, deck2 []string) (*Game, error) {
+	if player1 == player2 {
+		return nil, errors.Errorf("player uuids must not match")
+	}
 	gen := uuid.NewGen(rand.New(rand.NewSource(seed)))
 	engineBuilders := en.Builders{
 		BuildCondition: cn.NewCondition,
@@ -268,6 +271,9 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 				continue
 			}
 			choices = append(choices, card.GetUUID())
+		}
+		if !g.Sacked[player] {
+			choices = append(choices, g.State.Gen.New(en.SackUUID))
 		}
 		return choices, nil
 	default:
