@@ -65,7 +65,7 @@ func NewQuill(options *bg.BoardGameOptions) (*Quill, error) {
 	state, err := game.NewGame(details.Seed, teamToUUID[options.Teams[0]], teamToUUID[options.Teams[1]], details.Decks[0], details.Decks[1])
 	if err != nil {
 		return nil, &bgerr.Error{
-			Err:    fmt.Errorf("invalid options"),
+			Err:    err,
 			Status: bgerr.StatusInvalidOption,
 		}
 	}

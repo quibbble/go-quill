@@ -1,7 +1,6 @@
 # go-quill
 
 ## TODO
-- Networking Layer
 - More cards
 
 # Ideas
