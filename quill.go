@@ -69,10 +69,17 @@ func NewQuill(options *bg.BoardGameOptions) (*Quill, error) {
 			Status: bgerr.StatusInvalidOption,
 		}
 	}
+	targets, err := state.GetNextTargets(state.GetTurn())
+	if err != nil {
+		return nil, &bgerr.Error{
+			Err:    err,
+			Status: bgerr.StatusInvalidAction,
+		}
+	}
 	return &Quill{
 		state:      state,
 		actions:    make([]*bg.BoardGameAction, 0),
-		targets:    make([]uuid.UUID, 0),
+		targets:    targets,
 		teams:      options.Teams,
 		teamToUUID: teamToUUID,
 		uuidToTeam: uuidToTeam,

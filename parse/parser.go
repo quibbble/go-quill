@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/mitchellh/mapstructure"
-	"github.com/quibbble/go-quill/cards"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"gopkg.in/yaml.v3"
 )
@@ -13,7 +12,7 @@ var (
 	ErrInvalidCardID = errors.Errorf("invalid card id")
 )
 
-var library = cards.Library
+var library = Library
 
 func ParseCard(id string) (ICard, error) {
 	if len(id) == 0 {
