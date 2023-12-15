@@ -57,8 +57,9 @@ func NewQuill(options *bg.BoardGameOptions) (*Quill, error) {
 	}
 	teamToUUID := make(map[string]uuid.UUID)
 	uuidToTeam := make(map[uuid.UUID]string)
+	gen := uuid.NewGen(rand.New(rand.NewSource(details.Seed)))
 	for _, team := range options.Teams {
-		playerUUID := uuid.NewGen(rand.New(rand.NewSource(details.Seed))).New('P')
+		playerUUID := gen.New('P')
 		teamToUUID[team] = playerUUID
 		uuidToTeam[playerUUID] = team
 	}
