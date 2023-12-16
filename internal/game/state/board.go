@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	Rows = 8
+	Rows = 7
 	Cols = 3
 
 	BaseID = "U0001"

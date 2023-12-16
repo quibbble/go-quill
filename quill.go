@@ -267,6 +267,11 @@ func (q *Quill) GetSnapshot(team ...string) (*bg.BoardGameSnapshot, error) {
 		}
 		hand[q.uuidToTeam[id]] = cards
 	}
+	playRange := make(map[string][]int)
+	for _, team := range q.teams {
+		min, max := q.state.Board.GetPlayableRowRange(q.teamToUUID[team])
+		playRange[team] = []int{min, max}
+	}
 	deck := make(map[string]int)
 	for id, d := range q.state.Deck {
 		deck[q.uuidToTeam[id]] = d.GetSize()
@@ -288,11 +293,12 @@ func (q *Quill) GetSnapshot(team ...string) (*bg.BoardGameSnapshot, error) {
 		Teams:   q.teams,
 		Winners: winners,
 		MoreData: QuillSnapshotData{
-			Board:  q.state.Board.XYs,
-			Hand:   hand,
-			Deck:   deck,
-			Mana:   mana,
-			Sacked: sacked,
+			Board:     q.state.Board.XYs,
+			PlayRange: playRange,
+			Hand:      hand,
+			Deck:      deck,
+			Mana:      mana,
+			Sacked:    sacked,
 		},
 		Targets: targets,
 		Actions: q.actions,
