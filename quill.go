@@ -103,8 +103,8 @@ func (q *Quill) Do(action *bg.BoardGameAction) error {
 		}
 	}
 	switch action.ActionType {
-	case ActionNextTarget:
-		var details NextTargetActionDetails
+	case ActionNextTargets:
+		var details NextTargetsActionDetails
 		if err := mapstructure.Decode(action.MoreDetails, &details); err != nil {
 			return &bgerr.Error{
 				Err:    err,

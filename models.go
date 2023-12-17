@@ -7,11 +7,11 @@ import (
 
 // Action types
 const (
-	ActionNextTarget = "NextTarget"
-	ActionPlayCard   = "PlayCard"
-	ActionSackCard   = "SackCard"
-	ActionAttackUnit = "AttackUnit"
-	ActionMoveUnit   = "MoveUnit"
+	ActionNextTargets = "NextTargets"
+	ActionPlayCard    = "PlayCard"
+	ActionSackCard    = "SackCard"
+	ActionAttackUnit  = "AttackUnit"
+	ActionMoveUnit    = "MoveUnit"
 )
 
 const (
@@ -33,7 +33,7 @@ type QuillSnapshotData struct {
 	Sacked     map[string]bool
 }
 
-type NextTargetActionDetails struct {
+type NextTargetsActionDetails struct {
 	Targets []uuid.UUID
 }
 
