@@ -48,10 +48,12 @@ func NewState(seed int64, buildCard BuildCard, engineBuilders *en.Builders, play
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
+	d1.Shuffle()
 	d2, err := NewDeck(seed, buildCard, player2, deck2...)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}
+	d2.Shuffle()
 
 	hand1 := make([]ICard, 0)
 	hand2 := make([]ICard, 0)
