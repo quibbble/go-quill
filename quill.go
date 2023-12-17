@@ -211,6 +211,22 @@ func (q *Quill) Do(action *bg.BoardGameAction) error {
 			}
 		}
 		q.targets = targets
+	case ActionEndTurn:
+		if err := q.state.EndTurn(q.teamToUUID[action.Team]); err != nil {
+			return &bgerr.Error{
+				Err:    err,
+				Status: bgerr.StatusInvalidAction,
+			}
+		}
+		q.actions = append(q.actions, action)
+		targets, err := q.state.GetNextTargets(q.state.GetTurn())
+		if err != nil {
+			return &bgerr.Error{
+				Err:    err,
+				Status: bgerr.StatusInvalidAction,
+			}
+		}
+		q.targets = targets
 	case bg.ActionSetWinners:
 		var details bg.SetWinnersActionDetails
 		if err := mapstructure.Decode(action.MoreDetails, &details); err != nil {
@@ -337,6 +353,10 @@ func (q *Quill) GetBGN() *bgn.Game {
 			bgnAction.Details = details.encodeBGN()
 		case ActionMoveUnit:
 			var details MoveUnitActionDetails
+			_ = mapstructure.Decode(action.MoreDetails, &details)
+			bgnAction.Details = details.encodeBGN()
+		case ActionEndTurn:
+			var details EndTurnActionDetails
 			_ = mapstructure.Decode(action.MoreDetails, &details)
 			bgnAction.Details = details.encodeBGN()
 		case bg.ActionSetWinners:

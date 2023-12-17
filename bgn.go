@@ -87,3 +87,14 @@ func decodeMoveUnit(notation []string) (*MoveUnitActionDetails, error) {
 		Tile: uuid.UUID(notation[1]),
 	}, nil
 }
+
+func (s *EndTurnActionDetails) encodeBGN() []string {
+	return []string{}
+}
+
+func decodeEndTurn(notation []string) (*EndTurnActionDetails, error) {
+	if len(notation) != 2 {
+		return nil, loadFailure(fmt.Errorf("invalid move unit notation"))
+	}
+	return &EndTurnActionDetails{}, nil
+}

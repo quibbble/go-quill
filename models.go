@@ -12,6 +12,7 @@ const (
 	ActionSackCard    = "SackCard"
 	ActionAttackUnit  = "AttackUnit"
 	ActionMoveUnit    = "MoveUnit"
+	ActionEndTurn     = "EndTurn"
 )
 
 const (
@@ -54,3 +55,5 @@ type AttackUnitActionDetails struct {
 type MoveUnitActionDetails struct {
 	Unit, Tile uuid.UUID
 }
+
+type EndTurnActionDetails struct{}
