@@ -20,6 +20,7 @@ type ICard interface {
 	GetEvents() []en.IEvent
 	GetHooks() []en.IHook
 	Playable(engine en.IEngine, state en.IState) (bool, error)
+	GetTargets() []en.IChoose
 	NextTargets(ctx context.Context, engine en.IEngine, state en.IState) ([]uuid.UUID, error)
 	GetTraits(typ string) []ITrait
 	AddTrait(trait ITrait) error

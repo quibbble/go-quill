@@ -270,6 +270,13 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 			if !playable {
 				continue
 			}
+			targets, err := card.NextTargets(context.WithValue(context.Background(), en.TargetsCtx, []uuid.UUID{}), g.Engine, g.State)
+			if err != nil {
+				return nil, errors.Wrap(err)
+			}
+			if len(targets) == 0 && len(card.GetTargets()) != 0 {
+				continue
+			}
 			choices = append(choices, card.GetUUID())
 		}
 		if !g.Sacked[player] {

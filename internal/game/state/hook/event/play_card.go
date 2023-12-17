@@ -45,7 +45,7 @@ func PlayCardAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	if !playable || len(next) != 0 {
+	if (len(card.GetTargets()) != len(ctx.Value(en.TargetsCtx).([]uuid.UUID))) || !playable || len(next) != 0 {
 		return errors.Errorf("card cannot be played")
 	}
 

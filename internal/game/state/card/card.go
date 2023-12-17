@@ -234,6 +234,10 @@ func (c *Card) Playable(engine en.IEngine, state en.IState) (bool, error) {
 	return c.Conditions.Pass(context.Background(), engine, state)
 }
 
+func (c *Card) GetTargets() []en.IChoose {
+	return c.Targets
+}
+
 func (c *Card) NextTargets(ctx context.Context, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {
 	targets := ctx.Value(en.TargetsCtx).([]uuid.UUID)
 	if len(targets) > len(c.Targets) {

@@ -1,6 +1,7 @@
 # go-quill
 
 ## TODO
+- Fix bug where spark can be played with no valid targets on the board
 - More cards
 
 # Ideas
