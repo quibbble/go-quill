@@ -272,14 +272,9 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 			}
 			choices = append(choices, card.GetUUID())
 		}
-		if !g.Sacked[player] {
-			choices = append(choices, uuid.UUID(en.SackUUID))
-		}
 		return choices, nil
 	default:
-		if targets[0].Type() == en.SackUUID {
-			return []uuid.UUID{}, nil
-		} else if c, err := g.Hand[player].GetCard(targets[0]); err == nil {
+		if c, err := g.Hand[player].GetCard(targets[0]); err == nil {
 			if playable, err := c.Playable(g.Engine, g.State); err != nil || !playable || c.GetCost() > g.Mana[player].Amount {
 				return nil, errors.Errorf("'%s' not playable", targets[0])
 			}
