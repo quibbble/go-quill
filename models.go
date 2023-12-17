@@ -24,12 +24,13 @@ type QuillMoreOptions struct {
 }
 
 type QuillSnapshotData struct {
-	Board     [st.Cols][st.Rows]*st.Tile
-	PlayRange map[string][]int
-	Hand      map[string][]st.ICard
-	Deck      map[string]int
-	Mana      map[string]*st.Mana
-	Sacked    map[string]bool
+	Board      [st.Cols][st.Rows]*st.Tile
+	PlayRange  map[string][]int
+	UUIDToTeam map[uuid.UUID]string
+	Hand       map[string][]st.ICard
+	Deck       map[string]int
+	Mana       map[string]*st.Mana
+	Sacked     map[string]bool
 }
 
 type NextTargetActionDetails struct {
