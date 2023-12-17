@@ -30,5 +30,5 @@ func Test_Quill(t *testing.T) {
 		t.Fatal(err)
 	}
 	assert.True(t, len(game.teams) == 2)
-	assert.True(t, len(game.targets) == 0)
+	assert.True(t, len(game.targets) > 0)
 }

@@ -52,7 +52,7 @@ func RetrieveAdjacent(c *Choose, ctx context.Context, engine *en.Engine, state *
 			adjacent = append(adjacent, tile.UUID)
 		} else if tile.Unit != nil {
 			unit := tile.Unit.(*cd.UnitCard)
-			if len(r.Types) == 0 || slices.Contains(r.Types, unit.Type) {
+			if slices.Contains(r.Types, cd.Unit) || slices.Contains(r.Types, unit.Type) {
 				adjacent = append(adjacent, unit.UUID)
 			}
 		}

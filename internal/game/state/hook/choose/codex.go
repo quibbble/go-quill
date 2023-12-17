@@ -53,7 +53,7 @@ func RetrieveCodex(c *Choose, ctx context.Context, engine *en.Engine, state *st.
 				codex = append(codex, tile.UUID)
 			} else if tile.Unit != nil {
 				unit := tile.Unit.(*cd.UnitCard)
-				if len(r.Types) == 0 || slices.Contains(r.Types, unit.Type) {
+				if slices.Contains(r.Types, cd.Unit) || slices.Contains(r.Types, unit.Type) {
 					codex = append(codex, unit.UUID)
 				}
 			}
