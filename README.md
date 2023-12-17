@@ -1,7 +1,7 @@
 # go-quill
 
 ## TODO
-- Fix bug where spark can be played with no valid targets on the board
+- Fix bug where unit cannot move but still added to targets list
 - More cards
 
 # Ideas

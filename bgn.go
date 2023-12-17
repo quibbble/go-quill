@@ -20,6 +20,7 @@ var (
 		ActionSackCard:   "s",
 		ActionAttackUnit: "a",
 		ActionMoveUnit:   "m",
+		ActionEndTurn:    "e",
 	}
 	notationToAction = reverseMap(actionToNotation)
 )
