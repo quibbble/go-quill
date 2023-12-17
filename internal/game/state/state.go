@@ -54,6 +54,7 @@ func NewState(seed int64, buildCard BuildCard, engineBuilders *en.Builders, play
 		return nil, errors.Wrap(err)
 	}
 	d2.Shuffle()
+	d2.Shuffle()
 
 	hand1 := make([]ICard, 0)
 	hand2 := make([]ICard, 0)

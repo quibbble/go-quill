@@ -273,7 +273,7 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 			choices = append(choices, card.GetUUID())
 		}
 		if !g.Sacked[player] {
-			choices = append(choices, g.State.Gen.New(en.SackUUID))
+			choices = append(choices, uuid.UUID(en.SackUUID))
 		}
 		return choices, nil
 	default:
