@@ -220,7 +220,36 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 			}
 			unit := g.Board.XYs[x][y].Unit.(*cd.UnitCard)
 
-			canMove := unit.Movement > 0
+			canMove := false
+			if unit.Movement > 0 {
+				moveChoose1, err := ch.NewChoose(g.State.Gen.New(en.ChooseUUID), ch.CodexChoice, &ch.CodexArgs{
+					Types: []string{"Tile"},
+					Codex: unit.Codex,
+					ChooseUnitOrTile: parse.Choose{
+						Type: ch.UUIDChoice,
+						Args: ch.UUIDArgs{
+							UUID: unit.UUID,
+						},
+					},
+				})
+				if err != nil {
+					return nil, errors.Wrap(err)
+				}
+				moveChoose2, err := ch.NewChoose(g.State.Gen.New(en.ChooseUUID), ch.TilesChoice, &ch.TilesArgs{
+					Empty: true,
+				})
+				if err != nil {
+					return nil, errors.Wrap(err)
+				}
+				ctx := context.WithValue(context.Background(), en.CardCtx, unit.GetUUID())
+				moveChoices, err := ch.NewChooseChain(ch.SetIntersect, moveChoose1, moveChoose2).Retrieve(ctx, g.Engine, g.State)
+				if err != nil {
+					return nil, errors.Wrap(err)
+				}
+				if len(moveChoices) > 0 {
+					canMove = true
+				}
+			}
 			canAttack := false
 			if unit.Cooldown == 0 {
 				choose1, err := ch.NewChoose(g.Gen.New(en.ChooseUUID), ch.CodexChoice, &ch.CodexArgs{

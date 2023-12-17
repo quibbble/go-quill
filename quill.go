@@ -319,6 +319,7 @@ func (q *Quill) GetSnapshot(team ...string) (*bg.BoardGameSnapshot, error) {
 		},
 		Targets: targets,
 		Actions: q.actions,
+		Message: fmt.Sprintf("%s must complete their turn", q.uuidToTeam[q.state.GetTurn()]),
 	}, nil
 }
 

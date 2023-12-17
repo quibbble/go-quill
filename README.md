@@ -1,7 +1,6 @@
 # go-quill
 
 ## TODO
-- Fix bug where unit cannot move but still added to targets list
 - More cards
 
 # Ideas
