@@ -1,0 +1,8 @@
+ID: S0015
+Name: Knowledge
+Description: "Draw 2 cards."
+Cost: 3
+Targets:
+Hooks:
+Events:
+# TODO

@@ -1,6 +1,6 @@
 ID: U0005
 Name: Armorer
-Description: "Adjacent friendly 'Units' gain +1 health."
+Description: "Adjacent friendly 'Unit's gain +1 health."
 Cost: 3
 Conditions:
 Targets: # SET BY PARSER
