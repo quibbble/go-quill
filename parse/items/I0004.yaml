@@ -1,6 +1,6 @@
 ID: I0004
 Name: Bitter Root
-Description: "Holder gains 'Poison 1'."
+Description: "Holder gains 'Poison' 1."
 Cost: 1
 Targets:
 - Type: Units

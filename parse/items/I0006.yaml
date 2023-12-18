@@ -1,6 +1,6 @@
 ID: I0006
 Name: Shackle
-Description: "Holder gains -2 base movement."
+Description: "Holder gains -2 base 'Movement'."
 Cost: 1
 Targets:
 - Type: Units

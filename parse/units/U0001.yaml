@@ -1,7 +1,7 @@
 ID: U0001
 Name: Base
 Description: ""
-Cost: 1
+Cost: 0
 Conditions:
 Targets: # SET BY PARSER
 Type: Base

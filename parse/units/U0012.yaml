@@ -1,6 +1,6 @@
 ID: U0013
 Name: Glutton
-Description: "On death gain +1 base energy."
+Description: "On death gain +1 base 'Mana'."
 Cost: 2
 Conditions:
 Targets: # SET BY PARSER

@@ -1,6 +1,6 @@
 ID: S0014
 Name: Cleanse
-Description: "Remove poison from target 'Unit'."
+Description: "Remove 'Poison' from target 'Unit'."
 Cost: 3
 Targets:
 - Type: Units

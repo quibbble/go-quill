@@ -1,6 +1,6 @@
 ID: U0003
 Name: Archer
-Description: ""
+Description: "'Range' 3"
 Cost: 2
 Conditions:
 Targets: # SET BY PARSER

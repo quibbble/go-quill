@@ -1,6 +1,6 @@
 ID: U0014
 Name: Scapegrace
-Description: ""
+Description: "'Thief'"
 Cost: 4
 Conditions:
 Targets: # SET BY PARSER

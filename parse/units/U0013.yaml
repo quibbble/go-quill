@@ -1,6 +1,6 @@
 ID: U0013
 Name: Reaver
-Description: "Gain +X attack where X is your current energy."
+Description: "Gain +X 'Attack' where X is your current 'Mana'."
 Cost: 3
 Conditions:
 Targets: # SET BY PARSER

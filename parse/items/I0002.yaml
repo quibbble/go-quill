@@ -1,6 +1,6 @@
 ID: I0002
 Name: Plated Armor
-Description: "Holder gains +2 health and 'Shield 1'. "
+Description: "Holder gains +2 'Health' and 'Shield' 1. "
 Cost: 2
 Targets:
 - Type: Units

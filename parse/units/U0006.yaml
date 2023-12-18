@@ -1,6 +1,6 @@
 ID: U0006
 Name: Well
-Description: "While in play gain +1 base energy."
+Description: "While in play gain +1 base 'Mana'."
 Cost: 1
 Conditions:
 Targets: # SET BY PARSER

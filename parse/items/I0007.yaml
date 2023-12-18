@@ -1,6 +1,6 @@
 ID: I0007
 Name: Infected Helm
-Description: "Holder gains 'Poison 1'. If it dies from poison then this item passed to another random 'Creature' on the same team."
+Description: "Holder gains 'Poison' 1. If it dies from 'Poison' then this item passed to another random 'Creature' on the same team."
 Cost: 2
 Targets:
 - Type: Units

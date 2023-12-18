@@ -1,6 +1,6 @@
 ID: S0004
 Name: Power Override
-Description: "Gain +6 energy. If current energy is 9 or more then draw a card."
+Description: "Gain +6 'Mana'. If current 'Mana' is 9 or more then draw a card."
 Cost: 3
 Targets:
 Hooks:

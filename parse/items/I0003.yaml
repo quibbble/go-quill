@@ -1,6 +1,6 @@
 ID: I0003
 Name: Feather
-Description: "Holder gains -1 base cooldown and +1 base movement."
+Description: "Holder gains -1 base 'Cooldown' and +1 base 'Movement'."
 Cost: 3
 Targets:
 - Type: Units

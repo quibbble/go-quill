@@ -1,6 +1,6 @@
 ID: U0011
 Name: Recruit
-Description: "After attacking 'Recruit moves to a random adjacent space.'"
+Description: "After attacking 'Recruit' moves to a random adjacent space."
 Cost: 2
 Conditions:
 Targets: # SET BY PARSER

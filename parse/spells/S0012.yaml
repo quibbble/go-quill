@@ -1,6 +1,6 @@
 ID: S0012
 Name: Tempo
-Description: "Target 'Creature' or 'Structures' swap cooldowns."
+Description: "Target 'Creature' or 'Structure's swap cooldowns."
 Cost: 3
 Targets:
 - Type: Units
