@@ -45,7 +45,7 @@ func RetrieveCodex(c *Choose, ctx context.Context, engine *en.Engine, state *st.
 	for i := 0; i < len(r.Codex); i++ {
 		if r.Codex[i] == '1' {
 			x, y := x+codexXYs[i][0], y+codexXYs[i][1]
-			if x < 0 || x > st.Cols || y < 0 || y > st.Rows {
+			if x < 0 || x >= st.Cols || y < 0 || y >= st.Rows {
 				continue
 			}
 			tile := state.Board.XYs[x][y]
