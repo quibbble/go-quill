@@ -1,7 +1,7 @@
 # go-quill
 
 ## TODO
-- More cards
+- Fixed ranged units target selection in GetNextTargets
 
 # Ideas
 - Add unstable

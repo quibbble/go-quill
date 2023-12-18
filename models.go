@@ -41,6 +41,9 @@ type NextTargetsActionDetails struct {
 type PlayCardActionDetails struct {
 	Card    uuid.UUID
 	Targets []uuid.UUID
+
+	// DO NOT SET - QUILL INTERNAL USE ONLY
+	PlayCard st.ICard
 }
 
 type SackCardActionDetails struct {
@@ -50,10 +53,17 @@ type SackCardActionDetails struct {
 
 type AttackUnitActionDetails struct {
 	Attacker, Defender uuid.UUID
+
+	// DO NOT SET - QUILL INTERNAL USE ONLY
+	AttackerCard, DefenderCard st.ICard
 }
 
 type MoveUnitActionDetails struct {
 	Unit, Tile uuid.UUID
+
+	// DO NOT SET - QUILL INTERNAL USE ONLY
+	UnitCard st.ICard
+	TileXY   []int
 }
 
 type EndTurnActionDetails struct{}

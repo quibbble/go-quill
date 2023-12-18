@@ -127,6 +127,8 @@ func (q *Quill) Do(action *bg.BoardGameAction) error {
 				Status: bgerr.StatusInvalidActionDetails,
 			}
 		}
+		details.PlayCard = q.state.GetCard(details.Card)
+		action.MoreDetails = details
 		if err := q.state.PlayCard(team, details.Card, details.Targets...); err != nil {
 			return &bgerr.Error{
 				Err:    err,
@@ -173,6 +175,9 @@ func (q *Quill) Do(action *bg.BoardGameAction) error {
 				Status: bgerr.StatusInvalidActionDetails,
 			}
 		}
+		details.AttackerCard = q.state.GetCard(details.Attacker)
+		details.DefenderCard = q.state.GetCard(details.Defender)
+		action.MoreDetails = details
 		if err := q.state.AttackUnit(team, details.Attacker, details.Defender); err != nil {
 			return &bgerr.Error{
 				Err:    err,
@@ -196,6 +201,10 @@ func (q *Quill) Do(action *bg.BoardGameAction) error {
 				Status: bgerr.StatusInvalidActionDetails,
 			}
 		}
+		details.UnitCard = q.state.GetCard(details.Unit)
+		x, y, _ := q.state.Board.GetTileXY(details.Tile)
+		details.TileXY = []int{x, y}
+		action.MoreDetails = details
 		if err := q.state.MoveUnit(team, details.Unit, details.Tile); err != nil {
 			return &bgerr.Error{
 				Err:    err,
