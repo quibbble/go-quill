@@ -10,6 +10,7 @@ import (
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
+	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
 const (
@@ -67,8 +68,24 @@ func KillUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.
 	}
 
 	// friends/enemies trait check
-	FriendsTraitCheck(e, engine, state)
-	EnemiesTraitCheck(e, engine, state)
+	for _, trait := range unit.GetTraits(tr.FriendsTrait) {
+		args := trait.GetArgs().(*tr.FriendsArgs)
+		if err := updateUnits(e, engine, state, unit.GetUUID(), args.Current, make([]uuid.UUID, 0), args.Trait); err != nil {
+			return errors.Wrap(err)
+		}
+	}
+	for _, trait := range unit.GetTraits(tr.EnemiesTrait) {
+		args := trait.GetArgs().(*tr.EnemiesArgs)
+		if err := updateUnits(e, engine, state, unit.GetUUID(), args.Current, make([]uuid.UUID, 0), args.Trait); err != nil {
+			return errors.Wrap(err)
+		}
+	}
+	if err := friendsTraitCheck(e, engine, state); err != nil {
+		return errors.Wrap(err)
+	}
+	if err := enemiesTraitCheck(e, engine, state); err != nil {
+		return errors.Wrap(err)
+	}
 
 	if unit.GetID() != "U0001" {
 		// reset and move items and unit to discard

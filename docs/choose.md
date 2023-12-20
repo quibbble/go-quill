@@ -26,7 +26,7 @@
 | `Units`          | Retrieve a set of units on the board that have a type in `Types`.           | `Types`                                   |
 | `UUID`           | Retrieve the given `UUID`.                                                  | `UUID`                                    |
 
-# Args
+# Argsx
 
 | **Name**           | **Requirements**                                                                                 |
 |--------------------|--------------------------------------------------------------------------------------------------|

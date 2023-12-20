@@ -9,7 +9,7 @@ import (
 )
 
 func Test_U0004(t *testing.T) {
-	game, uuids, err := tests.NewTestEnv(tests.Player1, "U0004", "U0002")
+	game, uuids, err := tests.NewTestEnv(tests.Player1, "U0004", "U0002", "S0003")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -39,4 +39,11 @@ func Test_U0004(t *testing.T) {
 	}
 	assert.Equal(t, u0002Attack, game.Board.XYs[x][y-1].Unit.(*cd.UnitCard).Attack)
 	assert.Equal(t, u0002Attack+1, game.Board.XYs[x+1][y].Unit.(*cd.UnitCard).Attack)
+
+	// should play card and update friends traits
+	if err := game.PlayCard(tests.Player1, uuids[2], uuids[0]); err != nil {
+		t.Fatal(err)
+	}
+	assert.Equal(t, u0002Attack, game.Board.XYs[x][y-1].Unit.(*cd.UnitCard).Health)
+	assert.Equal(t, u0002Attack, game.Board.XYs[x+1][y].Unit.(*cd.UnitCard).Health)
 }

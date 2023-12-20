@@ -13,7 +13,7 @@ import (
 	"github.com/quibbble/go-quill/pkg/uuid"
 )
 
-func FriendsTraitCheck(e *Event, engine *en.Engine, state *st.State) error {
+func friendsTraitCheck(e *Event, engine *en.Engine, state *st.State) error {
 	// checks if any units need to add/remove their trait through friend trait
 	for _, col := range state.Board.XYs {
 		for _, tile := range col {
@@ -54,7 +54,7 @@ func FriendsTraitCheck(e *Event, engine *en.Engine, state *st.State) error {
 	return nil
 }
 
-func EnemiesTraitCheck(e *Event, engine *en.Engine, state *st.State) error {
+func enemiesTraitCheck(e *Event, engine *en.Engine, state *st.State) error {
 	// checks if any units need to add/remove their trait through friend trait
 	for _, col := range state.Board.XYs {
 		for _, tile := range col {

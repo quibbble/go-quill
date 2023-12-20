@@ -1,7 +1,6 @@
 # go-quill
 
 ## TODO
-- Burning armorer does not remove health buff from adjacent
 
 # Ideas
 - Add unstable

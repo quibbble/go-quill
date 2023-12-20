@@ -65,8 +65,12 @@ func AddTraitToCardAffect(e *Event, ctx context.Context, engine *en.Engine, stat
 	}
 
 	// friends/enemies trait check
-	FriendsTraitCheck(e, engine, state)
-	EnemiesTraitCheck(e, engine, state)
+	if err := friendsTraitCheck(e, engine, state); err != nil {
+		return errors.Wrap(err)
+	}
+	if err := enemiesTraitCheck(e, engine, state); err != nil {
+		return errors.Wrap(err)
+	}
 
 	return nil
 }
