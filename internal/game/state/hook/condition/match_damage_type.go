@@ -17,7 +17,7 @@ type MatchDamageTypeArgs struct {
 }
 
 func PassMatchDamageType(c *Condition, ctx context.Context, engine *en.Engine, state *st.State) (bool, error) {
-	p := c.args.(*MatchDamageTypeArgs)
+	p := c.GetArgs().(*MatchDamageTypeArgs)
 
 	event := ctx.Value(p.EventContext).(en.IEvent)
 

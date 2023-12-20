@@ -14,9 +14,10 @@ import (
 type Condition struct {
 	uuid uuid.UUID
 
-	typ  string
-	not  bool
-	args interface{}
+	Type string
+	Not  bool
+	Args interface{}
+
 	pass func(c *Condition, ctx context.Context, engine *en.Engine, state *st.State) (bool, error)
 }
 
@@ -31,9 +32,9 @@ func NewCondition(uuid uuid.UUID, typ string, not bool, args interface{}) (en.IC
 	}
 	return &Condition{
 		uuid: uuid,
-		typ:  typ,
-		not:  not,
-		args: decoded,
+		Type: typ,
+		Not:  not,
+		Args: decoded,
 		pass: p.Pass,
 	}, nil
 }
@@ -43,11 +44,15 @@ func (c *Condition) GetUUID() uuid.UUID {
 }
 
 func (c *Condition) GetType() string {
-	return c.typ
+	return c.Type
+}
+
+func (c *Condition) GetNot() bool {
+	return c.Not
 }
 
 func (c *Condition) GetArgs() interface{} {
-	return c.args
+	return c.Args
 }
 
 func (c *Condition) Pass(ctx context.Context, engine en.IEngine, state en.IState) (bool, error) {
@@ -63,7 +68,7 @@ func (c *Condition) Pass(ctx context.Context, engine en.IEngine, state en.IState
 	if err != nil {
 		return false, errors.Wrap(err)
 	}
-	if c.not {
+	if c.Not {
 		return !pass, nil
 	}
 	return pass, nil

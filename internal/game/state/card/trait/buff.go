@@ -3,7 +3,6 @@ package trait
 import (
 	st "github.com/quibbble/go-quill/internal/game/state"
 	cd "github.com/quibbble/go-quill/internal/game/state/card"
-	"github.com/quibbble/go-quill/parse"
 
 	"github.com/quibbble/go-quill/pkg/errors"
 )
@@ -60,10 +59,7 @@ func RemoveBuff(t *Trait, card st.ICard) error {
 	case cd.AttackStat:
 		unit.Attack -= a.Amount
 	case cd.HealthStat:
-		initHealth := unit.GetInit().(*parse.UnitCard).Health
-		if unit.Health > initHealth {
-			unit.Health = initHealth
-		}
+		unit.Health -= a.Amount
 	case cd.BaseCooldownStat:
 		unit.BaseCooldown += a.Amount
 	case cd.BaseMovementStat:

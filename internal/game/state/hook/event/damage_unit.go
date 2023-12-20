@@ -114,6 +114,7 @@ func DamageUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *s
 			}
 		}
 
+		// kill unit if health <= 0
 		event, err := NewEvent(state.Gen.New(en.EventUUID), KillUnitEvent, KillUnitArgs{
 			ChooseUnit: parse.Choose{
 				Type: ch.UUIDChoice,

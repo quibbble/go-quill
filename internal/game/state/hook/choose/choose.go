@@ -14,8 +14,9 @@ import (
 type Choose struct {
 	uuid uuid.UUID
 
-	typ      string
-	args     interface{}
+	Type string
+	Args interface{}
+
 	retrieve func(c *Choose, ctx context.Context, engine *en.Engine, state *st.State) ([]uuid.UUID, error)
 }
 
@@ -30,14 +31,18 @@ func NewChoose(uuid uuid.UUID, typ string, args interface{}) (en.IChoose, error)
 	}
 	return &Choose{
 		uuid:     uuid,
-		typ:      typ,
-		args:     decoded,
+		Type:     typ,
+		Args:     decoded,
 		retrieve: c.Retrieve,
 	}, nil
 }
 
+func (c *Choose) GetType() string {
+	return c.Type
+}
+
 func (c *Choose) GetArgs() interface{} {
-	return c.args
+	return c.Args
 }
 
 func (c *Choose) Retrieve(ctx context.Context, engine en.IEngine, state en.IState) ([]uuid.UUID, error) {

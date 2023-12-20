@@ -1,7 +1,7 @@
 # go-quill
 
 ## TODO
-- Fixed ranged units target selection in GetNextTargets
+- Burning armorer does not remove health buff from adjacent
 
 # Ideas
 - Add unstable

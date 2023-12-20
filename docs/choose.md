@@ -18,6 +18,7 @@
 | `Owner`          | Retrieve the owner of `ChooseCard`.                                         | `ChooseCard`                              |
 | `Random`         | Retrieve one random choice from `Choose`. Return zero if `Choose` is empty. | `Choose`                                  |
 | `Self`           | Retrieve self.                                                              |                                           |
+| `Ranged`         | Retrieve all `Types` within `Range` of `ChooseUnitOrTile`.                  | `Types`, `Range`, `ChooseUnitOrTile`      |
 | `Target`         | Retrieve the target found in targets list at index `Index`.                 | `Index`                                   |
 | `Tiles`          | Retrieve a set of tiles that are optionally `Empty`.                        | `Empty`                                   |
 | `TraitEventTile` | Retrieve the tile affected by event found in the `TraitEvent` context.      |                                           |
@@ -35,6 +36,7 @@
 | `ConnectionType`   | `Adjacent` or `Codex`                                                                            |
 | `Empty`            | `true` or `false`.                                                                               |
 | `Index`            | An integer.                                                                                      |
+| `Range`            | An integer.                                                                                      |
 | `SetFunction`      | `Union`, `Intersect`, `Diff`.                                                                    |
 | `Types`            | A list containing one or more of the following: `Tile`, `Unit`, `Creature`, `Structure`, `Base`. |
 | `UUID`             | A UUID.                                                                                          |

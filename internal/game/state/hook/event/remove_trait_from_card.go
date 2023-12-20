@@ -5,6 +5,7 @@ import (
 
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
+	cd "github.com/quibbble/go-quill/internal/game/state/card"
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
@@ -36,6 +37,24 @@ func RemoveTraitFromCardAffect(e *Event, ctx context.Context, engine *en.Engine,
 	}
 	if card.RemoveTrait(traitChoice); err != nil {
 		return errors.Wrap(err)
+	}
+
+	// check if killed
+	if _, _, err := state.Board.GetUnitXY(card.GetUUID()); err == nil && card.(*cd.UnitCard).Health <= 0 {
+		event, err := NewEvent(state.Gen.New(en.EventUUID), KillUnitEvent, KillUnitArgs{
+			ChooseUnit: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: ch.UUIDArgs{
+					UUID: card.GetUUID(),
+				},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err)
+		}
+		if err := engine.Do(context.Background(), event, state); err != nil {
+			return errors.Wrap(err)
+		}
 	}
 
 	// friends/enemies trait check

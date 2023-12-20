@@ -14,8 +14,9 @@ import (
 type Event struct {
 	uuid uuid.UUID
 
-	typ    string
-	args   interface{}
+	Type string
+	Args interface{}
+
 	affect func(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error
 }
 
@@ -30,8 +31,8 @@ func NewEvent(uuid uuid.UUID, typ string, args interface{}) (en.IEvent, error) {
 	}
 	return &Event{
 		uuid:   uuid,
-		typ:    typ,
-		args:   decoded,
+		Type:   typ,
+		Args:   decoded,
 		affect: a.Affect,
 	}, nil
 }
@@ -41,11 +42,11 @@ func (e *Event) GetUUID() uuid.UUID {
 }
 
 func (e *Event) GetType() string {
-	return e.typ
+	return e.Type
 }
 
 func (e *Event) GetArgs() interface{} {
-	return e.args
+	return e.Args
 }
 
 func (e *Event) Affect(ctx context.Context, engine en.IEngine, state en.IState) error {

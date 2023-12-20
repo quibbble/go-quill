@@ -11,11 +11,11 @@ import (
 
 type Trait struct {
 	uuid uuid.UUID
-	typ  string
-	args interface{}
+	Type string
+	Args interface{}
 
 	// which item/spell/unit created the trait when not initially part of a card
-	createdBy *uuid.UUID
+	CreatedBy *uuid.UUID
 
 	add    func(t *Trait, card st.ICard) error
 	remove func(t *Trait, card st.ICard) error
@@ -32,9 +32,9 @@ func NewTrait(uuid uuid.UUID, createdBy *uuid.UUID, typ string, args interface{}
 	}
 	return &Trait{
 		uuid:      uuid,
-		typ:       typ,
-		args:      decoded,
-		createdBy: createdBy,
+		Type:      typ,
+		Args:      decoded,
+		CreatedBy: createdBy,
 		add:       ar.Add,
 		remove:    ar.Remove,
 	}, nil
@@ -45,15 +45,15 @@ func (t *Trait) GetUUID() uuid.UUID {
 }
 
 func (t *Trait) GetType() string {
-	return t.typ
+	return t.Type
 }
 
 func (t *Trait) GetArgs() interface{} {
-	return t.args
+	return t.Args
 }
 
 func (t *Trait) GetCreatedBy() *uuid.UUID {
-	return t.createdBy
+	return t.CreatedBy
 }
 
 func (t *Trait) Add(card st.ICard) error {
