@@ -1,6 +1,6 @@
 ID: U0007
 Name: Harvester
-Description: "When a unit dies gain -1 'Cooldown'."
+Description: "When a unit dies 'Cooldown'."
 Cost: 3
 Conditions:
 Targets: # SET BY PARSER

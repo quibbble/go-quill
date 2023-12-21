@@ -1,6 +1,6 @@
 ID: I0008
 Name: Eternal Sword
-Description: "Holder gains +3 'Attack'. When it dies this item passed to a random 'Creature' on the same team."
+Description: "When holder dies pass this item to a random 'Creature' on the same team."
 Cost: 2
 Targets:
 - Type: Units

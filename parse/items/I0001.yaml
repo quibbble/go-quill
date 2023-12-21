@@ -1,6 +1,6 @@
 ID: I0001
 Name: Sword
-Description: "Gain +2 'Attack'."
+Description: ""
 Cost: 1
 Targets:
 - Type: Units

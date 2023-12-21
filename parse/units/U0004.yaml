@@ -1,6 +1,6 @@
 ID: U0004
 Name: Forger
-Description: "Adjacent friendly 'Unit's gain +1 'Attack'."
+Description: ""
 Cost: 3
 Conditions:
 Targets: # SET BY PARSER

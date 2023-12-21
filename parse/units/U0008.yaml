@@ -1,6 +1,6 @@
 ID: U0008
 Name: Rot Eater
-Description: "Gain +1 'Attack' and +1 'Health' when an adjacent 'unit' dies."
+Description: "Gain 'Attack' 1 and 'Health' 1 when an adjacent 'Unit' dies."
 Cost: 3
 Conditions:
 Targets: # SET BY PARSER
