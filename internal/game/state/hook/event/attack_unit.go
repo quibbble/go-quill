@@ -48,10 +48,11 @@ func AttackUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *s
 	if attacker.Cooldown != 0 {
 		return errors.Errorf("unit '%s' cannot attack due to cooldown", attacker.UUID)
 	}
-	if attacker.Range <= 0 && !attacker.CheckCodex(aX, aY, dX, dY) {
+	ranged := attacker.GetTraits(tr.RangedTrait)
+	if len(ranged) == 0 && !attacker.CheckCodex(aX, aY, dX, dY) {
 		return errors.Errorf("unit '%s' cannot attack due to failed codex check", attacker.UUID)
 	}
-	if attacker.Range > 0 && !attacker.CheckRange(aX, aY, dX, dY) {
+	if len(ranged) > 0 && !ranged[0].GetArgs().(*tr.RangedArgs).CheckRange(aX, aY, dX, dY) {
 		return errors.Errorf("unit '%s' cannot attack due to failed range check", attacker.UUID)
 	}
 
@@ -107,7 +108,7 @@ func AttackUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *s
 	defenders := []*cd.UnitCard{defender}
 
 	// lobber trait check
-	if (len(attacker.GetTraits(tr.LobberTrait)) > 0) && attacker.Range > 0 {
+	if len(ranged) > 0 && len(attacker.GetTraits(tr.LobberTrait)) > 0 {
 		choose, err := ch.NewChoose(state.Gen.New(en.ChooseUUID), ch.CodexChoice, &ch.CodexArgs{
 			Types: []string{cd.CreatureUnit, cd.StructureUnit},
 			Codex: attacker.Codex,
@@ -159,8 +160,12 @@ func AttackUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *s
 					return errors.Wrap(err)
 				}
 			} else {
+				damageType := attacker.DamageType
+				if len(ranged) > 0 {
+					damageType = dm.RangedDamage
+				}
 				event, err := NewEvent(state.Gen.New(en.EventUUID), DamageUnitEvent, DamageUnitArgs{
-					DamageType: attacker.DamageType,
+					DamageType: damageType,
 					Amount:     attackerDamage,
 					ChooseUnit: parse.Choose{
 						Type: ch.UUIDChoice,
@@ -225,9 +230,13 @@ func AttackUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *s
 			}
 		}
 
-		if defenderDamage > 0 && attacker.Range <= 0 {
+		if defenderDamage > 0 && len(ranged) == 0 {
+			damageType := defender.DamageType
+			if len(defender.GetTraits(tr.RangedTrait)) > 0 {
+				damageType = dm.RangedDamage
+			}
 			event, err := NewEvent(state.Gen.New(en.EventUUID), DamageUnitEvent, DamageUnitArgs{
-				DamageType: defender.DamageType,
+				DamageType: damageType,
 				Amount:     defenderDamage,
 				ChooseUnit: parse.Choose{
 					Type: ch.UUIDChoice,

@@ -36,8 +36,6 @@ func AddBuff(t *Trait, card st.ICard) error {
 		unit.BaseCooldown -= a.Amount
 	case cd.BaseMovementStat:
 		unit.BaseMovement += a.Amount
-	case cd.RangeState:
-		unit.Range += a.Amount
 	default:
 		return errors.Errorf("cannot buff '%s' stat", a.Stat)
 	}
@@ -64,8 +62,6 @@ func RemoveBuff(t *Trait, card st.ICard) error {
 		unit.BaseCooldown += a.Amount
 	case cd.BaseMovementStat:
 		unit.BaseMovement -= a.Amount
-	case cd.RangeState:
-		unit.Range -= a.Amount
 	default:
 		return errors.Errorf("cannot buff '%s' stat", a.Stat)
 	}

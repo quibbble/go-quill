@@ -69,11 +69,6 @@ func SwapStatsAffect(e *Event, ctx context.Context, engine *en.Engine, state *st
 			coolB := unitB.Cooldown
 			unitA.Cooldown = coolB
 			unitB.Cooldown = coolA
-		case cd.RangeState:
-			rangeA := unitA.Range
-			rangeB := unitB.Range
-			unitA.Range = rangeB
-			unitB.Range = rangeA
 		}
 	}
 	return errors.Errorf("'%s' cannot be swapped between '%s' and '%s'", a.Stat, choiceA, choiceB)

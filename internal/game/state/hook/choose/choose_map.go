@@ -71,6 +71,10 @@ func init() {
 			Type:     reflect.TypeOf(&RandomArgs{}),
 			Retrieve: RetrieveRandom,
 		},
+		RangedChoice: {
+			Type:     reflect.TypeOf(&RangedArgs{}),
+			Retrieve: RetrieveRanged,
+		},
 		SelfChoice: {
 			Type:     reflect.TypeOf(&SelfArgs{}),
 			Retrieve: RetrieveSelf,

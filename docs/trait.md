@@ -21,6 +21,7 @@
 | `Pillage`   | After damaging a base register `Hooks` and apply `Events`.                 | `Hooks`, `Events`          |
 | `Poison`    | At owner turn end take `Amount` magic damage.                              | `Amount`                   |
 | `Purity`    | Cannot be targeted by spells.                                              |                            |
+| `Ranged`    | Can attack up to `Amount` spaces away. Do not take damage when attacking.  | `Amount`                   |
 | `Recode`    | Apply `Code` to codex.                                                     | `Code`                     |
 | `Shield`    | Mitigate `Amount` physical damage.                                         | `Amount`                   |
 | `Spiky`     | Deal `Amount` extra damage when attacked.                                  | `Amount`                   |

@@ -50,8 +50,6 @@ func PassStatBelow(c *Condition, ctx context.Context, engine *en.Engine, state *
 			return p.Amount > maths.MaxInt(unit.Movement, 0), nil
 		case cd.BaseMovementStat:
 			return p.Amount > maths.MaxInt(unit.BaseMovement, 0), nil
-		case cd.RangeState:
-			return p.Amount > maths.MaxInt(unit.Range, 0), nil
 		}
 	}
 	return false, errors.Errorf("'%s' is not a valid stat", p.Stat)

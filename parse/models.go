@@ -43,7 +43,6 @@ type UnitCard struct {
 	Health     int
 	Cooldown   int
 	Movement   int
-	Range      int
 	Codex      string
 }
 

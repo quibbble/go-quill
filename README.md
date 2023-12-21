@@ -1,8 +1,6 @@
 # go-quill
 
 ## TODO
-- Fix Ranged next targets
-  - Make ranged a trait
 - Add dodge trait that has 50% chance of attack missing the unit
 
 # Ideas

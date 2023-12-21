@@ -73,6 +73,9 @@ func init() {
 		PurityTrait: {
 			Type: reflect.TypeOf(&PurityArgs{}),
 		},
+		RangedTrait: {
+			Type: reflect.TypeOf(&RangedArgs{}),
+		},
 		RecodeTrait: {
 			Type:   reflect.TypeOf(&RecodeArgs{}),
 			Add:    AddRecode,

@@ -19,7 +19,6 @@ const (
 	BaseMovementStat = "BaseMovement"
 	CooldownStat     = "Cooldown"
 	BaseCooldownStat = "BaseCooldown"
-	RangeState       = "Range"
 )
 
 type Builders struct {
@@ -190,7 +189,6 @@ func NewCard(builders *Builders, id string, player uuid.UUID, token bool) (st.IC
 			BaseCooldown: unit.Cooldown,
 			Movement:     unit.Movement,
 			BaseMovement: unit.Movement,
-			Range:        unit.Range,
 			Codex:        unit.Codex,
 			Items:        make([]*ItemCard, 0),
 		}, nil

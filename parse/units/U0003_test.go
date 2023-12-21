@@ -29,10 +29,23 @@ func Test_U0003(t *testing.T) {
 	err = game.AttackUnit(tests.Player1, uuids[0], u0002.GetUUID())
 	assert.True(t, err != nil)
 
+	targets, err := game.GetNextTargets(tests.Player1, uuids[0])
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.Equal(t, 2, len(targets))
+
 	// should attack at range
 	u0002Health := game.Board.XYs[x][y+2].Unit.(*cd.UnitCard).Health
 	u0003Health := game.Board.XYs[x][y].Unit.(*cd.UnitCard).Health
 	game.Board.XYs[x][y].Unit.(*cd.UnitCard).Cooldown = 0
+
+	targets, err = game.GetNextTargets(tests.Player1, uuids[0])
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.Equal(t, 3, len(targets))
+
 	if err := game.AttackUnit(tests.Player1, uuids[0], u0002.GetUUID()); err != nil {
 		t.Fatal(err)
 	}

@@ -1,8 +1,6 @@
 package card
 
 import (
-	"math"
-
 	st "github.com/quibbble/go-quill/internal/game/state"
 	"github.com/quibbble/go-quill/pkg/errors"
 	"github.com/quibbble/go-quill/pkg/uuid"
@@ -24,7 +22,6 @@ type UnitCard struct {
 	Health                 int
 	Cooldown, BaseCooldown int
 	Movement, BaseMovement int
-	Range                  int
 	Codex                  string
 
 	// Items that apply held traits to this card
@@ -114,17 +111,6 @@ func (c *UnitCard) CheckCodex(x1, y1, x2, y2 int) bool {
 		(x == 1 && y == 1 && c.Codex[7] == '1') // upper-right
 
 	return check
-}
-
-// CheckRange checks whether a ranged unit may attack from x1, y1 to x2, y2
-func (c *UnitCard) CheckRange(x1, y1, x2, y2 int) bool {
-	x := int(math.Abs(float64(x2 - x1)))
-	y := int(math.Abs(float64(y2 - y1)))
-
-	if x > c.Range || y > c.Range {
-		return false
-	}
-	return true
 }
 
 func (c *UnitCard) Reset(build st.BuildCard) {

@@ -356,10 +356,10 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 
 				if unit.Cooldown == 0 {
 					var attackChoose1 en.IChoose
-					if unit.Range > 0 {
+					if len(unit.GetTraits(tr.RangedTrait)) > 0 {
 						attackChoose1, err = ch.NewChoose(g.State.Gen.New(en.ChooseUUID), ch.RangedChoice, &ch.RangedArgs{
 							Types: []string{"Unit"},
-							Range: unit.Range,
+							Range: unit.GetTraits(tr.RangedTrait)[0].GetArgs().(*tr.RangedArgs).Amount,
 							ChooseUnitOrTile: parse.Choose{
 								Type: ch.UUIDChoice,
 								Args: ch.UUIDArgs{
