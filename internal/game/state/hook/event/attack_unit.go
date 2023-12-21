@@ -173,6 +173,7 @@ func AttackUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *s
 							UUID: defender.UUID,
 						},
 					},
+					fromBattle: true,
 				})
 				if err != nil {
 					return errors.Wrap(err)
@@ -244,6 +245,7 @@ func AttackUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *s
 						UUID: attacker.UUID,
 					},
 				},
+				fromBattle: true,
 			})
 			if err != nil {
 				return errors.Wrap(err)

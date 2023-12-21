@@ -21,6 +21,9 @@ type DamageUnitArgs struct {
 	DamageType string
 	Amount     int
 	ChooseUnit parse.Choose
+
+	// INTERNAL USE ONLY - do not redo damage calculations if damage is from a battle
+	fromBattle bool
 }
 
 func DamageUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
@@ -35,9 +38,12 @@ func DamageUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *s
 		return errors.Wrap(err)
 	}
 	unit := state.Board.XYs[x][y].Unit.(*cd.UnitCard)
-	damage, err := dg.Damage(unit, a.Amount, a.DamageType)
-	if err != nil {
-		return errors.Wrap(err)
+	damage := a.Amount
+	if !a.fromBattle {
+		damage, err = dg.Damage(unit, a.Amount, a.DamageType)
+		if err != nil {
+			return errors.Wrap(err)
+		}
 	}
 	unit.Health -= damage
 
