@@ -256,7 +256,7 @@ func AttackUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *s
 		}
 	}
 
-	// if attacker still on board then reset cooldown
+	// if attacker still on board then reset cooldown to base cooldown
 	if _, _, err := state.Board.GetUnitXY(attacker.UUID); err == nil {
 		attacker.Cooldown = maths.MaxInt(0, attacker.BaseCooldown)
 

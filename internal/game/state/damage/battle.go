@@ -39,6 +39,11 @@ func Battle(state *st.State, attacker, defender *cd.UnitCard) (int, int, error) 
 		return 0, 0, errors.Wrap(err)
 	}
 
+	// dodge trait check
+	if len(defender.GetTraits(tr.DodgeTrait)) > 0 && state.Rand.Intn(3) == 0 {
+		return 0, 0, nil
+	}
+
 	// spiky trait check
 	for _, trait := range defender.GetTraits(tr.SpikyTrait) {
 		args := trait.GetArgs().(*tr.SpikyArgs)

@@ -10,6 +10,7 @@
 | `Buff`      | Apply buff to `Stat` by `Amount`.                                          | `Stat`, `Amount`           |
 | `DeathCry`  | On death register `Hooks` and apply `Events`.                              | `Hooks`, `Events`          |
 | `Debuff`    | Apply debuff to `Stat` by `Amount`.                                        | `Stat`, `Amount`           |
+| `Dodge`     | Incoming attacks have a 1 in 3 chance of missing.                          |                            |
 | `Enemies`   | Apply `Trait` to enemy `ChooseUnits`.                                      | `Trait`, `ChooseUnits`     |
 | `Enrage`    | On taking damage register `Hooks` and apply `Events`.                      | `Hooks`, `Events`          |
 | `Eternal`   | Item is passed to `ChooseUnit` if all `Conditions` are met.                | `Conditions`, `ChooseUnit` |

@@ -1,7 +1,6 @@
 # go-quill
 
 ## TODO
-- Add dodge trait that has 50% chance of attack missing the unit
 
 # Ideas
 - Add unstable

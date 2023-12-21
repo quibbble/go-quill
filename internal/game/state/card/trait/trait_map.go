@@ -40,6 +40,9 @@ func init() {
 			Add:    AddDebuff,
 			Remove: RemoveDebuff,
 		},
+		DodgeTrait: {
+			Type: reflect.TypeOf(&DodgeArgs{}),
+		},
 		EnemiesTrait: {
 			Type: reflect.TypeOf(&EnemiesArgs{}),
 		},
