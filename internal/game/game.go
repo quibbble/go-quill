@@ -252,18 +252,35 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 			}
 			canAttack := false
 			if unit.Cooldown == 0 {
-				choose1, err := ch.NewChoose(g.Gen.New(en.ChooseUUID), ch.CodexChoice, &ch.CodexArgs{
-					Types: []string{cd.Unit},
-					Codex: unit.Codex,
-					ChooseUnitOrTile: parse.Choose{
-						Type: ch.UUIDChoice,
-						Args: ch.UUIDArgs{
-							UUID: unit.UUID,
+				var choose1 en.IChoose
+				if len(unit.GetTraits(tr.RangedTrait)) > 0 {
+					choose1, err = ch.NewChoose(g.State.Gen.New(en.ChooseUUID), ch.RangedChoice, &ch.RangedArgs{
+						Types: []string{"Unit"},
+						Range: unit.GetTraits(tr.RangedTrait)[0].GetArgs().(*tr.RangedArgs).Amount,
+						ChooseUnitOrTile: parse.Choose{
+							Type: ch.UUIDChoice,
+							Args: ch.UUIDArgs{
+								UUID: unit.UUID,
+							},
 						},
-					},
-				})
-				if err != nil {
-					return nil, errors.Wrap(err)
+					})
+					if err != nil {
+						return nil, errors.Wrap(err)
+					}
+				} else {
+					choose1, err = ch.NewChoose(g.State.Gen.New(en.ChooseUUID), ch.CodexChoice, &ch.CodexArgs{
+						Types: []string{"Unit"},
+						Codex: unit.Codex,
+						ChooseUnitOrTile: parse.Choose{
+							Type: ch.UUIDChoice,
+							Args: ch.UUIDArgs{
+								UUID: unit.UUID,
+							},
+						},
+					})
+					if err != nil {
+						return nil, errors.Wrap(err)
+					}
 				}
 				choose2, err := ch.NewChoose(g.Gen.New(en.ChooseUUID), ch.OwnedUnitsChoice, &ch.OwnedUnitsArgs{
 					ChoosePlayer: parse.Choose{
