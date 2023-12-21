@@ -1,6 +1,7 @@
 # go-quill
 
 ## TODO
+- Fix Ranged next targets
 
 # Ideas
 - Add unstable

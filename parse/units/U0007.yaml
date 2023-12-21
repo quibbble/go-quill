@@ -1,6 +1,6 @@
 ID: U0007
 Name: Harvester
-Description: "'Berserk'. Does not 'Cooldown'. When a unit dies gain -1 'Cooldown'."
+Description: "When a unit dies gain -1 'Cooldown'."
 Cost: 3
 Conditions:
 Targets: # SET BY PARSER
