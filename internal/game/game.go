@@ -433,8 +433,12 @@ func (g *Game) GetNextTargets(player uuid.UUID, targets ...uuid.UUID) ([]uuid.UU
 					if unit.Cooldown != 0 {
 						return nil, errors.Errorf("'%s' may not attack due to cooldown stat", unit.GetUUID())
 					}
-					if !unit.CheckCodex(x1, y1, x2, y2) {
+					ranged := unit.GetTraits(tr.RangedTrait)
+					if len(ranged) == 0 && !unit.CheckCodex(x1, y1, x2, y2) {
 						return nil, errors.Errorf("invalid attack for unit '%s'", unit.GetUUID())
+					}
+					if len(ranged) > 0 && !ranged[0].GetArgs().(*tr.RangedArgs).CheckRange(x1, y1, x2, y2) {
+						return nil, errors.Errorf("invalid ranged attack for unit '%s'", unit.GetUUID())
 					}
 					return make([]uuid.UUID, 0), nil
 				case en.TileUUID:

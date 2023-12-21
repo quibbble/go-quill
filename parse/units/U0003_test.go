@@ -56,6 +56,12 @@ func Test_U0003(t *testing.T) {
 	}
 	assert.Equal(t, 1, len(targets))
 
+	targets, err = game.GetNextTargets(tests.Player1, uuids[0], u0002.GetUUID())
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.Equal(t, 0, len(targets))
+
 	if err := game.AttackUnit(tests.Player1, uuids[0], u0002.GetUUID()); err != nil {
 		t.Fatal(err)
 	}
