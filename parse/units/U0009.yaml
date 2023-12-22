@@ -1,3 +1,4 @@
+Enabled: true
 ID: U0009
 Name: Library
 Description: "When 'Cooldown' is 0 'Library' is destroyed. Draw 2 cards."

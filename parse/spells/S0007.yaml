@@ -1,3 +1,4 @@
+Enabled: true
 ID: S0007
 Name: Pother
 Description: "Target 'Creature' or 'Structure' is moved to a random adjacent space. Draw a card."

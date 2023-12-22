@@ -131,6 +131,9 @@ func (b *Builder) Info() *bg.BoardGameInfo {
 	for _, id := range ids {
 		card, err := game.NewDummyCard(id)
 		if err != nil {
+			if err == parse.ErrNotEnabled {
+				continue
+			}
 			return nil
 		}
 		cards = append(cards, card)

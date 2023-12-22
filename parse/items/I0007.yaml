@@ -1,3 +1,4 @@
+Enabled: true
 ID: I0007
 Name: Infected Helm
 Description: "If holder dies from 'Poison' then pass this item to another random 'Creature' on the same team."

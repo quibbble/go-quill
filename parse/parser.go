@@ -10,6 +10,7 @@ import (
 
 var (
 	ErrInvalidCardID = errors.Errorf("invalid card id")
+	ErrNotEnabled    = errors.Errorf("card not enabled")
 )
 
 var library = Library
@@ -62,6 +63,10 @@ func ParseCard(id string) (ICard, error) {
 	}
 	if err := mapstructure.Decode(m, card); err != nil {
 		return nil, errors.Wrap(err)
+	}
+
+	if !card.GetEnabled() {
+		return nil, ErrNotEnabled
 	}
 
 	// set unit card targets as they are the same no matter the unit

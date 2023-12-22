@@ -2,9 +2,12 @@ package parse
 
 type ICard interface {
 	GetID() string
+	GetEnabled() bool
 }
 
 type Card struct {
+	Enabled bool // only used in parsing to determine if a card is ready for prime-time
+
 	ID          string
 	Name        string
 	Description string
@@ -22,6 +25,10 @@ type Card struct {
 
 func (c *Card) GetID() string {
 	return c.ID
+}
+
+func (c *Card) GetEnabled() bool {
+	return c.Enabled
 }
 
 type ItemCard struct {

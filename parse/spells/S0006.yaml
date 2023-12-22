@@ -1,3 +1,4 @@
+Enabled: true
 ID: S0006
 Name: Tunnel
 Description: "Swap the position of two 'Creature's or 'Structure's owned by the same player."

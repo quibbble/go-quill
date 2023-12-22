@@ -1,3 +1,4 @@
+Enabled: true
 ID: S0010
 Name: Destruction
 Description: "Destroy target 'Creature' or 'Structure'."
