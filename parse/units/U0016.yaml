@@ -1,17 +1,20 @@
-ID: U0003
-Name: Archer
+ID: U0016
+Name: Cannoneer
 Description: ""
-Cost: 2
+Cost: 4
 Conditions:
 Targets: # SET BY PARSER
 Type: Creature
 DamageType: Ranged
-Attack: 1
+Attack: 3
 Health: 3
 Cooldown: 2
 Movement: 1
-Codex: "11110000"
+Codex: "00001111"
 Traits:
+- Type: Dodge
 - Type: Ranged
   Args:
-    Amount: 2
+    Amount: 3
+Hooks:
+Events:

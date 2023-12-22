@@ -1,6 +1,18 @@
 # go-quill
 
 ## TODO
+- Add an endpoint to quibbble that is GET info gameKey={KEY}
+  - Game key
+  - Returns min and max players
+  - Variants (if there are any)
+  - Any other info needed when creating a game
+    - In the case of quill - all the cards that currently exist in the game
+  - These fields are all constants that should be returned from Builder.GetInfo() *bg.Info
+- Create randomness
+  - Write code that puts sorts all cards into categories by:
+    - Cost
+- Create cards that have synergy together
+  - Add groups? Maybe this will help with building synergy 
 
 # Ideas
 - Add unstable

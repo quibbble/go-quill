@@ -7,6 +7,9 @@ import (
 
 	bg "github.com/quibbble/go-boardgame"
 	"github.com/quibbble/go-boardgame/pkg/bgn"
+	"github.com/quibbble/go-quill/internal/game"
+	st "github.com/quibbble/go-quill/internal/game/state"
+	"github.com/quibbble/go-quill/parse"
 )
 
 const key = "Quill"
@@ -117,6 +120,29 @@ func (b *Builder) Load(game *bgn.Game) (bg.BoardGameWithBGN, error) {
 		}
 	}
 	return g, nil
+}
+
+func (b *Builder) Info() *bg.BoardGameInfo {
+	ids, err := parse.AllCards()
+	if err != nil {
+		return nil
+	}
+	cards := make([]st.ICard, 0)
+	for _, id := range ids {
+		card, err := game.NewDummyCard(id)
+		if err != nil {
+			return nil
+		}
+		cards = append(cards, card)
+	}
+	return &bg.BoardGameInfo{
+		GameKey:  b.Key(),
+		MinTeams: minTeams,
+		MaxTeams: maxTeams,
+		MoreInfo: &QuillMoreInfo{
+			Cards: cards,
+		},
+	}
 }
 
 func (b *Builder) Key() string {

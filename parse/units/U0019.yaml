@@ -1,18 +1,18 @@
-ID: U0004
-Name: Forger
+ID: U0019
+Name: Sage
 Description: ""
-Cost: 3
+Cost: 5
 Conditions:
 Targets: # SET BY PARSER
 Type: Creature
 DamageType: Physical
-Attack: 1
-Health: 3
+Attack: 4
+Health: 5
 Cooldown: 2
 Movement: 1
-Codex: "11111111"
+Codex: "00001111"
 Traits:
-- Type: Friends
+- Type: Enemies
   Args:
     ChooseUnits:
       Type: Adjacent
@@ -23,7 +23,9 @@ Traits:
         ChooseUnitOrTile:
           Type: Self
     Trait:
-      Type: Buff
+      Type: Debuff
       Args:
         Stat: Attack
         Amount: 1
+Hooks:
+Events:

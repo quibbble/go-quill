@@ -1,17 +1,17 @@
-ID: U0003
-Name: Archer
+ID: U0015
+Name: Jarl
 Description: ""
-Cost: 2
+Cost: 4
 Conditions:
 Targets: # SET BY PARSER
 Type: Creature
-DamageType: Ranged
-Attack: 1
+DamageType: Physical
+Attack: 3
 Health: 3
 Cooldown: 2
-Movement: 1
+Movement: 2
 Codex: "11110000"
 Traits:
-- Type: Ranged
-  Args:
-    Amount: 2
+- Type: Haste
+Hooks:
+Events:

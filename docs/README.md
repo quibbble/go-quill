@@ -50,11 +50,10 @@ Units additionally have the following values:
 
 ```yaml
 Type: Creature # Base / Creature / Structure
-DamageType: Physical # Physical / Magic / Pure
+DamageType: Physical # Physical / Ranged (Physical SubType) / Magic / Poison (Magic SubType) / Pure
 Attack: 2
 Health: 2
 Cooldown: 1 # how many turns until the unit may attack.
 Movement: 1 # how many moves a unit may make a turn.
-Range: 0 # Range > 0 makes this a ranged unit. Range determines how many tiles away the unit may attack from.
 Codex: "11000000" # an eight character string representing directions a unit may move or attack `up|down|left|right|upper-left|lower-right|lower-left|upper-right`.
 ```

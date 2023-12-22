@@ -14,6 +14,20 @@ var (
 
 var library = Library
 
+func AllCards() ([]string, error) {
+	ids := make([]string, 0)
+	for _, dir := range []string{"items", "spells", "units"} {
+		raws, err := library.ReadDir(dir)
+		if err != nil {
+			return nil, err
+		}
+		for _, raw := range raws {
+			ids = append(ids, raw.Name())
+		}
+	}
+	return ids, nil
+}
+
 func ParseCard(id string) (ICard, error) {
 	if len(id) == 0 {
 		return nil, ErrInvalidCardID

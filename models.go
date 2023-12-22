@@ -24,6 +24,10 @@ type QuillMoreOptions struct {
 	Decks [][]string
 }
 
+type QuillMoreInfo struct {
+	Cards []st.ICard
+}
+
 type QuillSnapshotData struct {
 	Board      [st.Cols][st.Rows]*st.Tile
 	PlayRange  map[string][]int

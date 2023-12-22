@@ -1,0 +1,16 @@
+ID: U0020
+Name: Confused Knight
+Description: "At the end of every turn 'Codex' is randomly recoded. (1/4 chance of 1 per code)"
+Cost: 4
+Conditions:
+Targets: # SET BY PARSER
+Type: Creature
+DamageType: Physical
+Attack: 7
+Health: 7
+Cooldown: 1
+Movement: 1
+Codex: "00000000"
+Traits:
+Hooks:
+Events:

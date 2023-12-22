@@ -23,7 +23,7 @@ func Test_U0003(t *testing.T) {
 	assert.Equal(t, game.Board.XYs[x][y].Unit.GetUUID(), uuids[0])
 
 	u0002, _ := game.BuildCard("U0002", tests.Player2, false)
-	game.Board.XYs[x][y+3].Unit = u0002
+	game.Board.XYs[x][y+2].Unit = u0002
 
 	// should fail cooldown check
 	err = game.AttackUnit(tests.Player1, uuids[0], u0002.GetUUID())
@@ -36,7 +36,7 @@ func Test_U0003(t *testing.T) {
 	assert.Equal(t, 2, len(targets))
 
 	// should attack at range
-	u0002Health := game.Board.XYs[x][y+3].Unit.(*cd.UnitCard).Health
+	u0002Health := game.Board.XYs[x][y+2].Unit.(*cd.UnitCard).Health
 	u0003Health := game.Board.XYs[x][y].Unit.(*cd.UnitCard).Health
 	game.Board.XYs[x][y].Unit.(*cd.UnitCard).Cooldown = 0
 
@@ -66,5 +66,5 @@ func Test_U0003(t *testing.T) {
 		t.Fatal(err)
 	}
 	assert.Equal(t, u0003Health, game.Board.XYs[x+1][y].Unit.(*cd.UnitCard).Health)
-	assert.Equal(t, u0002Health-1, game.Board.XYs[x][y+3].Unit.(*cd.UnitCard).Health)
+	assert.Equal(t, u0002Health-1, game.Board.XYs[x][y+2].Unit.(*cd.UnitCard).Health)
 }
