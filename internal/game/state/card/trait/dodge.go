@@ -1,5 +1,5 @@
 package trait
 
-const DodgeTrait = "DodgeCry"
+const DodgeTrait = "Dodge"
 
 type DodgeArgs struct{}

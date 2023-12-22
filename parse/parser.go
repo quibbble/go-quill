@@ -22,7 +22,7 @@ func AllCards() ([]string, error) {
 			return nil, err
 		}
 		for _, raw := range raws {
-			ids = append(ids, raw.Name())
+			ids = append(ids, raw.Name()[:5])
 		}
 	}
 	return ids, nil
