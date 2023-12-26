@@ -19,13 +19,13 @@ const (
 )
 
 type AttackUnitArgs struct {
-	ChooseAttacker parse.Choose
+	ChooseUnit     parse.Choose
 	ChooseDefender parse.Choose
 }
 
 func AttackUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
 	a := e.GetArgs().(*AttackUnitArgs)
-	attackerChoice, err := ch.GetUnitChoice(ctx, a.ChooseAttacker, engine, state)
+	attackerChoice, err := ch.GetUnitChoice(ctx, a.ChooseUnit, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -144,11 +144,21 @@ func AttackUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *s
 			// execute trait check
 			if len(attacker.GetTraits(tr.ExecuteTrait)) > 0 &&
 				defender.Health < defender.GetInit().(*parse.UnitCard).Health {
+				x, y, err := state.Board.GetUnitXY(defender.GetUUID())
+				if err != nil {
+					return errors.Wrap(err)
+				}
 				event, err := NewEvent(state.Gen.New(en.EventUUID), KillUnitEvent, KillUnitArgs{
 					ChooseUnit: parse.Choose{
 						Type: ch.UUIDChoice,
 						Args: ch.UUIDArgs{
 							UUID: defender.UUID,
+						},
+					},
+					ChooseTile: parse.Choose{
+						Type: ch.UUIDChoice,
+						Args: ch.UUIDArgs{
+							UUID: state.Board.XYs[x][y].UUID,
 						},
 					},
 				})

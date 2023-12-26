@@ -10,5 +10,5 @@ DamageType: Physical
 Attack: 2
 Health: 2
 Cooldown: 1
-Movement: 1
+Movement: 2
 Codex: "11000000"

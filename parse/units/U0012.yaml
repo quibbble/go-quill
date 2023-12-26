@@ -1,4 +1,5 @@
-ID: U0013
+Enabled: true
+ID: U0012
 Name: Glutton
 Description: "On death gain +1 base 'Mana'."
 Cost: 2
@@ -6,12 +7,38 @@ Conditions:
 Targets: # SET BY PARSER
 Type: Creature
 DamageType: Physical
-Attack: 1
-Health: 3
+Attack: 2
+Health: 2
 Cooldown: 2
 Movement: 1
 Codex: "11110000"
 Traits:
 Hooks:
-# TODO
+- When: After
+  Types: 
+  - KillUnit
+  Conditions:
+  - Type: Match
+    Args:
+      ChooseA:
+        Type: HookEventUnit
+      ChooseB:
+        Type: Self
+  Events:
+  - Type: GainBaseMana
+    Args:
+      Amount: 1
+      ChoosePlayer:
+        Type: Owner
+        Args:
+          ChooseCard: 
+            Type: Self
+  ReuseConditions:
+  - Not: true
+    Type: Match
+    Args:
+      ChooseA:
+        Type: HookEventUnit
+      ChooseB:
+        Type: Self
 Events:

@@ -26,6 +26,7 @@
 | `Recode`    | Apply `Code` to codex.                                                     | `Code`                     |
 | `Shield`    | Mitigate `Amount` physical damage.                                         | `Amount`                   |
 | `Spiky`     | Deal `Amount` extra damage when attacked.                                  | `Amount`                   |
+| `Surge`     | Add mana amount to attack.                                                 |                            |
 | `Thief`     | If attacked unit holds items then steal one randomly instead of attacking. |                            |
 | `Tired`     | Does not cooldown at the end of owner's turn.                              |                            |
 | `Ward`      | Mitigate `Amount` magic damage.                                            | `Amount`                   |

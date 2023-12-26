@@ -125,7 +125,7 @@ func (g *Game) AttackUnit(player, attacker, defender uuid.UUID) error {
 		return ErrWrongTurn(player)
 	}
 	event, err := ev.NewEvent(g.Gen.New(en.EventUUID), ev.AttackUnitEvent, ev.AttackUnitArgs{
-		ChooseAttacker: parse.Choose{
+		ChooseUnit: parse.Choose{
 			Type: ch.UUIDChoice,
 			Args: ch.UUIDArgs{
 				UUID: attacker,

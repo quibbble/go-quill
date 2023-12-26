@@ -6,7 +6,7 @@
 |-----------------------|----------------------------------------------------------------------------------------|--------------------------------------------|--------------|
 | `AddItemToUnit`       | Adds `ChooseItem` from `ChoosePlayer`'s hand to `ChooseUnit`.                          | `ChoosePlayer`, `ChooseItem`, `ChooseUnit` | T            |
 | `AddTraitToCard`      | Adds `Trait` to `ChooseCard`.                                                          | `Trait`, `ChooseCard`                      | F            |
-| `AttackUnit`          | `ChooseAttacker` attacks `ChooseDefender`.                                             | `ChooseAttacker`, `ChooseDefender`         | T            |
+| `AttackUnit`          | `ChooseUnit` attacks `ChooseDefender`.                                             | `ChooseUnit`, `ChooseDefender`         | T            |
 | `BurnCard`            | Trash the card at the top of `ChoosePlayer`'s deck.                                    | `ChoosePlayer`                             | T            |
 | `Cooldown`            | decrement `ChooseUnits` cooldowns by 1.                                                | `ChooseUnits`                              | F            |
 | `DamageUnit`          | Apply `Amount` damage of type `DamageType` to `ChooseUnit`.                            | `Amount`, `DamageType`, `ChooseUnit`       | T            |

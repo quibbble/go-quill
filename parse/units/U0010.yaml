@@ -10,7 +10,7 @@ DamageType: Physical
 Attack: 2
 Health: 3
 Cooldown: 2
-Movement: 1
+Movement: 2
 Codex: "00001111"
 Traits:
 Hooks:

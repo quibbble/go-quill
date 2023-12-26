@@ -1,3 +1,4 @@
+Enabled: true
 ID: U0011
 Name: Recruit
 Description: "After attacking 'Recruit' moves to a random adjacent space."
@@ -13,5 +14,42 @@ Movement: 1
 Codex: "11000000"
 Traits:
 Hooks:
-# TODO
+- When: After
+  Types: 
+  - AttackUnit
+  Conditions:
+  - Type: Match
+    Args:
+      ChooseA:
+        Type: HookEventUnit
+      ChooseB:
+        Type: Self
+  - Not: true
+    Type: UnitMissing
+    Args:
+      ChooseUnit:
+        Type: Self
+  Events:
+  - Type: MoveUnit
+    Args:
+      ChooseUnit:
+        Type: Self
+      ChooseTile:
+        Type: Random
+        Args:
+          Choose:
+            Type: Adjacent
+            Args:
+              Types:
+              - Tile
+              ChooseUnitOrTile:
+                Type: Self
+  ReuseConditions:
+  - Not: true
+    Type: Match
+    Args:
+      ChooseA:
+        Type: HookEventUnit
+      ChooseB:
+        Type: Self
 Events:

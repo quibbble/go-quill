@@ -21,7 +21,7 @@ type KillUnitArgs struct {
 	ChooseUnit parse.Choose
 
 	// DO NOT SET IN YAML - SET BY ENGINE
-	// tile location unit before death
+	// tile location of unit before death
 	ChooseTile parse.Choose
 }
 

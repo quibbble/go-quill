@@ -90,6 +90,9 @@ func init() {
 		SpikyTrait: {
 			Type: reflect.TypeOf(&SpikyArgs{}),
 		},
+		SurgeTrait: {
+			Type: reflect.TypeOf(&SurgeArgs{}),
+		},
 		ThiefTrait: {
 			Type: reflect.TypeOf(&ThiefArgs{}),
 		},

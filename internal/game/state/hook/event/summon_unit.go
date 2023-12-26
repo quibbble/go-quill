@@ -54,6 +54,11 @@ func SummonUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *s
 		unit.(*cd.UnitCard).Cooldown = 0
 	}
 
+	// surge trait check
+	for range unit.GetTraits(tr.SurgeTrait) {
+		unit.(*cd.UnitCard).Attack += state.Mana[playerChoice].Amount
+	}
+
 	state.Board.XYs[tX][tY].Unit = unit
 
 	// friends/enemies trait check

@@ -1,3 +1,4 @@
+Enabled: true
 ID: S0011
 Name: Return
 Description: "Target 'Creature' or 'Structure' is returned to owner's hand."

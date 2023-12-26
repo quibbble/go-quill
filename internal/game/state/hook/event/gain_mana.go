@@ -5,6 +5,8 @@ import (
 
 	en "github.com/quibbble/go-quill/internal/game/engine"
 	st "github.com/quibbble/go-quill/internal/game/state"
+	cd "github.com/quibbble/go-quill/internal/game/state/card"
+	tr "github.com/quibbble/go-quill/internal/game/state/card/trait"
 	ch "github.com/quibbble/go-quill/internal/game/state/hook/choose"
 	"github.com/quibbble/go-quill/parse"
 	"github.com/quibbble/go-quill/pkg/errors"
@@ -26,5 +28,16 @@ func GainManaAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.
 		return errors.Wrap(err)
 	}
 	state.Mana[playerChoice].Amount += a.Amount
+
+	// surge trait check
+	for _, col := range state.Board.XYs {
+		for _, tile := range col {
+			if tile.Unit != nil && tile.Unit.GetPlayer() == playerChoice {
+				for range tile.Unit.GetTraits(tr.SurgeTrait) {
+					tile.Unit.(*cd.UnitCard).Attack += a.Amount
+				}
+			}
+		}
+	}
 	return nil
 }

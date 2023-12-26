@@ -57,7 +57,7 @@ Hooks:
         Type: Self
   ReuseConditions:
   - Type: Match
-    Not: false
+    Not: true
     Args:
       ChooseA:
         Type: HookEventUnit

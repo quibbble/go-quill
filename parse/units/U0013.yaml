@@ -1,6 +1,7 @@
+Enabled: true
 ID: U0013
 Name: Reaver
-Description: "Gain +X 'Attack' where X is your current 'Mana'."
+Description: ""
 Cost: 3
 Conditions:
 Targets: # SET BY PARSER
@@ -9,9 +10,9 @@ DamageType: Physical
 Attack: 0
 Health: 4
 Cooldown: 2
-Movement: 1
+Movement: 2
 Codex: "00001111"
 Traits:
+- Type: Surge
 Hooks:
-# TODO
 Events:

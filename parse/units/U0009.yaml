@@ -1,7 +1,7 @@
 Enabled: true
 ID: U0009
 Name: Library
-Description: "When 'Cooldown' is 0 'Library' is destroyed. Draw 2 cards."
+Description: "When 'Cooldown' is 0 Library is destroyed. Draw 2 cards."
 Cost: 2
 Conditions:
 Targets: # SET BY PARSER

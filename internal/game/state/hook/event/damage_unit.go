@@ -128,6 +128,12 @@ func DamageUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *s
 					UUID: unit.UUID,
 				},
 			},
+			ChooseTile: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: ch.UUIDArgs{
+					UUID: state.Board.XYs[x][y].UUID,
+				},
+			},
 		})
 		if err != nil {
 			return errors.Wrap(err)

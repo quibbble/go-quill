@@ -63,6 +63,11 @@ func PlaceUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *st
 		unit.Cooldown = 0
 	}
 
+	// surge trait check
+	for range unit.GetTraits(tr.SurgeTrait) {
+		unit.Attack += state.Mana[playerChoice].Amount
+	}
+
 	state.Board.XYs[tX][tY].Unit = unit
 
 	// battle cry trait check

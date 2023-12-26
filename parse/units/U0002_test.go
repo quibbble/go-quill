@@ -34,9 +34,13 @@ func Test_U0002(t *testing.T) {
 	if err := game.MoveUnitXY(tests.Player1, uuids[0], x, y); err != nil {
 		t.Fatal(err)
 	}
-	assert.Equal(t, game.Board.XYs[x][y].Unit.(*cd.UnitCard).Movement, 0)
+	assert.Equal(t, game.Board.XYs[x][y].Unit.(*cd.UnitCard).Movement, 1)
+
+	if err := game.MoveUnitXY(tests.Player1, uuids[0], x, y+1); err != nil {
+		t.Fatal(err)
+	}
 
 	// should fail movement check
-	err = game.MoveUnitXY(tests.Player1, uuids[0], x, y+1)
+	err = game.MoveUnitXY(tests.Player1, uuids[0], x, y+2)
 	assert.True(t, err != nil)
 }

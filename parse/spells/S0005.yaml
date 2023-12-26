@@ -1,7 +1,7 @@
 Enabled: true
 ID: S0005
 Name: Surge
-Description: "Target and connected 'Creatures' and 'Structures' take 2 'Magic' damage."
+Description: "Target and connected 'Creature's and 'Structure's take 2 'Magic' damage."
 Cost: 4
 Targets:
 - Type: Units
