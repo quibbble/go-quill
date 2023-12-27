@@ -14,6 +14,9 @@ type Trait struct {
 	Type string
 	Args interface{}
 
+	// useful in the frontend for certain traits that are too complex to generate
+	Description string
+
 	// which item/spell/unit created the trait when not initially part of a card
 	CreatedBy *uuid.UUID
 

@@ -1,7 +1,7 @@
 Enabled: true
 ID: U0011
 Name: Recruit
-Description: "After attacking 'Recruit' moves to a random adjacent space."
+Description: "After attacking move to a random adjacent tile."
 Cost: 2
 Conditions:
 Targets: # SET BY PARSER

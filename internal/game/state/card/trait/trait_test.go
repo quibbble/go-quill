@@ -35,8 +35,9 @@ func Test_ModifyingTraitArgs(t *testing.T) {
 			},
 		},
 		Trait: struct {
-			Type string
-			Args interface{}
+			Type        string
+			Args        interface{}
+			Description string
 		}{
 			Type: BuffTrait,
 			Args: BuffArgs{

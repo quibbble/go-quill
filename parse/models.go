@@ -78,6 +78,7 @@ type Event struct {
 }
 
 type Trait struct {
-	Type string
-	Args interface{}
+	Type        string
+	Args        interface{}
+	Description string
 }

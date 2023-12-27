@@ -37,13 +37,6 @@ func KillUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.
 		return errors.Wrap(err)
 	}
 	unit := state.Board.XYs[x][y].Unit.(*cd.UnitCard)
-	state.Board.XYs[x][y].Unit = nil
-	a.ChooseTile = parse.Choose{
-		Type: ch.UUIDChoice,
-		Args: ch.UUIDArgs{
-			UUID: state.Board.XYs[x][y].UUID,
-		},
-	}
 
 	// death cry trait check
 	for _, trait := range unit.GetTraits(tr.DeathCryTrait) {
@@ -65,6 +58,14 @@ func KillUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.
 				return errors.Wrap(err)
 			}
 		}
+	}
+
+	state.Board.XYs[x][y].Unit = nil
+	a.ChooseTile = parse.Choose{
+		Type: ch.UUIDChoice,
+		Args: ch.UUIDArgs{
+			UUID: state.Board.XYs[x][y].UUID,
+		},
 	}
 
 	// friends/enemies trait check

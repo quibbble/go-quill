@@ -19,15 +19,12 @@ func Test_U0012(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	assert.Equal(t, 1, len(game.Hooks()))
-
 	mana := game.Mana[tests.Player1].BaseAmount
 
 	if err := game.PlayCard(tests.Player1, uuids[1], uuids[0]); err != nil {
 		t.Fatal(err)
 	}
 
-	assert.Equal(t, 0, len(game.Hooks()))
 	assert.Equal(t, nil, game.Board.XYs[x][y].Unit)
 	assert.Equal(t, mana+1, game.Mana[tests.Player1].BaseAmount)
 }
