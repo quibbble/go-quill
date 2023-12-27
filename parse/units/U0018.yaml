@@ -1,3 +1,4 @@
+Enabled: true
 ID: U0018
 Name: Mercenary
 Description: ""
@@ -13,5 +14,7 @@ Movement: 3
 Codex: "11111111"
 Traits:
 - Type: Assassin
+  Args:
+    Amount: 3
 Hooks:
 Events:

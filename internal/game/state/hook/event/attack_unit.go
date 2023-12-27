@@ -80,6 +80,12 @@ func AttackUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *s
 			return errors.Wrap(err)
 		}
 		event2, err := NewEvent(state.Gen.New(en.EventUUID), AddItemToUnitEvent, AddItemToUnitArgs{
+			ChoosePlayer: parse.Choose{
+				Type: ch.UUIDChoice,
+				Args: ch.UUIDArgs{
+					UUID: attacker.Player,
+				},
+			},
 			ChooseItem: parse.Choose{
 				Type: ch.UUIDChoice,
 				Args: ch.UUIDArgs{

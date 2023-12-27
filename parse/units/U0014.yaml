@@ -1,3 +1,4 @@
+Enabled: true
 ID: U0014
 Name: Scapegrace
 Description: ""
@@ -10,7 +11,7 @@ Attack: 3
 Health: 4
 Cooldown: 2
 Movement: 2
-Codex: "00001111"
+Codex: "11111111"
 Traits:
 - Type: Thief
 Hooks:
