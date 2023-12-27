@@ -7,6 +7,7 @@ const (
 )
 
 type EnrageArgs struct {
-	Hooks  []parse.Hook
-	Events []parse.Event
+	Description string
+	Hooks       []parse.Hook
+	Events      []parse.Event
 }

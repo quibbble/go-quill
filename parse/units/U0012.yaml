@@ -14,8 +14,8 @@ Movement: 1
 Codex: "11110000"
 Traits:
 - Type: DeathCry 
-  Description: "'BaseMana' 1"
   Args:
+    Description: "'BaseMana' 1"
     Events:
     - Type: GainBaseMana
       Args:
