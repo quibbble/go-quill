@@ -4,6 +4,7 @@
 
 | **Name**   | **Description**                                                            | **Args**                    |
 |-------------|----------------------------------------------------------------------------|----------------------------|
+| `Aimless`   | Codex is randomized every turn.                                            |                            |
 | `Assassin`  | Attacking a unit from behind deals `Amount` extra damage.                  | `Amount`                   |
 | `BattleCry` | On place register `Hooks` and apply `Events`.                              | `Hooks`, `Events`          |
 | `Berserk`   | Attacking and killing a unit resets cooldown to zero.                      |                            |

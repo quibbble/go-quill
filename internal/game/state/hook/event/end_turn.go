@@ -49,6 +49,16 @@ func EndTurnAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.S
 		}
 	}
 
+	// aimless trait check on player's units
+	for _, col := range state.Board.XYs {
+		for _, tile := range col {
+			unit := tile.Unit
+			if unit != nil && unit.GetPlayer() == state.GetTurn() && len(unit.GetTraits(tr.AimlessTrait)) > 0 {
+				unit.(*cd.UnitCard).Codex = tr.BuildAimlessCodex(state.Rand)
+			}
+		}
+	}
+
 	// update units movement and cooldown
 	event1, err := NewEvent(state.Gen.New(en.EventUUID), RefreshMovementEvent, RefreshMovementArgs{
 		ChooseUnits: parse.Choose{

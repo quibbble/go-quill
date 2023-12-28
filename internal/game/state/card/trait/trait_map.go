@@ -32,6 +32,9 @@ func init() {
 			Add:    AddBuff,
 			Remove: RemoveBuff,
 		},
+		AimlessTrait: {
+			Type: reflect.TypeOf(&AimlessArgs{}),
+		},
 		DeathCryTrait: {
 			Type: reflect.TypeOf(&DeathCryArgs{}),
 		},

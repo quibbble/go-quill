@@ -1,3 +1,4 @@
+Enabled: true
 ID: U0019
 Name: Sage
 Description: ""
@@ -9,7 +10,7 @@ DamageType: Physical
 Attack: 4
 Health: 5
 Cooldown: 2
-Movement: 1
+Movement: 2
 Codex: "00001111"
 Traits:
 - Type: Enemies
