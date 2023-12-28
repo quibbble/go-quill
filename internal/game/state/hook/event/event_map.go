@@ -126,6 +126,10 @@ func init() {
 			Type:   reflect.TypeOf(&RemoveTraitFromCardArgs{}),
 			Affect: RemoveTraitFromCardAffect,
 		},
+		RemoveTraitsFromCard: {
+			Type:   reflect.TypeOf(&RemoveTraitsFromCardArgs{}),
+			Affect: RemoveTraitsFromCardAffect,
+		},
 		SackCardEvent: {
 			Type:   reflect.TypeOf(&SackCardArgs{}),
 			Affect: SackCardAffect,

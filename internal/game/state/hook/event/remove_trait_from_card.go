@@ -11,9 +11,7 @@ import (
 	"github.com/quibbble/go-quill/pkg/errors"
 )
 
-const (
-	RemoveTraitFromCard = "RemoveTraitFromCard"
-)
+const RemoveTraitFromCard = "RemoveTraitFromCard"
 
 type RemoveTraitFromCardArgs struct {
 	ChooseTrait parse.Choose

@@ -7,6 +7,7 @@
 | `Adjacent`       | Retrieve all `Types` adjacent to `ChooseUnitOrTile`.                        | `Types`, `ChooseUnitOrTile`               |
 | `CardIDByCost`   | Retrieve all card IDs of cost `Cost`.                                       | `Cost`                                    |
 | `CardIDByType`   | Retrieve all card IDs of types `CardTypes`.                                 | `CardTypes`                               |
+| `CardTraits`     | Retrieve all traits of type `TraitType` held by `ChooseCard`.               | `TraitType`, `ChooseCard`                 |
 | `Codex`          | Retrieve all `Types` matching `Codex` to `ChooseUnitOrTile`.                | `Types`, `Codex`, `ChooseUnitOrTile`      |
 | `Composite`      | Apply `SetFunction` to all `ChooseChain`.                                   | `SetFunction`, `ChooseChain`              |
 | `Connected`      | Retrieve all `Types` connected to `ChooseUnit` using `ConnectionType`.      | `Types`, `ConnectionType`, `ChooseUnit`   |
@@ -42,4 +43,5 @@
 | `Range`            | An integer.                                                                                      |
 | `SetFunction`      | `Union`, `Intersect`, `Diff`.                                                                    |
 | `Types`            | A list containing one or more of the following: `Tile`, `Unit`, `Creature`, `Structure`, `Base`. |
+| `TraitType`        | A [Trait](./trait.md) type.                                                                      |
 | `UUID`             | A UUID.                                                                                          |

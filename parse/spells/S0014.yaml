@@ -1,7 +1,8 @@
+Enabled: true
 ID: S0014
 Name: Cleanse
-Description: "Remove 'Poison' from target 'Unit'."
-Cost: 3
+Description: "Remove all 'Poison' affects from target 'Unit'."
+Cost: 1
 Targets:
 - Type: Units
   Args:
@@ -10,14 +11,14 @@ Targets:
     - Structure
 Hooks:
 Events:
-- Type: RemoveTraitFromCard
+- Type: RemoveTraitsFromCard
   Args:
     ChooseCard:
       Type: Target
       Args:
         Index: 0
-    ChooseTrait:
-      Type: CardTrait
+    ChooseTraits:
+      Type: CardTraits
       Args:
         ChooseCard:
           Type: Target

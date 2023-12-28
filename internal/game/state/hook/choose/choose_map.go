@@ -35,6 +35,10 @@ func init() {
 			Type:     reflect.TypeOf(&CodexArgs{}),
 			Retrieve: RetrieveCodex,
 		},
+		CardTraitsChoice: {
+			Type:     reflect.TypeOf(&CardTraitsArgs{}),
+			Retrieve: RetrieveCardTraits,
+		},
 		CompositeChoice: {
 			Type:     reflect.TypeOf(&CompositeArgs{}),
 			Retrieve: RetrieveComposite,
