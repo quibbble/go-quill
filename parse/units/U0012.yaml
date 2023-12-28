@@ -15,7 +15,7 @@ Codex: "11110000"
 Traits:
 - Type: DeathCry 
   Args:
-    Description: "'BaseMana' 1"
+    Description: "gain 'BaseMana' 1"
     Events:
     - Type: GainBaseMana
       Args:

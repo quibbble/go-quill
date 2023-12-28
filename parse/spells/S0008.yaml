@@ -1,7 +1,7 @@
 Enabled: true
 ID: S0008
 Name: Speed
-Description: "Target 'Creature' gains -2 'Cooldown'."
+Description: "Target 'Creature' gains 'Cooldown' -2."
 Cost: 2
 Targets:
 - Type: Units

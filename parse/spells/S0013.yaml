@@ -1,7 +1,7 @@
 Enabled: true
 ID: S0013
 Name: Recruiting
-Description: "Deal 2 'Magic' damage to a 'Creature' or 'Structure'. If it dies summon a 'Recruit' on a random tile."
+Description: "Deal 2 'Magic' damage to a 'Creature' or 'Structure'. If it dies summon a 'U0011' on a random tile."
 Cost: 3
 Targets:
 - Type: Units

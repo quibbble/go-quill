@@ -1,7 +1,7 @@
 Enabled: true
 ID: I0010
 Name: Map
-Description: "Holder's codex is valid in all directions."
+Description: ""
 Cost: 1
 Targets:
 - Type: Units
@@ -12,5 +12,5 @@ Hooks:
 HeldTraits:
 - Type: Recode
   Args:
-    SetFunction: "Union"
+    SetFunction: "Replace"
     Code: "11111111"

@@ -1,7 +1,7 @@
 Enabled: true
 ID: S0004
 Name: Power Override
-Description: "Gain +6 'Mana'. If current 'Mana' is 9 or more then draw a card."
+Description: "Gain 'Mana' 6. If current 'Mana' is 9 or more then draw a card."
 Cost: 3
 Targets:
 Hooks:
