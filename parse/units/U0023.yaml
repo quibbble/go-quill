@@ -1,18 +1,18 @@
 Enabled: true
-ID: U0020
-Name: Confused Knight
+ID: U0023
+Name: Zealot
 Description: ""
-Cost: 4
+Cost: 2
 Conditions:
 Targets: # SET BY PARSER
 Type: Creature
 DamageType: Physical
-Attack: 7
-Health: 7
-Cooldown: 2
-Movement: 1
-Codex: "00000000"
+Attack: 1
+Health: 1
+Cooldown: 1
+Movement: 3
+Codex: "11111111"
 Traits:
-- Type: Aimless
+- Type: Execute
 Hooks:
 Events:

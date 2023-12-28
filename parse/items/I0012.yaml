@@ -1,13 +1,14 @@
 Enabled: true
-ID: I0011
-Name: Shoes
+ID: I0012
+Name: Cloak
 Description: ""
-Cost: 3
+Cost: 2
 Targets:
 - Type: Units
   Args:
     Types:
     - Creature
-Hooks:
 HeldTraits:
-- Type: Dodge
+- Type: Ward
+  Args:
+    Amount: 2

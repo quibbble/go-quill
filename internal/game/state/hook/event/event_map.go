@@ -94,6 +94,10 @@ func init() {
 			Type:   reflect.TypeOf(&ModifyUnitArgs{}),
 			Affect: ModifyUnitAffect,
 		},
+		ModifyUnitsEvent: {
+			Type:   reflect.TypeOf(&ModifyUnitsArgs{}),
+			Affect: ModifyUnitsAffect,
+		},
 		MoveUnitEvent: {
 			Type:   reflect.TypeOf(&MoveUnitArgs{}),
 			Affect: MoveUnitAffect,

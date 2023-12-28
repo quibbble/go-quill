@@ -1,18 +1,21 @@
 Enabled: true
-ID: U0020
-Name: Confused Knight
+ID: U0022
+Name: Giant
 Description: ""
-Cost: 4
+Cost: 5
 Conditions:
 Targets: # SET BY PARSER
 Type: Creature
 DamageType: Physical
-Attack: 7
-Health: 7
+Attack: 3
+Health: 5
 Cooldown: 2
 Movement: 1
-Codex: "00000000"
+Codex: "11110000"
 Traits:
-- Type: Aimless
+- Type: Ranged
+  Args:
+    Amount: 3
+- Type: Lobber
 Hooks:
 Events:

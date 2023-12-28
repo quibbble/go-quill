@@ -23,6 +23,7 @@
 | `HealUnits`            | Heals `ChooseUnits` by `Amount`                                                                       | `ChooseUnits`, `Amount`                                   | F            |
 | `KillUnit`             | Removes `ChooseUnit` from the board and resets the card.                                              | `ChooseUnit`                                              | T            |
 | `ModifyUnit`           | Modifies `ChooseUnit`'s `Stat` by `Amount`.                                                           | `ChooseUnit`, `Stat`, `Amount`                            | T            |
+| `ModifyUnits`          | Modifies all `ChooseUnits` `Stat`s by `Amount`.                                                       | `ChooseUnits`, `Stat`, `Amount`                           | F            |
 | `MoveUnit`             | Moves `ChooseUnit` to `ChooseTile`. Decrements `ChooseUnit` if `UnitMovement` is true.                | `ChooseUnit`, `ChooseTile`, `UnitMovement`                | T            |
 | `PlaceUnit`            | Move `ChooseUnit` from `ChoosePlayer`'s hand and places it on `ChooseTile` with option `InPlayRange`. | `ChoosePlayer`, `ChooseUnit`, `ChooseTile`, `InPlayRange` | T            |
 | `PlayCard`             | Plays `ChooseCard` in `ChoosePlayer`'s hand.                                                          | `ChoosePlayer`, `ChooseCard`                              | T            |

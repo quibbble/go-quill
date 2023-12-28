@@ -23,6 +23,7 @@ func Test_I0002(t *testing.T) {
 	u2, _ := game.BuildCard("U0002", tests.Player1, false)
 	game.Board.XYs[x][y+1].Unit = u2
 	game.Board.XYs[x][y+1].Unit.(*cd.UnitCard).Cooldown = 0
+	game.Board.XYs[x][y+1].Unit.(*cd.UnitCard).Codex = "11111111"
 
 	health := u1.(*cd.UnitCard).Health
 
