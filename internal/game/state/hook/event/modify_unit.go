@@ -36,6 +36,10 @@ func ModifyUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *s
 	unit := state.Board.XYs[x][y].Unit.(*cd.UnitCard)
 
 	switch a.Stat {
+	case cd.AttackStat:
+		unit.Attack = unit.Attack + a.Amount
+	case cd.HealthStat:
+		unit.Health = unit.Health + a.Amount
 	case cd.MovementStat:
 		unit.Movement = maths.MaxInt(0, unit.Movement+a.Amount)
 	case cd.CooldownStat:

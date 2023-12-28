@@ -37,24 +37,18 @@ Hooks:
       Choose:
         Type: Self
   Events:
-  - Type: AddTraitToCard
-    Args:
-      Trait:
-        Type: Buff
-        Args:
-          Stat: Attack
-          Amount: 1        
-      ChooseCard:
+  - Type: ModifyUnit
+    Args:  
+      ChooseUnit:
         Type: Self
-  - Type: AddTraitToCard
-    Args:
-      Trait:
-        Type: Buff
-        Args:
-          Stat: Health
-          Amount: 1        
-      ChooseCard:
+      Stat: Attack
+      Amount: 1
+  - Type: ModifyUnit
+    Args:  
+      ChooseUnit:
         Type: Self
+      Stat: Health
+      Amount: 1
   ReuseConditions:
   - Type: Match
     Not: true

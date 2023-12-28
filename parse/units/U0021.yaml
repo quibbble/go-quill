@@ -18,7 +18,7 @@ Traits:
     Amount: 2
 - Type: Pillage
   Args:
-    Description: "Draw a card"
+    Description: "draw a card"
     Events:
     - Type: DrawCard
       Args:

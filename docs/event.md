@@ -47,5 +47,5 @@
 | `DamageType`       | `Physical`, `Magic`, `Pure`.                                 |
 | `ID`               | A five character string representing a card i.e. `U0001`.    |
 | `InPlayRange`      | A boolean.                                                   |
-| `Stat`             | `Cost`, `Attack`, `Health`, `Movement`, `Cooldown`, `Range`. |
+| `Stat`             | `Cost`, `Attack`, `Health`, `Movement`, `Cooldown`.          |
 | `Trait`            | [Trait](./trait.md).                                         |
