@@ -38,28 +38,6 @@ func KillUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.
 	}
 	unit := state.Board.XYs[x][y].Unit.(*cd.UnitCard)
 
-	// death cry trait check
-	for _, trait := range unit.GetTraits(tr.DeathCryTrait) {
-		args := trait.GetArgs().(*tr.DeathCryArgs)
-		for _, h := range args.Hooks {
-			hook, err := state.NewHook(state.Gen, unit.GetUUID(), h)
-			if err != nil {
-				return errors.Wrap(err)
-			}
-			engine.Register(hook)
-		}
-		for _, e := range args.Events {
-			event, err := NewEvent(state.Gen.New(en.EventUUID), e.Type, e.Args)
-			if err != nil {
-				return errors.Wrap(err)
-			}
-			ctx := context.WithValue(context.WithValue(context.Background(), en.TraitCardCtx, unit.GetUUID()), en.TraitEventCtx, e)
-			if err := engine.Do(ctx, event, state); err != nil {
-				return errors.Wrap(err)
-			}
-		}
-	}
-
 	state.Board.XYs[x][y].Unit = nil
 	a.ChooseTile = parse.Choose{
 		Type: ch.UUIDChoice,
@@ -137,6 +115,28 @@ func KillUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.
 				return errors.Wrap(err)
 			}
 			if err := engine.Do(context.Background(), event, state); err != nil {
+				return errors.Wrap(err)
+			}
+		}
+	}
+
+	// death cry trait check
+	for _, trait := range unit.GetTraits(tr.DeathCryTrait) {
+		args := trait.GetArgs().(*tr.DeathCryArgs)
+		for _, h := range args.Hooks {
+			hook, err := state.NewHook(state.Gen, unit.GetUUID(), h)
+			if err != nil {
+				return errors.Wrap(err)
+			}
+			engine.Register(hook)
+		}
+		for _, ev := range args.Events {
+			event, err := NewEvent(state.Gen.New(en.EventUUID), ev.Type, ev.Args)
+			if err != nil {
+				return errors.Wrap(err)
+			}
+			ctx := context.WithValue(context.WithValue(context.Background(), en.TraitCardCtx, unit.GetUUID()), en.TraitEventCtx, e)
+			if err := engine.Do(ctx, event, state); err != nil {
 				return errors.Wrap(err)
 			}
 		}

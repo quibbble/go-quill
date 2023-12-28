@@ -20,6 +20,7 @@ type PlaceUnitArgs struct {
 	ChoosePlayer parse.Choose
 	ChooseUnit   parse.Choose
 	ChooseTile   parse.Choose
+	InPlayRange  bool
 }
 
 func PlaceUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
@@ -50,9 +51,11 @@ func PlaceUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *st
 	if state.Board.XYs[tX][tY].Unit != nil {
 		return errors.Errorf("unit '%s' cannot be placed on a full tile", unit.UUID)
 	}
-	min, max := state.Board.GetPlayableRowRange(playerChoice)
-	if tY < min || tY > max {
-		return errors.Errorf("unit '%s' must be placed within rows %d to %d", unit.UUID, min, max)
+	if a.InPlayRange {
+		min, max := state.Board.GetPlayableRowRange(playerChoice)
+		if tY < min || tY > max {
+			return errors.Errorf("unit '%s' must be placed within rows %d to %d", unit.UUID, min, max)
+		}
 	}
 	if err := state.Hand[playerChoice].RemoveCard(unitChoice); err != nil {
 		return errors.Wrap(err)

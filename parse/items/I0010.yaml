@@ -1,3 +1,4 @@
+Enabled: true
 ID: I0010
 Name: Map
 Description: "Holder's codex is valid in all directions."
@@ -11,4 +12,5 @@ Hooks:
 HeldTraits:
 - Type: Recode
   Args:
+    SetFunction: "Union"
     Code: "11111111"

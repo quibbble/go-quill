@@ -10,4 +10,17 @@ Targets:
     - Structure
 Hooks:
 Events:
-# TODO
+- Type: RemoveTraitFromCard
+  Args:
+    ChooseCard:
+      Type: Target
+      Args:
+        Index: 0
+    ChooseTrait:
+      Type: CardTrait
+      Args:
+        ChooseCard:
+          Type: Target
+          Args:
+            Index: 0
+        TraitType: Poison

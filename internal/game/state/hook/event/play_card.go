@@ -154,6 +154,7 @@ func PlayCardAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.
 					UUID: targets[0],
 				},
 			},
+			InPlayRange: true,
 		})
 		if err != nil {
 			return errors.Wrap(err)

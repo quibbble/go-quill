@@ -23,7 +23,7 @@
 | `Poison`    | At owner turn end take `Amount` magic damage.                              | `Amount`                   |
 | `Purity`    | Cannot be targeted by spells.                                              |                            |
 | `Ranged`    | Can attack up to `Amount` spaces away. Do not take damage when attacking.  | `Amount`                   |
-| `Recode`    | Apply `Code` to codex.                                                     | `Code`                     |
+| `Recode`    | Apply `Code` to codex using `SetFunction`.                                 | `Code`, `SetFunction`      |
 | `Shield`    | Mitigate `Amount` physical damage.                                         | `Amount`                   |
 | `Spiky`     | Deal `Amount` extra damage when attacked.                                  | `Amount`                   |
 | `Surge`     | Add mana amount to attack.                                                 |                            |
@@ -37,9 +37,10 @@
 |--------------------|----------------------------------------------------------------------|
 | `Amount`           | An integer.                                                          |
 | `Choose{X}`        | [Choose](./choose.md).                                               |
-| `Conditions`       | list of [Condition](./condition.md).                                               |
+| `Conditions`       | list of [Condition](./condition.md).                                 |
 | `Code`             | An eight character string containing only 0 or 1 i.e. `11001111`.    |
 | `Events`           | List of [Event](./event.md).                                         |
 | `Hooks`            | List of [Hook](./hook.md).                                           |
+| `SetFunction`      | `Union`, `Intersect`, `Replace`.                                     |
 | `Stat`             | `Cost`, `Attack`, `Health`, `BaseMovement`, `BaseCooldown`, `Range`. |
 | `Trait`            | [Trait](./trait.md).                                                 

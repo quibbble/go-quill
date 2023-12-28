@@ -70,6 +70,7 @@ func SwapStatsAffect(e *Event, ctx context.Context, engine *en.Engine, state *st
 			unitA.Cooldown = coolB
 			unitB.Cooldown = coolA
 		}
+		return nil
 	}
 	return errors.Errorf("'%s' cannot be swapped between '%s' and '%s'", a.Stat, choiceA, choiceB)
 }

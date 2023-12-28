@@ -12,14 +12,13 @@ import (
 	"github.com/quibbble/go-quill/pkg/errors"
 )
 
-const (
-	SummonUnitEvent = "SummonUnit"
-)
+const SummonUnitEvent = "SummonUnit"
 
 type SummonUnitArgs struct {
 	ChoosePlayer parse.Choose
-	ID           string
+	ChooseID     parse.Choose
 	ChooseTile   parse.Choose
+	InPlayRange  bool
 }
 
 func SummonUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
@@ -28,12 +27,16 @@ func SummonUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *s
 	if err != nil {
 		return errors.Wrap(err)
 	}
+	idChoice, err := ch.GetChoice(ctx, a.ChooseID, engine, state)
+	if err != nil {
+		return errors.Wrap(err)
+	}
 	tileChoice, err := ch.GetTileChoice(ctx, a.ChooseTile, engine, state)
 	if err != nil {
 		return errors.Wrap(err)
 	}
 
-	unit, err := state.BuildCard(a.ID, playerChoice, true)
+	unit, err := state.BuildCard(string(idChoice), playerChoice, true)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -44,9 +47,11 @@ func SummonUnitAffect(e *Event, ctx context.Context, engine *en.Engine, state *s
 	if state.Board.XYs[tX][tY].Unit != nil {
 		return errors.Errorf("unit '%s' cannot be placed on a full tile", unit.GetUUID())
 	}
-	min, max := state.Board.GetPlayableRowRange(playerChoice)
-	if tY < min || tY > max {
-		return errors.Errorf("unit '%s' must be placed within rows %d to %d", unit.GetUUID(), min, max)
+	if a.InPlayRange {
+		min, max := state.Board.GetPlayableRowRange(playerChoice)
+		if tY < min || tY > max {
+			return errors.Errorf("unit '%s' must be placed within rows %d to %d", unit.GetUUID(), min, max)
+		}
 	}
 
 	// haste trait check

@@ -23,6 +23,14 @@ func init() {
 			Type:     reflect.TypeOf(&AdjacentArgs{}),
 			Retrieve: RetrieveAdjacent,
 		},
+		CardIDByCostChoice: {
+			Type:     reflect.TypeOf(&CardIDByCostArgs{}),
+			Retrieve: RetrieveCardIDByCost,
+		},
+		CardIDByTypeChoice: {
+			Type:     reflect.TypeOf(&CardIDByTypeArgs{}),
+			Retrieve: RetrieveCardIDByType,
+		},
 		CodexChoice: {
 			Type:     reflect.TypeOf(&CodexArgs{}),
 			Retrieve: RetrieveCodex,

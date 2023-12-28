@@ -7,12 +7,21 @@ import (
 	"github.com/quibbble/go-quill/pkg/errors"
 )
 
+const RecodeTrait = "Recode"
+
 const (
-	RecodeTrait = "Recode"
+	Union     = "Union"
+	Intersect = "Intersect"
+	Replace   = "Replace"
 )
 
 type RecodeArgs struct {
 	Code string
+
+	SetFunction string // Union, Intersect, Replace
+
+	// INTERNAL USE ONLY
+	oldCode string
 }
 
 func AddRecode(t *Trait, card st.ICard) error {
@@ -21,7 +30,33 @@ func AddRecode(t *Trait, card st.ICard) error {
 	if !ok {
 		return errors.ErrInterfaceConversion
 	}
-	return unit.Recode(a.Code)
+	switch a.SetFunction {
+	case Union:
+		code := ""
+		for i, c := range a.Code {
+			if unit.Codex[i] == '1' {
+				code += "1"
+			} else {
+				code += string(c)
+			}
+		}
+		unit.Codex = code
+	case Intersect:
+		code := ""
+		for i, c := range a.Code {
+			if unit.Codex[i] == '1' && c == '1' {
+				code += "1"
+			} else {
+				code += "0"
+			}
+		}
+		unit.Codex = code
+	case Replace:
+		unit.Codex = a.Code
+	default:
+		return errors.Errorf("invalid set function %s", a.SetFunction)
+	}
+	return nil
 }
 
 func RemoveRecode(t *Trait, card st.ICard) error {
@@ -30,5 +65,6 @@ func RemoveRecode(t *Trait, card st.ICard) error {
 	if !ok {
 		return errors.ErrInterfaceConversion
 	}
-	return unit.Recode(a.Code)
+	unit.Codex = a.oldCode
+	return nil
 }

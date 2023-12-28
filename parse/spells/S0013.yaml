@@ -1,6 +1,7 @@
+Enabled: true
 ID: S0013
 Name: Recruiting
-Description: "Deal 2 'Magic' damage to a 'Creature' or 'Structure'. If it dies summon a 'Recruit' randomly in your zone."
+Description: "Deal 2 'Magic' damage to a 'Creature' or 'Structure'. If it dies summon a 'Recruit' on a random tile."
 Cost: 3
 Targets:
 - Type: Units
@@ -9,5 +10,59 @@ Targets:
     - Creature
     - Structure
 Hooks:
+- When: After
+  Types: 
+  - DamageUnit
+  Conditions:
+  - Type: Match
+    Not: false
+    Args:
+      ChooseA:
+        Type: HookEventUnit
+      ChooseB:
+        Type: Target
+        Args:
+          Index: 0
+  - Type: UnitMissing
+    Not: false
+    Args:
+      ChooseUnit:
+        Type: Target
+        Args:
+          Index: 0
+  Events:
+  - Type: SummonUnit
+    Args:
+      ChoosePlayer:
+        Type: CurrentPlayer
+      ChooseTile:
+        Type: Random
+        Args:
+          Choose:
+            Type: Tiles
+            Args:
+              Empty: true
+      ChooseID:
+        Type: UUID
+        Args:
+          UUID: U0011
+      InPlayRange: false
+  ReuseConditions:
+  - Type: Match
+    Not: true
+    Args:
+      ChooseA:
+        Type: HookEventUnit
+      ChooseB:
+        Type: Target
+        Args:
+          Index: 0
 Events:
-# TODO
+- Type: DamageUnit
+  Args:
+    DamageType: Magic
+    Amount: 2
+    ChooseUnit:
+      Type: Target
+      Args:
+        Index: 0

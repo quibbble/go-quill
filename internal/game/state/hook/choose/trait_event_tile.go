@@ -26,7 +26,7 @@ func RetrieveTraitEventTile(c *Choose, ctx context.Context, engine *en.Engine, s
 		return nil, errors.ErrInterfaceConversion
 	}
 
-	tileChoice, err := GetUnitChoice(ctx, a.ChooseTile, engine, state)
+	tileChoice, err := GetTileChoice(ctx, a.ChooseTile, engine, state)
 	if err != nil {
 		return nil, errors.Wrap(err)
 	}

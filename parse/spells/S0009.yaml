@@ -2,7 +2,7 @@ Enabled: true
 ID: S0009
 Name: Dust to Dust
 Description: "Sacrifice target 'Creature' you control. Draw 3 cards."
-Cost: 4
+Cost: 3
 Targets:
 - Type: Composite
   Args:

@@ -2,8 +2,6 @@
 
 ## TODO
 - Create randomness
-  - Write code that puts sorts all cards into categories by:
-    - Cost
 - Create cards that have synergy together
   - Add groups? Maybe this will help with building synergy 
 

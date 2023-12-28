@@ -79,19 +79,6 @@ func (c *UnitCard) GetAndRemoveItem(item uuid.UUID) (*ItemCard, error) {
 	return itm, nil
 }
 
-func (c *UnitCard) Recode(code string) error {
-	tf := map[bool]string{true: "1", false: "0"}
-	if len(code) != 8 {
-		return errors.ErrIndexOutOfBounds
-	}
-	var recode string
-	for i := 0; i < len(c.Codex); i++ {
-		recode += tf[(c.Codex[i] == '1') != (code[i] == '1')]
-	}
-	c.Codex = recode
-	return nil
-}
-
 // CheckCodex checks whether the unit may move/attack from x1, y1 to x2, y2 with it's current codex
 func (c *UnitCard) CheckCodex(x1, y1, x2, y2 int) bool {
 	x := x2 - x1

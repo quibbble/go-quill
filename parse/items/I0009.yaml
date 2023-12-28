@@ -1,6 +1,7 @@
+Enabled: true
 ID: I0009
 Name: Necklace of Nature
-Description: "On death summon a 'Hound' in holder's place."
+Description: "On death summon a random 2 cost 'Unit' in holder's place."
 Cost: 2
 Targets:
 - Type: Composite
@@ -13,7 +14,8 @@ Targets:
         - Creature
     - Type: OwnedUnits
       Args:
-        ChoosesPlayer: CurrentPlayer
+        ChoosePlayer: 
+          Type: CurrentPlayer
 Hooks:
 HeldTraits:
 - Type: DeathCry
@@ -28,4 +30,19 @@ HeldTraits:
               Type: TraitEventUnit
         ChooseTile:
           Type: TraitEventTile
-        ID: U0010
+        ChooseID:
+          Type: Random
+          Args:
+            Choose:
+              Type: Composite
+              Args:
+                SetFunction: Intersect
+                ChooseChain:
+                - Type: CardIDByCost
+                  Args:
+                    Cost: 2
+                - Type: CardIDByType
+                  Args:
+                    CardTypes:
+                    - Unit
+        InPlayRange: false

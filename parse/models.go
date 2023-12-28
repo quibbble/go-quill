@@ -2,6 +2,7 @@ package parse
 
 type ICard interface {
 	GetID() string
+	GetCost() int
 	GetEnabled() bool
 }
 
@@ -25,6 +26,10 @@ type Card struct {
 
 func (c *Card) GetID() string {
 	return c.ID
+}
+
+func (c *Card) GetCost() int {
+	return c.Cost
 }
 
 func (c *Card) GetEnabled() bool {
