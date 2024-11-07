@@ -19,11 +19,11 @@ func Test_S0020(t *testing.T) {
 	u1, _ := game.BuildCard("U0002", tests.Player2, false)
 	game.Board.XYs[x][y].Unit = u1
 
-	movement := game.Board.XYs[x][y].Unit.(*cd.UnitCard).Movement
+	cooldown := game.Board.XYs[x][y].Unit.(*cd.UnitCard).Cooldown
 
 	if err := game.PlayCard(tests.Player1, uuids[0], u1.GetUUID()); err != nil {
 		t.Fatal(err)
 	}
 
-	assert.Equal(t, movement+2, game.Board.XYs[x][y].Unit.(*cd.UnitCard).Movement)
+	assert.Equal(t, cooldown-1, game.Board.XYs[x][y].Unit.(*cd.UnitCard).Cooldown)
 }

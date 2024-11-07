@@ -149,7 +149,7 @@ func updateUnits(e *Event, engine *en.Engine, state *st.State, createdBy uuid.UU
 					UUID: u,
 				},
 			},
-			CreatedBy: &createdBy,
+			createdBy: &createdBy,
 		})
 		if err != nil {
 			return errors.Wrap(err)

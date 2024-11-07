@@ -35,36 +35,40 @@ func RemoveItemFromUnitAffect(e *Event, ctx context.Context, engine *en.Engine, 
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	item, err := state.Board.XYs[x][y].Unit.(*cd.UnitCard).GetAndRemoveItem(itemChoice)
+	card := state.Board.XYs[x][y].Unit.(*cd.UnitCard)
+	item, err := card.GetAndRemoveItem(itemChoice)
 	if err != nil {
 		return errors.Wrap(err)
 	}
-	for _, trait := range item.HeldTraits {
-		event, err := NewEvent(state.Gen.New(en.EventUUID), RemoveTraitFromCard, RemoveTraitFromCardArgs{
-			ChooseTrait: parse.Choose{
-				Type: ch.UUIDChoice,
-				Args: ch.UUIDArgs{
-					UUID: trait.GetUUID(),
+	for _, trait := range card.Traits {
+		createdBy := trait.GetCreatedBy()
+		if createdBy != nil && *createdBy == item.GetUUID() {
+			event, err := NewEvent(state.Gen.New(en.EventUUID), RemoveTraitFromCard, RemoveTraitFromCardArgs{
+				ChooseTrait: parse.Choose{
+					Type: ch.UUIDChoice,
+					Args: ch.UUIDArgs{
+						UUID: trait.GetUUID(),
+					},
 				},
-			},
-			ChooseCard: parse.Choose{
-				Type: ch.UUIDChoice,
-				Args: ch.UUIDArgs{
-					UUID: unitChoice,
+				ChooseCard: parse.Choose{
+					Type: ch.UUIDChoice,
+					Args: ch.UUIDArgs{
+						UUID: unitChoice,
+					},
 				},
-			},
-		})
-		if err != nil {
-			return errors.Wrap(err)
-		}
-		if err := engine.Do(context.Background(), event, state); err != nil {
-			return errors.Wrap(err)
-		}
+			})
+			if err != nil {
+				return errors.Wrap(err)
+			}
+			if err := engine.Do(context.Background(), event, state); err != nil {
+				return errors.Wrap(err)
+			}
 
-		// if unit died from adding trait then break
-		_, _, err = state.Board.GetUnitXY(unitChoice)
-		if err != nil {
-			break
+			// if unit died from adding trait then break
+			_, _, err = state.Board.GetUnitXY(unitChoice)
+			if err != nil {
+				break
+			}
 		}
 	}
 	return nil

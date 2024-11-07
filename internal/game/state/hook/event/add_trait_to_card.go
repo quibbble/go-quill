@@ -21,14 +21,14 @@ type AddTraitToCardArgs struct {
 	Trait      parse.Trait
 	ChooseCard parse.Choose
 
-	// DO NOT SET IN YAML - SET BY ENGINE
+	// NOT SET IN YAML - SET BY ENGINE
 	// which item/spell/unit created the trait
-	CreatedBy *uuid.UUID
+	createdBy *uuid.UUID
 }
 
 func AddTraitToCardAffect(e *Event, ctx context.Context, engine *en.Engine, state *st.State) error {
 	a := e.GetArgs().(*AddTraitToCardArgs)
-	trait, err := tr.NewTrait(state.Gen.New(en.ChooseUUID), a.CreatedBy, a.Trait.Type, a.Trait.Args)
+	trait, err := tr.NewTrait(state.Gen.New(en.ChooseUUID), a.createdBy, a.Trait.Type, a.Trait.Args)
 	if err != nil {
 		return errors.Wrap(err)
 	}
@@ -42,7 +42,7 @@ func AddTraitToCardAffect(e *Event, ctx context.Context, engine *en.Engine, stat
 	if card == nil {
 		return st.ErrNotFound(choice)
 	}
-	if card.AddTrait(trait); err != nil {
+	if err := card.AddTrait(trait); err != nil {
 		return errors.Wrap(err)
 	}
 

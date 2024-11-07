@@ -50,9 +50,6 @@ func (b *Builder) Load(game *bgn.Game) (bg.BoardGameWithBGN, error) {
 		return nil, loadFailure(fmt.Errorf("must have two decks"))
 	}
 	decks := [][]string{strings.Split(decksList[0], ", "), strings.Split(decksList[1], ", ")}
-	if err != nil {
-		return nil, loadFailure(err)
-	}
 	g, err := b.CreateWithBGN(&bg.BoardGameOptions{
 		Teams: teams,
 		MoreOptions: QuillMoreOptions{

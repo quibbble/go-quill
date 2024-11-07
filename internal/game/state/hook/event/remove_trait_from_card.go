@@ -33,7 +33,7 @@ func RemoveTraitFromCardAffect(e *Event, ctx context.Context, engine *en.Engine,
 	if card == nil {
 		return st.ErrNotFound(cardChoice)
 	}
-	if card.RemoveTrait(traitChoice); err != nil {
+	if err := card.RemoveTrait(traitChoice); err != nil {
 		return errors.Wrap(err)
 	}
 

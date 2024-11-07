@@ -3,6 +3,8 @@
 Quill is a turn based strategy card game. To create your own cards head over to the [docs](./docs/) page.
 
 ## TODO
+- Create trait that expires after X turns
+  - Add card that gives all current player units +2 attack just this turn
 - Create more fun randomness
 - Create cards that have synergy together
   - Add groups field to units? Maybe this will help with building synergy 
